@@ -1,0 +1,16 @@
+library(rjags)
+rjags
+?jags.model
+jags.model
+inits=list(null,null,null)
+inits=list(NULL,NULL)
+null.inits <- sapply(inits, is.null)
+null.inits
+length(which(is.null(inits)))
+length(which(null.inits))
+length(inits)
+source("/Users/lianlian/Dropbox/work/ARVALIS/PIPELINES_2014/GxE/code/GibbsFW/R/GibbsFW.R")
+GIbbsFW()
+load("/Users/lianlian/Dropbox/work/ARVALIS/PIPELINES_2014/GxE/simulate/EffectOfBalance/A/seed2/corr.rda")
+corr
+load("/Users/lianlian/Desktop/badseed.RData")

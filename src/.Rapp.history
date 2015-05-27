@@ -1,0 +1,408 @@
+dyn.load("C_GibbsFW.so")
+dyn.load("C_GibbsFW.so")
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+dyn.load("C_GibbsFW.so")
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+b=realizedValue$b
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+b=realizedValue$b
+dyn.load("C_GibbsFW.so")
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+g=realizedValue$g
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+g
+b
+L
+dyn.load("C_GibbsFW.so")
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+var_g
+var_h
+var_g
+var_b
+var_h
+var_h<-var(y,na.rm=T)/4
+var_h
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+var_h
+var_e
+mu
+mu=mean(y);
+var_e<-var(y,na.rm=TRUE)/2
+mu
+var_e
+dyn.load("C_GibbsFW.so")
+var_e<-var(y,na.rm=TRUE)/2
+var_g<-var(y,na.rm=T)/4
+var_b<-var(y,na.rm=T)/4
+var_h<-var(y,na.rm=T)/4
+g=realizedValue$g
+b=realizedValue$b
+h=realizedValue$h
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+g
+b
+h
+var_e
+var_g
+var_b
+var_h
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+dyn.load("C_GibbsFW.so")
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+dyn.load("C_GibbsFW.so")
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+L
+dyn.load("C_GibbsFW.so")
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,NA)
+g
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,NA)
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+g
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+dyn.load("C_GibbsFW.so")
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,as.vector(L))
+.Call("C_GibbsFW",y,IDL,IDE,g,b,h,nIter,burnIn,thin,sampFile,S,Sg,Sb,Sh,df,dfg,dfb,dfh,var_e,var_g,var_b,var_h,mu,NA)
+realizedValue$g
+realizedValue$b
+library(MASS)
+G=matrix(c(25,15,-5,15,18,0,-5,0,11),3,3);#
+L=t(chol(G))#
+ID=rep((1:3),each=3);#
+var_e=2;#
+var_b=3;#
+b=mvrnorm(n=1,mu=rep(0,3),Sigma=G*var_g)#
+set.seed(1);x=rnorm(9,0,1);#
+set.seed(2);y=x*b[ID]+rnorm(9,0,var_e);
+set.seed(seed);.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))#
+set.seed(seed);R_sample_beta(ID,x,y,var_e,var_b,L)
+b
+set.seed(seed); .Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)#
+set.seed(seed); R_sample_beta(ID,x=x,y,var_e,var_b,NA)#
+#x is na (all x equal to 1), #
+set.seed(seed);.Call("R_sample_beta",b,ID,NA,y,var_e,var_b,as.vector(L))#
+set.seed(seed);R_sample_beta(ID,x=NA,y,var_e,var_b,L)#
+#
+#x is na, genotypes not correlated#
+set.seed(seed); .Call("R_sample_beta",b,ID,NA,y,var_e,var_b,NA)#
+set.seed(seed);R_sample_beta(ID,x=NA,y,var_e,var_b,NA)
+b
+G=matrix(c(25,15,-5,15,18,0,-5,0,11),3,3);#
+L=t(chol(G))#
+ID=rep((1:3),each=3);#
+var_e=2;#
+var_b=3;#
+b=mvrnorm(n=1,mu=rep(0,3),Sigma=G*var_g)#
+set.seed(1);x=rnorm(9,0,1);#
+set.seed(2);y=x*b[ID]+rnorm(9,0,var_e);
+b
+re.b=b
+re.b
+set.seed(seed);.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))#
+set.seed(seed);R_sample_beta(ID,x,y,var_e,var_b,L)#
+# x is not NA, gentoypes not correlated #
+set.seed(seed); .Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)#
+set.seed(seed); R_sample_beta(ID,x=x,y,var_e,var_b,NA)#
+#x is na (all x equal to 1), #
+set.seed(seed);.Call("R_sample_beta",b,ID,NA,y,var_e,var_b,as.vector(L))#
+set.seed(seed);R_sample_beta(ID,x=NA,y,var_e,var_b,L)#
+#
+#x is na, genotypes not correlated#
+set.seed(seed); .Call("R_sample_beta",b,ID,NA,y,var_e,var_b,NA)#
+set.seed(seed);R_sample_beta(ID,x=NA,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+re.b
+b
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+G=diag(1,3,3)
+G
+dyn.load("R_sample_beta.so")#
+#G=matrix(c(25,15,-5,15,18,0,-5,0,11),3,3);#
+G=diag(1,3,3)#
+L=t(chol(G))#
+ID=rep((1:3),each=3);#
+var_e=2;#
+var_b=3;#
+b=mvrnorm(n=1,mu=rep(0,3),Sigma=G*var_g)#
+set.seed(1);x=rnorm(9,0,1);#
+set.seed(2);y=x*b[ID]+rnorm(9,0,var_e);
+b
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x,y,var_e,var_b,L)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+R_sample_beta(ID,x=x,y,var_e,var_b,NA)
+dyn.load("R_sample_beta.so")#
+G=matrix(c(25,15,-5,15,18,0,-5,0,11),3,3);#
+ID=rep((1:3),each=3);#
+var_e=2;#
+var_b=3;#
+b=mvrnorm(n=1,mu=rep(0,3),Sigma=G*var_g)#
+#set.seed(1);x=rnorm(9,0,1);y=x*b[ID]+rnorm(9,0,var_e);#
+x=NULL#
+set.seed(2);y=b[ID]+rnorm(9,0,var_e);
+b
+b
+dyn.load("R_sample_beta.so")#
+G=matrix(c(25,15,-5,15,18,0,-5,0,11),3,3);#
+ID=rep((1:3),each=3);#
+var_e=2;#
+var_b=3;#
+b=mvrnorm(n=1,mu=rep(0,3),Sigma=G*var_b)#
+#set.seed(1);x=rnorm(9,0,1);y=x*b[ID]+rnorm(9,0,var_e);#
+x=NULL#
+set.seed(2);y=b[ID]+rnorm(9,0,var_e);
+b
+Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,as.vector(L))
+Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+.Call("R_sample_beta",b,ID,x,y,var_e,var_b,NA)
+rnorm(3,0,sqrt(var_b))
+mvrnorm(3,0,G*var_b)
+mvrnorm(3,0,G*var_b)
+G
+?mvrnorm
+G*var_b
+Gvb=G*var_b
+Gvb
+mvrnorm(1,0,Gvb)
+mvrnorm(1,rep(0,3),Gvb)
+L%*%rnorm(3,0,sqrt(var_b))
+L%*%rnorm(3,0,sqrt(var_b))
+L=t(chol(G))
+L%*%rnorm(3,0,sqrt(var_b))
+L%*%rnorm(3,0,sqrt(var_b))
+L%*%rnorm(3,0,sqrt(var_b))
+b=rep(0,3)
+var_b
+b=b+L%*%L%*%rnorm(3,0,sqrt(var_b))
+b=rep(0,3)#
+for(i in 1:100){#
+	b=b+L%*%L%*%rnorm(3,0,sqrt(var_b))/100#
+}
+b
+b=rep(0,3)
+for(i in 1:100){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}
+b
+b=rep(0,3)#
+for(i in 1:100){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b
+b=rep(0,3)#
+for(i in 1:100){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b
+b=rep(0,3)#
+for(i in 1:100){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b
+b=rep(0,3)#
+for(i in 1:1000){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b
+for(i in 1:1000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}
+b
+b=rep(0,3)
+for(i in 1:1000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}#
+b
+b=rep(0,3)#
+for(i in 1:1000){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b	#
+#
+b=rep(0,3)#
+for(i in 1:1000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}#
+b
+b=rep(0,3)#
+for(i in 1:1000){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b	#
+#
+b=rep(0,3)#
+for(i in 1:1000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}#
+b
+b=rep(0,3)#
+for(i in 1:10000){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b	#
+#
+b=rep(0,3)#
+for(i in 1:10000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}#
+b
+b=rep(0,3)#
+for(i in 1:10000){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b	#
+#
+b=rep(0,3)#
+for(i in 1:10000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}#
+b
+b=rep(0,3)#
+set.seed(1)#
+for(i in 1:10000){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b	#
+set.seed(1)#
+b=rep(0,3)#
+for(i in 1:10000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}#
+b
+b=rep(0,3)#
+set.seed(1)#
+for(i in 1:10000){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/100#
+	}#
+b	#
+set.seed(1)#
+b=rep(0,3)#
+for(i in 1:10000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/100#
+}#
+b
+b=rep(0,3)#
+set.seed(1)#
+for(i in 1:10000){#
+	b=b+L%*%rnorm(3,0,sqrt(var_b))/10000#
+	}#
+b	#
+set.seed(1)#
+b=rep(0,3)#
+for(i in 1:10000){#
+	b=b+mvrnorm(1,rep(0,3),Gvb)/10000#
+}#
+b
+A
