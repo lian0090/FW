@@ -1,30 +1,47 @@
 ####################################################################################
 ### function to plot
 ####################################################################################
-plotYhatvsE=function(yhat=NULL,h=NULL,mu=NULL,g=NULL,b=NULL,IDL=NULL,IDE=NULL,main=NULL){
+plotYhatvsE=function(yhat=NULL,h=NULL,mu=NULL,g=NULL,b=NULL,IDL=NULL,IDE=NULL,y=NULL,main=NULL){
 	#yhat is a dataframe with IDL,IDE and yhat
 	# IDL and IDE are the IDLiety index for the predicted yhat values
 	#either provide yhat and h or provide h,mu,g,b,IDL,IDE.
 	if(is.null(yhat)){
 	yhat=data.frame(aggregate(g[IDL]+(1+b[IDL])*h[IDE],by=list(IDL,IDE),mean))
-    colnames(yhat)=c("IDL","IDE","yhat")
+	y=data.frame(aggregate(y,by=list(IDL,IDE),mean))
+	colnames(yhat)=c("IDL","IDE","yhat")
     if(!is.null(mu)){yhat$yhat=yhat$yhat+mu}
     }
-	y=yhat$yhat
-	IDE=yhat$IDE
+    h=h+mu
+    IDE=yhat$IDE
 	IDL=yhat$IDL
-	n.IDL=length(unique(IDL))
-	plot(c(min(y),max(y))~c(min(h),min(h)+(max(h)-min(h))*1.05),type="n",xlab="environment values",ylab="fitted variety values",main=main)
+	yhat=yhat$yhat
+	y=y[,3]
+	uniqIDL=unique(IDL)
+	n.IDL=length(uniqIDL)
+	plot(c(min(c(y,yhat)),max(c(y,yhat)))~ c(min(h),min(h)+(max(h)-min(h))*1.05),type="n",xlab="Environment values",ylab="Variety performance",main=main)
+	cols=NULL
+	pchs=NULL
 	for(i in 1:n.IDL){	
-		wh.i=which(IDL==i)
+		col=i+1
+		pch=1
+		cols=c(cols,col)
+		pchs=c(pchs,pch)
+		IDLi=uniqIDL[i]
+		wh.i=which(IDL==IDLi)
+		yhat.i=yhat[wh.i]
 		y.i=y[wh.i]
 		IDE.i=IDE[wh.i]
 		p.i=h[IDE.i]
 		order.E.i=order(p.i)
-		lines(y.i[order.E.i]~sort(p.i),col=i,type="b")
+		sortp.i=sort(p.i)
+		lines(yhat.i[order.E.i]~sortp.i,col=col,type="l")
+		points(y.i[order.E.i]~sortp.i,col=col,pch=pch)
 		whmax=which.max(p.i)
-		text(x=min(p.i)+1.05*(max(p.i)-min(p.i)),y=y.i[whmax],labels=i,col=i)
+		#text(x=min(p.i)+1.05*(max(p.i)-min(p.i)),y=y.i[whmax],labels=IDLi,col=col)
 	}
+	sorth=sort(h[unique(IDE)])
+	lines((sorth) ~ sorth, lty=2,col=1)
+	legend("bottomright",legend=c(paste("variety",uniqIDL), "slope = 1"),lty=c(rep(1,n.IDL),2),col=c(cols,1))
 }
 
 summaryplot=function(IDL,IDE,realizedValue,postMean,LSvalue,plotdir,samps){

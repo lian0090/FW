@@ -5,10 +5,11 @@ GibbsFW=function(y,IDL,IDE,savedir=".",nIter=1000,burnIn=500,thin=1,df=5,dfg=5,d
 	if(!file.exists(savedir)){dir.create(savedir)}	
 	setwd(savedir)
 	#hyper parameters:
-	if(is.null(S)) S<-0.5*var(y)*(df+2)  #S is the scale times df
-	if(is.null(Sg))Sg<-0.25*var(y)*(dfg+2)
-	if(is.null(Sb))Sb<-0.5*var(y)*(dfb+2)  
-	if(is.null(Sh))Sh<-0.5*var(y)*(dfh+2)
+	var_y=var(y)
+	if(is.null(S)) S<-0.5*var_y*(df+2)  #S is the scale times df
+	if(is.null(Sg))Sg<-0.25*var_y*(dfg+2)
+	if(is.null(Sb))Sb<-0.5*sqrt(var_y)*(dfb+2)  #should be sqrt (var(y)) 
+	if(is.null(Sh))Sh<-0.5*sqrt(var_y)*(dfh+2)  #should be sqrt (var(y))
 	if(!is.null(A)){L<-t(chol(A)); Linv=solve(L)}else {L<-NA;Linv=NA}
 ############################################# 
 # initialize
