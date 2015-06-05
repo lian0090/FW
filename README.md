@@ -4,8 +4,10 @@ We wrote this R package to simultaneously estimate the environment effect and th
 
 
 ## Loading the package and data
+```R
 library(GibbsFW)
 data(FWdat)
+```
 
 ## Example 1 run Finlay-Wilkinson Regression by ordinary least squares
 ```R
