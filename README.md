@@ -3,11 +3,11 @@ Plant breeders use Finlay-Wilkinson Regression to assess the stableness differen
 We wrote this R package to simultaneously estimate the environment effect and the genetic effect by Gibbs Sampling.  
 
 
-# Loading the package and data
+## Loading the package and data
 library(GibbsFW)
 data(FWdat)
 
-# Example 1 run Finlay-Wilkinson Regression by ordinary least squares
+## Example 1 run Finlay-Wilkinson Regression by ordinary least squares
 ```R
 lm1=lmFW(FWdat$y,VAR=FWdat$Variety, ENV=FWdat$Environment)
 
@@ -23,3 +23,25 @@ lm1$fitted.values
 plot(lm1)
 
 ```
+
+## Example 2 run Finlay-Wilkinson Regression by Gibbs Sampler with only one chain.
+
+```R
+lm2=GibbsFW(FWdat$y,VAR=FWdat$Variety, ENV=FWdat$Environment)
+
+#the estimated values of b, g, h can be obtained as 
+lm2$Init1$b
+lm2$Init1$g
+lm2$Init1$h
+
+#the fitted values can be obtained as
+lm2$Init1$fitted.values
+
+#To plot the results of the first chain
+plot(lm2$Init1)
+
+#To plot only a few lines 
+plot(lm2$Init1,plotVAR=c("V1","V4","V5","V9"))
+
+```
+
