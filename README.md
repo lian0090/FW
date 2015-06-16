@@ -27,7 +27,7 @@ plot(lm1)
 ```
 
 ## Example 2 run Finlay-Wilkinson Regression by Gibbs Sampler with only one chain.
-
+By Default, only one chain is run by the GibbsFW function
 ```R
 lm2=GibbsFW(FWdat$y,VAR=FWdat$Variety, ENV=FWdat$Environment)
 
@@ -39,7 +39,7 @@ lm2$Init1$h
 #the fitted values can be obtained as
 lm2$Init1$fitted.values
 
-#To plot the results of the first chain
+#To plot the varieties performance on difference environments
 plot(lm2$Init1)
 
 #To plot only a few lines 
