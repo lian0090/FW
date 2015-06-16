@@ -1,4 +1,4 @@
-Package: GibbsFWjags
+Package: GibbsFW
 Type: Package
 Title: Performs Gibbs Sampler and Least Square models for Finlay-Wilkinson regressions. 
 Version: 0.0
