@@ -1,4 +1,4 @@
-GibbsFW: A Gibbs Sampler for Finlay Wilkinson Regression with unbalanced data
+# GibbsFW: A Gibbs Sampler for Finlay Wilkinson Regression with unbalanced data
 
 Documentation can be found in wiki page
 
