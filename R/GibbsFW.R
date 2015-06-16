@@ -1,4 +1,4 @@
-GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=1000,burnIn=500,thin=1,df=5,dfg=5,dfh=5,dfb=5,S=NULL,Sg=NULL,Sb=NULL,Sh=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL){
+GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,burnIn=3000,thin=1,df=5,dfg=5,dfh=5,dfb=5,S=NULL,Sg=NULL,Sb=NULL,Sh=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL){
   
   current.dir=getwd()  
   if(!file.exists(savedir)){dir.create(savedir)}	
@@ -41,7 +41,6 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=1000,
       var_b=inits[[i]]$var_b
       var_h=inits[[i]]$var_h
       if(!is.null(seed)){set.seed(seed)}
-      cat("seed before starting Gibbs Sampler is ", seed, "\n")
       outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, df, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv))
       names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h");
       for(namej in names(outi)){

@@ -113,3 +113,13 @@ setFW=function(g,b,h,y,VAR,ENV,...){
   return(out)
   
 }
+
+get_cor_ymean=function(g,b,h,y,VAR,ENV,corOnly=T){
+  ymean=aggregate(y,by=list(VAR,ENV),mean)
+  VAR=ymean[,1]
+  ENV=ymean[,2]
+  ymean=ymean[,3]
+  yhat=g[VAR]+(1+b[VAR])*h[ENV]
+  return(cor(yhat,ymean))
+}
+
