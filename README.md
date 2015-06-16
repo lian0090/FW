@@ -46,3 +46,11 @@ plot(lm2$Init1)
 plot(lm2$Init1,plotVAR=c("V1","V4","V5","V9"))
 
 ```
+## Example 3 run Finlay-Wilkinson Regression by Gibbs Sampler with two or more chains.
+```R
+lm3=GibbsFW(FWdat$y,VAR=FWdat$Variety, ENV=FWdat$Environment,nchain=3)
+#plot the samples of Gibbs sampler and check convergence:
+#by default, the samples of parameters are stored in current working directory.
+load("Gibbs_samps.rda")
+plot(samps)
+```
