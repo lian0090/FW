@@ -129,3 +129,5 @@ get_cor_ymean=function(g,b,h,y,VAR,ENV,corOnly=T){
   return(cor(yhat,ymean))
 }
 
+
+

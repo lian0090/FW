@@ -1,5 +1,7 @@
 #this is the code for ordinary linear regression
 lmFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir="."){
+  VAR=as.character(VAR)
+  ENV=as.character(ENV)	
   IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
   IDE=IDEL$IDE
   IDL=IDEL$IDL
