@@ -1,4 +1,7 @@
 GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,burnIn=3000,thin=1,df=5,dfg=5,dfh=5,dfb=5,S=NULL,Sg=NULL,Sb=NULL,Sh=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL){
+#check thin and df: they are functions in coda
+  if(!is.numeric(thin)){stop("thin must be a numeric")}
+  if(!is.numeric(df)){stop("df must be a numeric")}	
   VAR=as.character(VAR)
   ENV=as.character(ENV)	
   current.dir=getwd()  
