@@ -1,7 +1,6 @@
 lmFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir="."){
 
-  
-
+    if(!file.exists(savedir)){dir.create(savedir)}	
 
 
   IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)

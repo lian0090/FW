@@ -2,9 +2,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
 #check thin and df: they are functions in coda
   if(!is.numeric(thin)){stop("thin must be a numeric")}
   if(!is.numeric(df)){stop("df must be a numeric")}	
-  VAR=as.character(VAR)
-  ENV=as.character(ENV)	
-  current.dir=getwd()  
+   current.dir=getwd()  
   if(!file.exists(savedir)){dir.create(savedir)}	
   setwd(savedir)
   #hyper parameters:
@@ -65,6 +63,8 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
     if(save_samps==TRUE){save(samps,file="Gibbs_samps.rda")}
     #mpsrf=gelman.diag(samps)$mpsrf
     #return(list(postMean=postMean,mpsrf=mpsrf))
+    #setback the original working directory
+    setwd(current.dir)
     return(list(postMean=postMean))
   }
   
