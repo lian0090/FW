@@ -1,17 +1,14 @@
 GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,burnIn=3000,thin=1,df=5,dfg=5,dfh=5,dfb=5,S=NULL,Sg=NULL,Sb=NULL,Sh=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL){
 #check thin and df: they are functions in coda
-  if(!is.numeric(thin)){stop("thin must be a numeric")}
-  if(!is.numeric(df)){stop("df must be a numeric")}	
+  if(!is.numeric(thin)){
+  	stop("thin must be a numeric")
+  	}
+  if(!is.numeric(df)){
+  	stop("df must be a numeric")
+  	}	
    current.dir=getwd()  
   if(!file.exists(savedir)){dir.create(savedir)}	
   setwd(savedir)
-  #hyper parameters:
-  var_y=var(y)
-  if(is.null(S)) S<-0.5*var_y*(df+2)  #S is the scale times df
-  if(is.null(Sg))Sg<-0.25*var_y*(dfg+2)
-  if(is.null(Sb))Sb<-0.5*sqrt(var_y)*(dfb+2)   
-  if(is.null(Sh))Sh<-0.5*sqrt(var_y)*(dfh+2)  
-  if(!is.null(A)){L<-t(chol(A)); Linv=solve(L)}else {L<-NA;Linv=NA}
   ############################################# 
   # initialize
   ########################################################################################## 
@@ -23,8 +20,21 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   ng=length(VARlevels)
   nh=length(ENVlevels)
   inits=initialize(y,ng=ng,nh=nh,model="Gibbs",inits=inits,seed=seed,nchain=nchain)
-  
-  
+
+  #hyper parameters:
+  var_y=var(y)
+  if(is.null(S))  S<-0.5*var_y*(df+2)  #S is the scale times df
+  if(is.null(Sg)) Sg<-0.25*var_y*(dfg+2)
+  if(is.null(Sb)) Sb<-0.5*sqrt(var_y)*(dfb+2)   
+  if(is.null(Sh)) Sh<-0.5*sqrt(var_y)*(dfh+2)  
+  if(!is.null(A)){
+  	A=A[VARlevels,VARlevels]
+  	L<-t(chol(A));
+  	Linv=solve(L);
+  	}else {
+  		L<-NA;
+  		Linv=NA;
+  	}
   ############################################# 
   # runSampler: A private function to run multiple chains
   #############################################
@@ -58,13 +68,15 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
       sampFile=paste("sampsChain",i,".txt",sep="");
       samps[[i]] = mcmc(read.table(sampFile,sep=",", stringsAsFactors=F, header=T, check.names=F), start=burnIn+1, end=nIter, thin=thin)
       file.remove(sampFile)
-    }	
+    }
+    	
     samps=mcmc.list(samps);	
     if(save_samps==TRUE){save(samps,file="Gibbs_samps.rda")}
     #mpsrf=gelman.diag(samps)$mpsrf
     #return(list(postMean=postMean,mpsrf=mpsrf))
     #setback the original working directory
     setwd(current.dir)
+   
     return(list(postMean=postMean))
   }
   
@@ -73,8 +85,9 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   #############################################
   #select seeds that produced higher correlation between ENV and hhat
 
-  postMean=runSampler(inits=inits,nchain=nchain,nIter=nIter,burnIn=burnIn,save_samps=T,seed=seed)$postMean   
+  postMean=runSampler(inits=inits,nchain=nchain,nIter=nIter,burnIn=burnIn,save_samps=T,seed=seed)$postMean 
   class(postMean)=c("postMean","list")
+  #cat(postMean[[1]]$corENVmean,"\n")
   save(postMean,file=file.path(savedir,"postMean_Gibbs.rda"))	
   setwd(current.dir)
   return(postMean=postMean)
