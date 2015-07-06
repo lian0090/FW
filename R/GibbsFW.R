@@ -12,6 +12,14 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   ############################################# 
   # initialize
   ########################################################################################## 
+  if(is.null(VARlevels)){
+  	if(!is.null(A)){
+  	 if(is.null(colnames(A))){
+  	 	stop("Variety names for variance matrix must be provided as column names")
+  	 }
+  		VARlevels=colnames(A)
+  	}	
+  }
   IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
   IDE=IDEL$IDE
   IDL=IDEL$IDL
@@ -28,7 +36,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   if(is.null(Sb)) Sb<-0.5*sqrt(var_y)*(dfb+2)   
   if(is.null(Sh)) Sh<-0.5*sqrt(var_y)*(dfh+2)  
   if(!is.null(A)){
-  	A=A[VARlevels,VARlevels]
+  	A=A[VARlevels,VARlevels] #when Varlevels was specifed by the user
   	L<-t(chol(A));
   	Linv=solve(L);
   	}else {
