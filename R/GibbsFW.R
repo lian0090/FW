@@ -83,7 +83,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   ############################################# 
   #end of runSampler function.
   #############################################
-  #select seeds that produced higher correlation between ENV and hhat
+  #select seeds that produced higher correlation between ENVmean and hhat
 
   postMean=runSampler(inits=inits,nchain=nchain,nIter=nIter,burnIn=burnIn,save_samps=T,seed=seed)$postMean 
   class(postMean)=c("postMean","list")
