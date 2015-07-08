@@ -22,7 +22,7 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL){
     fitted.values=fitted.values[whIDL]
     y=y[whIDL]
   }
-  yhat=aggregate(fitted.values,by=list(IDL,IDE),mean)
+  yhat=aggregate(yhat,by=list(IDL,IDE),mean)
   y=data.frame(aggregate(y,by=list(IDL,IDE),mean))
   colnames(yhat)=c("IDL","IDE","yhat")
   yhat$yhat=yhat$yhat+mu
