@@ -19,11 +19,11 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL){
     whIDL=which(IDL %in% plotIDL)
     IDL=IDL[whIDL]
     IDE=IDE[whIDL]
-    fitted.values=fitted.values[whIDL]
+    yhat=yhat[whIDL]
     y=y[whIDL]
   }
-  yhat=aggregate(yhat,by=list(IDL,IDE),mean)
-  y=data.frame(aggregate(y,by=list(IDL,IDE),mean))
+  yhat=aggregate(yhat,by=list(IDL,IDE),function(a)mean(a,na.rm=T))
+  y=data.frame(aggregate(y,by=list(IDL,IDE),function(a)mean(a,na.rm=T)))
   colnames(yhat)=c("IDL","IDE","yhat")
   yhat$yhat=yhat$yhat+mu
   IDE=yhat$IDE
@@ -32,7 +32,7 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL){
   y=y[,3]
   uniqIDL=sort(as.numeric(unique(IDL)))
   n.IDL=length(uniqIDL)
-  plot(c(min(c(y,yhat)),max(c(y,yhat)))~ c(min(h),min(h)+(max(h)-min(h))*1.05),type="n",xlab="",ylab="Variety performance",main=main)
+  plot(c(min(c(y,yhat),na.rm=T),max(c(y,yhat),na.rm=T))~ c(min(h,na.rm=T),min(h,na.rm=T)+(max(h,na.rm=T)-min(h,na.rm=T))*1.05),type="n",xlab="",ylab="Variety performance",main=main)
   sorth=sort(h)
   sorth1=sorth[seq(1,length(h),by=2)]
   sorth2=sorth[seq(2,length(h),by=2)]
