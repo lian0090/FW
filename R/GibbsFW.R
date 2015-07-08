@@ -27,10 +27,16 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   ENVlevels=IDEL$ENVlevels
   ng=length(VARlevels)
   nh=length(ENVlevels)
-  inits=initialize(y,ng=ng,nh=nh,model="Gibbs",inits=inits,seed=seed,nchain=nchain)
+  whNA=which(yNA)
+  nNa=length(whNA)
+  yStar=y
+  #initial values for yNA
+  if(nNa>0)yStar[whNA]=mean(y,na.rm=T)
+  
+  inits=initialize.Gibbs(y,ng=ng,nh=nh,inits=inits,seed=seed,nchain=nchain)
 
   #hyper parameters:
-  var_y=var(y)
+  var_y=var(y,na.rm=T)
   if(is.null(S))  S<-0.5*var_y*(df+2)  #S is the scale times df
   if(is.null(Sg)) Sg<-0.25*var_y*(dfg+2)
   if(is.null(Sb)) Sb<-0.5*sqrt(var_y)*(dfb+2)   

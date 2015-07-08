@@ -90,7 +90,7 @@ void sample_betaX(double *b,double *e, double *Xvec, int nrow, int ncol,double v
 //b and e will be updated
 //sample beta from incidence matrix X. All betaj have weights in each individual, so the total non-zero values in incidence matrix X is nrow*ncol.
 //b is the holder for the sampled beta.
-//Xvec: incidence matrix X transformed into matrix
+//Xvec: incidence matrix X transformed into vector form
 //nrow :numer of rows for incidence matrix C size of ID, X and y
 //ncol: number of columns in incidence matrix X
 // var_e: residual variance

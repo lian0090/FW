@@ -103,16 +103,16 @@ getIDEL=function(VAR,ENV,VARlevels=NULL,ENVlevels=NULL){
 
 setFW=function(g,b,h,y,VAR,ENV,...){
   eclipse=list(...)
-  fitted.values=g[VAR]+(1+b[VAR])*h[ENV]
-  ENVmean=aggregate(y,by=list(ENV),mean)
+  yhat=g[VAR]+(1+b[VAR])*h[ENV]
+  ENVmean=aggregate(y,by=list(ENV),function(a)mean(a,na.rm=T))
   nameENVmean=ENVmean[,1]
   ENVmean=ENVmean[,2]
   names(ENVmean)=nameENVmean
   ENVmean=ENVmean[names(h)]
-  corENVmean=cor(ENVmean,h)
-  corfitted=cor(y,fitted.values)
-  cor_ymean=get_cor_ymean(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV)
-  out=list(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV,ENVmean=ENVmean,corENVmean=corENVmean,corfitted=corfitted,cor_ymean=cor_ymean,fitted.values=fitted.values,mu=0)
+  corENVmean_hhat=cor(ENVmean,h,use="na.or.complete")
+  cor_y_yhat=cor(y,yhat,use="na.or.complete")
+  cor_ymean_yhat=get_cor_ymean(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV)
+  out=list(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV,ENVmean=ENVmean,corENVmean_hhat=corENVmean_hhat,cor_y_yhat=cor_y_yhat,cor_ymean_yhat=cor_ymean_yhat,yhat=yhat,mu=0)
   out=c(out,eclipse)	
   class(out)=c("FW","list")
   
@@ -126,6 +126,6 @@ get_cor_ymean=function(g,b,h,y,VAR,ENV,corOnly=T){
   ENV=ymean[,2]
   ymean=ymean[,3]
   yhat=g[VAR]+(1+b[VAR])*h[ENV]
-  return(cor(yhat,ymean))
+  return(cor(yhat,ymean,use="na.or.complete"))
 }
 
