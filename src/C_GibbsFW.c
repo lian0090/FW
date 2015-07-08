@@ -7,7 +7,7 @@
 
 //main Gibbs sampler program.
 
-SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_L, SEXP R_Linv, SEXP R_yhat, SEXP R_whNA ){
+SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_L, SEXP R_Linv, SEXP R_whNA ){
     //data and initial values
     PROTECT(R_y=AS_NUMERIC(R_y));
     PROTECT(R_IDL=AS_INTEGER(R_IDL));
@@ -17,7 +17,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     PROTECT(R_h=AS_NUMERIC(R_h));
     PROTECT(R_L=AS_NUMERIC(R_L));
     PROTECT(R_Linv=AS_NUMERIC(R_Linv));
-    PROTECT(R_yhat=AS_NUMERIC(R_yhat));
     PROTECT(R_whNA=AS_INTEGER(R_whNA));
     
     
@@ -26,6 +25,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int ng=length(R_g);
     int nh=length(R_h);
     int nNa=length(R_whNA);
+    //g, b, h are duplicates of R_g, R_b, R_h, they do not point to R_g, R_b, R_h, and do not modify them
     double *g=(double *) R_alloc(ng,sizeof(double));
     double *b=(double *) R_alloc(ng,sizeof(double));
     double *h=(double *) R_alloc(nh,sizeof(double));
@@ -35,7 +35,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     }
     for(i=0;i<nh;i++)h[i]=NUMERIC_POINTER(R_h)[i];
     double *y=NUMERIC_POINTER(R_y);
-    double *yhat=NUMERIC_POINTER(R_yhat);
     int *whNA=INTEGER_POINTER(R_whNA);
     int *IDL=INTEGER_POINTER(R_IDL);
     int *IDE=INTEGER_POINTER(R_IDE);
@@ -71,9 +70,9 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     
     
     /************************************************
-     * posteria storage
+     * posteria and yhat storage
      ************************************************/
-    SEXP R_post_mu,R_post_var_g,R_post_var_b,R_post_var_h,R_post_var_e,R_post_g,R_post_b,R_post_h;
+    SEXP R_post_mu,R_post_var_g,R_post_var_b,R_post_var_h,R_post_var_e,R_post_g,R_post_b,R_post_h, R_yhat;
     PROTECT(R_post_mu=allocVector(REALSXP,1));
     PROTECT(R_post_var_g=allocVector(REALSXP,1));
     PROTECT(R_post_var_b=allocVector(REALSXP,1));
@@ -82,12 +81,15 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     PROTECT(R_post_g=allocVector(REALSXP,ng));
     PROTECT(R_post_b=allocVector(REALSXP,ng));
     PROTECT(R_post_h=allocVector(REALSXP,nh));
+    PROTECT(R_yhat=allocVector(REALSXP,n));
     double post_mu=0, post_var_e=0,post_var_g=0,post_var_b=0,post_var_h=0;
     double *post_g=NUMERIC_POINTER(R_post_g);
     double *post_b=NUMERIC_POINTER(R_post_b);
     double *post_h=NUMERIC_POINTER(R_post_h);
+    double *yhat=NUMERIC_POINTER(R_yhat);
     for(i=0;i<ng;i++){post_g[i]=0;post_b[i]=0;}
     for(i=0;i<nh;i++){post_h[i]=0;}
+    for(i=0;i<n;i++){yhat[i]=mu[0];}
     /************************************************
      * Gibbs sampler
      ************************************************/
@@ -325,7 +327,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     REAL(R_post_var_h)[0]=post_var_h;
     REAL(R_post_var_e)[0]=post_var_e;
     SEXP list;
-    PROTECT(list = allocVector(VECSXP, 8));
+    PROTECT(list = allocVector(VECSXP, 9));
     SET_VECTOR_ELT(list, 0, R_post_mu);
     SET_VECTOR_ELT(list, 1, R_post_var_g);
     SET_VECTOR_ELT(list, 2, R_post_var_b);
@@ -334,6 +336,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     SET_VECTOR_ELT(list, 5, R_post_g);
     SET_VECTOR_ELT(list, 6, R_post_b);
     SET_VECTOR_ELT(list,7, R_post_h);
+    SET_VECTOR_ELT(list,8, R_yhat);
+
 
     UNPROTECT(19);
 

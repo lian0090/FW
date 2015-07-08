@@ -112,7 +112,7 @@ setFW=function(g,b,h,y,VAR,ENV,...){
   corENVmean_hhat=cor(ENVmean,h,use="na.or.complete")
   cor_y_yhat=cor(y,yhat,use="na.or.complete")
   cor_ymean_yhat=get_cor_ymean(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV)
-  out=list(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV,ENVmean=ENVmean,corENVmean_hhat=corENVmean_hhat,cor_y_yhat=cor_y_yhat,cor_ymean_yhat=cor_ymean_yhat,yhat=yhat,mu=0)
+  out=list(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV,ENVmean=ENVmean,corENVmean_hhat=corENVmean_hhat,cor_y_yhat=cor_y_yhat,cor_ymean_yhat=cor_ymean_yhat,yhat=yhat)
   out=c(out,eclipse)	
   class(out)=c("FW","list")
   
