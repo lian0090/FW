@@ -25,21 +25,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int ng=length(R_g);
     int nh=length(R_h);
     int nNa=length(R_whNA);
-    //g, b, h are duplicates of R_g, R_b, R_h, they do not point to R_g, R_b, R_h, and do not modify them
-    double *g=(double *) R_alloc(ng,sizeof(double));
-    double *b=(double *) R_alloc(ng,sizeof(double));
-    double *h=(double *) R_alloc(nh,sizeof(double));
-    for(i=0;i<ng;i++){
-        g[i]= NUMERIC_POINTER(R_g)[i];
-        b[i]= NUMERIC_POINTER(R_b)[i];
-    }
-    for(i=0;i<nh;i++)h[i]=NUMERIC_POINTER(R_h)[i];
-    double *y=NUMERIC_POINTER(R_y);
-    int *whNA=INTEGER_POINTER(R_whNA);
-    int *IDL=INTEGER_POINTER(R_IDL);
-    int *IDE=INTEGER_POINTER(R_IDE);
-    double *L=NUMERIC_POINTER(R_L);
-    double *Linv=NUMERIC_POINTER(R_Linv);
     double mu[1];mu[0]=NUMERIC_VALUE(R_mu);
     double var_e=NUMERIC_VALUE(R_var_e);
     double var_b=NUMERIC_VALUE(R_var_b);
@@ -49,9 +34,41 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int burnIn=INTEGER_VALUE(R_burnIn);
     int thin=INTEGER_VALUE(R_thin);
     int nSamples=nIter-burnIn+1;
+    double *y=NUMERIC_POINTER(R_y);
+    int *whNA=INTEGER_POINTER(R_whNA);
+    int *IDL=INTEGER_POINTER(R_IDL);
+    int *IDE=INTEGER_POINTER(R_IDE);
+    double *L=NUMERIC_POINTER(R_L);
+    double *Linv=NUMERIC_POINTER(R_Linv);
+    
     int C_IDL[n];
     int C_IDE[n];
     for(i=0;i<n;i++){C_IDL[i]=IDL[i]-1; C_IDE[i]=IDE[i]-1;}
+    
+    
+    //g, b, h are duplicates of R_g, R_b, R_h, they do not point to R_g, R_b, R_h, and do not modify them
+    double *g=(double *) R_alloc(ng,sizeof(double));
+    double *b=(double *) R_alloc(ng,sizeof(double));
+    double *h=(double *) R_alloc(nh,sizeof(double));
+    double *yhat=(double *) R_alloc(n,sizeof(double));
+    double *yStar=(double *)R_alloc(n,sizeof(double));
+    for(i=0;i<ng;i++){
+        g[i]= NUMERIC_POINTER(R_g)[i];
+        b[i]= NUMERIC_POINTER(R_b)[i];
+    }
+    for(i=0;i<nh;i++)h[i]=NUMERIC_POINTER(R_h)[i];
+    for(i=0;i<n;i++){
+    yhat[i]=mu[0];
+    yStar[i]=y[i];
+    }
+    //starting value for yStar is set to mu[0]
+     if(nNa>0){
+            for(j=0;j<nNa;j++){
+                yStar[(whNA[j]-1)]=mu[0];
+            }
+        }
+    
+    
     
     // int nParameters=length(R_parameters);//will include this later so we can define parameter names to print out.
     double S=NUMERIC_VALUE(R_S);
@@ -72,7 +89,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     /************************************************
      * posteria and yhat storage
      ************************************************/
-    SEXP R_post_mu,R_post_var_g,R_post_var_b,R_post_var_h,R_post_var_e,R_post_g,R_post_b,R_post_h, R_yhat;
+    SEXP R_post_mu,R_post_var_g,R_post_var_b,R_post_var_h,R_post_var_e,R_post_g,R_post_b,R_post_h, R_post_yhat;
     PROTECT(R_post_mu=allocVector(REALSXP,1));
     PROTECT(R_post_var_g=allocVector(REALSXP,1));
     PROTECT(R_post_var_b=allocVector(REALSXP,1));
@@ -81,15 +98,15 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     PROTECT(R_post_g=allocVector(REALSXP,ng));
     PROTECT(R_post_b=allocVector(REALSXP,ng));
     PROTECT(R_post_h=allocVector(REALSXP,nh));
-    PROTECT(R_yhat=allocVector(REALSXP,n));
+    PROTECT(R_post_yhat=allocVector(REALSXP,n));
     double post_mu=0, post_var_e=0,post_var_g=0,post_var_b=0,post_var_h=0;
     double *post_g=NUMERIC_POINTER(R_post_g);
     double *post_b=NUMERIC_POINTER(R_post_b);
     double *post_h=NUMERIC_POINTER(R_post_h);
-    double *yhat=NUMERIC_POINTER(R_yhat);
+    double *post_yhat=NUMERIC_POINTER(R_post_yhat);
     for(i=0;i<ng;i++){post_g[i]=0;post_b[i]=0;}
     for(i=0;i<nh;i++){post_h[i]=0;}
-    for(i=0;i<n;i++){yhat[i]=mu[0];}
+    for(i=0;i<n;i++){post_yhat[i]=0;}
     /************************************************
      * Gibbs sampler
      ************************************************/
@@ -121,7 +138,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     
     
     //*initial values for e.
-    for(j=0;j<n;j++) e[j]=y[j]-mu[0]-g[C_IDL[j]]-(1+b[C_IDL[j]])*(h[C_IDE[j]]);
+    for(j=0;j<n;j++) e[j]=yStar[j]-mu[0]-g[C_IDL[j]]-(1+b[C_IDL[j]])*(h[C_IDE[j]]);
     
     //begin Gibbs sampler
     for(i=0; i<nIter;i++){
@@ -143,7 +160,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             //	sample_beta_ID_x1(g,e,C_IDL,n,ng,var_e,var_g);
             
             //sample b and g together
-                       for(j=0;j<n;j++) X[j]=h[C_IDE[j]];
+            for(j=0;j<n;j++) X[j]=h[C_IDE[j]];
             for(k=0;k<ng;k++){
                 tXy=0;
                 tXX=0;
@@ -273,12 +290,12 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         
         //yhat & missing values
         for(j=0;j<n;j++){
-            yhat[j]=y[j]-e[j];
+            yhat[j]=yStar[j]-e[j];
         }
         if(nNa>0){
             for(j=0;j<nNa;j++){
                 e[(whNA[j]-1)]=sqrtf(var_e)*norm_rand();
-                y[(whNA[j]-1)]=yhat[(whNA[j]-1)]+e[(whNA[j]-1)];
+                yStar[(whNA[j]-1)]=yhat[(whNA[j]-1)]+e[(whNA[j]-1)];
             }
         }
         
@@ -292,6 +309,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             for(j=0;j<nh;j++) post_h[j] += h[j]/nSamples;
             for(j=0;j<ng;j++) post_b[j] += b[j]/nSamples;
             
+            //post_g
             if(ISNAN(L[0])){
                 for(j=0;j<ng;j++){
                     post_g[j] += g[j]/nSamples;
@@ -301,6 +319,11 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
                     post_delta_g[j] += delta_g[j]/nSamples;
                 }
             }
+           //post_yhat
+           for(j=0;j<n;j++){
+           post_yhat[j]+=yhat[j]/nSamples;
+           }
+        
         }
         if(ISNAN(L[0])){
             if(i==0)fprintf(fsaveFile,"%s,%s,%s,%s,%s,%s,%s,%s\n","mu","var_g","var_b","var_h","var_e","g[0]","b[0]","p[0]");
@@ -336,7 +359,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     SET_VECTOR_ELT(list, 5, R_post_g);
     SET_VECTOR_ELT(list, 6, R_post_b);
     SET_VECTOR_ELT(list,7, R_post_h);
-    SET_VECTOR_ELT(list,8, R_yhat);
+    SET_VECTOR_ELT(list,8, R_post_yhat);
 
 
     UNPROTECT(19);

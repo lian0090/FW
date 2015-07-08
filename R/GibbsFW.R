@@ -29,10 +29,6 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   nh=length(ENVlevels)
   whNA=which(is.na(y))
   nNa=length(whNA)
-  yStar=y
-  #initial values for yNA
-  if(nNa>0)yStar[whNA]=mean(y,na.rm=T)
-  mu=mean(y,na.rm=T)
   
   inits=initialize.Gibbs(y,ng=ng,nh=nh,inits=inits,seed=seed,nchain=nchain)
 
@@ -68,8 +64,8 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
       var_b=inits[[i]]$var_b
       var_h=inits[[i]]$var_h
       if(!is.null(seed)){set.seed(seed)}
-      outi  =.Call("C_GibbsFW", yStar, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, df, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA)
-      names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","yhat");
+      outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, df, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA)
+      names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       for(namej in names(outi)){
         assign(namej,outi[[namej]])
       }
@@ -77,7 +73,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
       names(b)=VARlevels
       names(h)=ENVlevels
       postMean[[i]]=setFW(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV,IDL=IDL,IDE=IDE,VARlevels=VARlevels,ENVlevels=ENVlevels,mu=mu,var_g=var_g,var_h=var_h,var_b=var_b,var_e=var_e)
-      postMean[[i]]$post_yhat=yhat
+      postMean[[i]]$post_yhat=post_yhat
     }
     names(postMean)=paste("Init",c(1:nchain),sep="")
     for(i in 1:nchain){
