@@ -1,4 +1,4 @@
-lmFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir="."){
+lmFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL){
 
    if(!file.exists(savedir)){dir.create(savedir)}	
   #if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
@@ -29,21 +29,25 @@ lmFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir="."){
 
   gb=coef(lm1)
 
-  g=gb[paste("fVAR",VARlevels,sep="")]
+  g=matrix(gb[paste("fVAR",VARlevels,sep="")])
 
-  b=gb[paste("ZXfVAR",VARlevels,sep="")]-1
+  b=matrix(gb[paste("ZXfVAR",VARlevels,sep="")]-1)
 
-  names(g)=VARlevels
+  h=matrix(h)
+  
+  rownames(g)=VARlevels
 
-  names(b)=VARlevels
+  rownames(b)=VARlevels
 
-  names(h)=ENVlevels
+  rownames(h)=ENVlevels
 
-  LSvalue=setFW(g=g,b=b,h=h,y=y,VAR=VAR,ENV=ENV,IDL=IDL,IDE=IDE,VARlevels=VARlevels,ENVlevels=ENVlevels,mu=0) 
+  yhat=matrix(g[VAR,]+(1+b[VAR,])*h[ENV,])
+
+ 
+  LSvalue=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels,mu=0,g=g,b=b,h=h,yhat=yhat) 
 
   class(LSvalue)=c("FW","list")
 
-  save(LSvalue,file=file.path(savedir,"LSvalue.rda"))
 
   return(LSvalue)
 

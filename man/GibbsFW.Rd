@@ -28,8 +28,11 @@ GibbsFW(y = y, IDL, IDE ,savedir=".", nIter = 1000, burnIn = 500, thin = 1, df =
 }
 
 \value{
-	return a list of posteria means for the parameters: mu, var_g, var_b, var_h, var_e, g, b, and h.
-	The samples are saved under the working directory as samps.rda. samps is a mcmc.list type that is ready to be used by the coda package. 
+	return a list of posterior means for the parameters for each chain. The name for chain 1 is Init1, for chain 2 is Init2, ect. 
+  \item{mu}{of posteria means for the parameters: mu,}
+  \item{var_g,var_b,var_h,var_e}{}
+  \item{ g, b, h}{
+	The samples are saved under the working directory as samps.rda. samps is a mcmc.list type that is ready to be used by the coda package. }
 }
 \author{
 Lian Lian
