@@ -10,6 +10,9 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   if(!file.exists(savedir)){
   	dir.create(savedir)
   	}	
+  if(!is.null(seed)){
+  	if(length(seed)!=nchain)stop("number of seed must be equal to the number of chains")
+  	}	
   setwd(savedir)
   ############################################# 
   # initialize
@@ -35,7 +38,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   whNA=which(is.na(y))
   nNa=length(whNA)
   
-  inits=initialize.Gibbs(y,ng=ng,nh=nh,inits=inits,seed=seed,nchain=nchain)
+  inits=initialize.Gibbs(y,ng=ng,nh=nh,inits=inits,nchain=nchain)
 
   #hyper parameters:
   var_y=var(y,na.rm=T)
@@ -71,7 +74,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
       var_g=inits[[i]]$var_g
       var_b=inits[[i]]$var_b
       var_h=inits[[i]]$var_h
-      if(!is.null(seed)){set.seed(seed)}
+      if(!is.null(seed)){set.seed(seed[i])}
       outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, df, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA)
       names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       gT[,i]=outi$g

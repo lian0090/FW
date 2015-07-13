@@ -1,5 +1,5 @@
 #initialize
-initialize.Gibbs=function(y,ng,nh,inits=NULL,seed=NULL,nchain=1){
+initialize.Gibbs=function(y,ng,nh,inits=NULL,nchain=1){
 	#seed is to set the random seed for Gibbs Sampler for jags. Not for the random seed of inital values.
 	var_y=var(y,na.rm=T)
 	mean_y=mean(y,na.rm=T)

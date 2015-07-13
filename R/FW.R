@@ -15,7 +15,7 @@ if(method=="OLS"){
 }
 
 if(method=="Gibbs"){
-	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,nIter=nIter,burnIn=burnIn,thin=thin,df=df,dfg=dfg,dfh=dfh,dfb=dfb,S=S,Sg=Sg,Sb=Sb,Sh=Sh, A=A,inits=inits,nchain=nchain,seed=seed,savedir=savedir);	
+	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,nIter=nIter,burnIn=burnIn,thin=thin,df=df,dfg=dfg,dfh=dfh,dfb=dfb,priorVar_e=priorVar_e,priorVar_g=priorVar_g,priorVar_b=priorVar_b,priorVar_h=priorVar_h, A=A,nchain=nchain,seed=seed,savedir=savedir);	
 	
 }
 
