@@ -326,7 +326,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         
         }
         if(ISNAN(L[0])){
-            if(i==0)fprintf(fsaveFile,"%s,%s,%s,%s,%s,%s,%s,%s\n","mu","var_g","var_b","var_h","var_e","g[0]","b[0]","p[0]");
+            if(i==0)fprintf(fsaveFile,"%s,%s,%s,%s,%s,%s,%s,%s\n","mu","var_g","var_b","var_h","var_e","g[1]","b[1]","h[1]");
             if((i+1)%thin==0)fprintf(fsaveFile,"%f,%f,%f,%f,%f,%f,%f,%f\n",mu[0],var_g,var_b,var_h,var_e,g[0],b[0],h[0]);
             //if((i+1)%100==0){Rprintf("iter:%d\n",i+1);}
         }else{

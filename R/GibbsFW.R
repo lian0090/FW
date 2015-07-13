@@ -105,7 +105,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
     	
     samps=mcmc.list(samps);	
 	if(save_samps==TRUE){
-		save(samps,file="Gibbs_samps.rda")
+		save(samps,file="samps.rda")
 		}
     
     #mpsrf=gelman.diag(samps)$mpsrf
