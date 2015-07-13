@@ -11,11 +11,11 @@ whNA=which(is.na(y))
   
 
 if(method=="OLS"){
-	 predictedValue=lmFW(y,VAR,ENV,savedir=savedir)
+	 predictedValue=lmFW(y,VAR,ENV)
 }
 
 if(method=="Gibbs"){
-	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,nIter=nIter,burnIn=burnIn,thin=thin,df=df,dfg=dfg,dfh=dfh,dfb=dfb,priorVar_e=priorVar_e,priorVar_g=priorVar_g,priorVar_b=priorVar_b,priorVar_h=priorVar_h, A=A,nchain=nchain,seed=seed,savedir=savedir);	
+	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,nIter=nIter,burnIn=burnIn,thin=thin,df=df,dfg=dfg,dfh=dfh,dfb=dfb,priorVar_e=priorVar_e,priorVar_g=priorVar_g,priorVar_b=priorVar_b,priorVar_h=priorVar_h, A=A,nchain=nchain,seed=seed,saveAt=saveAt);	
 	
 }
 

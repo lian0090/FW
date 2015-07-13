@@ -6,13 +6,18 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
   if(!is.numeric(df)){
   	stop("df must be a numeric")
   	}	
-   current.dir=getwd()  
+   current.dir=getwd() 
+   
+   savedir=gsub("/[^/]*$","",saveAt)
+    
   if(!file.exists(savedir)){
   	dir.create(savedir)
   	}	
+  	
   if(!is.null(seed)){
   	if(length(seed)!=nchain)stop("number of seed must be equal to the number of chains")
   	}	
+  	
   setwd(savedir)
   ############################################# 
   # initialize
@@ -108,7 +113,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,savedir=".",nIter=5000,
     	
     samps=mcmc.list(samps);	
 	if(save_samps==TRUE){
-		save(samps,file="samps.rda")
+		save(samps,file=paste(saveAt,"samps.rda"))
 		}
     
     #mpsrf=gelman.diag(samps)$mpsrf
