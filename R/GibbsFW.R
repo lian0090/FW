@@ -107,7 +107,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
       colnames(post_yhatT)=colnames(gT)=colnames(bT)=colnames(hT)=names(muT)=names(var_eT)=names(var_gT)=names(var_bT)=names(var_hT)=paste("Init",c(1:nchain),sep="")
   
   
-     yhatT=muT+gT[VAR,]+(1+bT[VAR,])*hT[ENV,]
+     yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F]
       
      postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT)
     class(postMean)=c("FW","list")
@@ -141,5 +141,5 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 
 
 
-.onUnload<-function(libpath){library.dynam.unload("GibbsFW",libpath)}
+.onUnload<-function(libpath){library.dynam.unload("FW",libpath)}
 
