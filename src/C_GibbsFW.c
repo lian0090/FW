@@ -47,7 +47,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int nIter=INTEGER_VALUE(R_nIter);
     int burnIn=INTEGER_VALUE(R_burnIn);
     int thin=INTEGER_VALUE(R_thin);
-    int nSamples=nIter-burnIn+1;
+    int nSamples=nIter-burnIn;//burnIn is the number of discarded samples
     double *y=NUMERIC_POINTER(R_y);
     int *whNA=INTEGER_POINTER(R_whNA);
     int *IDL=INTEGER_POINTER(R_IDL);
@@ -111,7 +111,27 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     //FILE *fb=fopen(concat(saveAt,"b.dat"));
     //FILE *fh=fopen(concat(saveAt,"h.dat"));
     
-
+    //headers for samples file.
+  
+    fprintf(fsaveFile,"%s,%s,%s,%s,%s","mu","var_g","var_b","var_h","var_e");
+            if(ISNAN(L[0])){
+            	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",g[%d]",VARstore[j]);
+            	}
+            }else{
+            	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",delta_g[%d]",VARstore[j]);
+            	}
+            }	
+            for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",b[%d]",VARstore[j]);
+            }
+            for(j=0;j<nENV_Store;j++){
+            	fprintf(fsaveFile,",h[%d]",ENVstore[j]);
+            }
+            
+    fprintf(fsaveFile,"\n");
+            
         
     /************************************************
      * posteria and yhat storage
@@ -326,8 +346,9 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             }
         }
         
-        //posteria means
-        if(i>=(burnIn-1)){
+        //running means and storing samples
+        if(i>=(burnIn)){
+            if((i+1)%thin==0){
             post_mu += mu[0]/nSamples;
             post_var_g += var_g/nSamples;
             post_var_h += var_h/nSamples;
@@ -351,31 +372,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
            post_yhat[j]+=yhat[j]/nSamples;
            }
         
-        }
-      
-       //store samples in file
-        if(i==0){
-            fprintf(fsaveFile,"%s,%s,%s,%s,%s","mu","var_g","var_b","var_h","var_e");
-            if(ISNAN(L[0])){
-            	for(j=0;j<nVAR_Store;j++){
-            	fprintf(fsaveFile,",g[%d]",VARstore[j]);
-            	}
-            }else{
-            	for(j=0;j<nVAR_Store;j++){
-            	fprintf(fsaveFile,",delta_g[%d]",VARstore[j]);
-            	}
-            }	
-            for(j=0;j<nVAR_Store;j++){
-            	fprintf(fsaveFile,",b[%d]",VARstore[j]);
-            }
-            for(j=0;j<nENV_Store;j++){
-            	fprintf(fsaveFile,",h[%d]",ENVstore[j]);
-            }
-            
-            fprintf(fsaveFile,"\n");
-            }
-             
-        if((i+1)%thin==0){
+         //store samples in file
+         
             fprintf(fsaveFile,"%f,%f,%f,%f,%f",mu[0],var_g,var_b,var_h,var_e);
             
             if(ISNAN(L[0])){
@@ -394,8 +392,11 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             	fprintf(fsaveFile,",%f",h[(ENVstore[j]-1)]);
             }
             fprintf(fsaveFile,"\n");
-        }
-    
+    	  }
+        
+        }//end of running means and storing samples.
+      
+     
             // print out iterations
         if((i+1)%1000==0){Rprintf("iter:%d\n",i+1);}
         
