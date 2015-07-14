@@ -3,11 +3,23 @@
 #include <Rinternals.h>
 #include <Rdefines.h>
 #include "sample_beta.h"
+#include <stdlib.h>
+#include <string.h>
+
+//create a new string, which is the combination of two strings.
+char* concat(const char *s1, char *s2)
+{
+    char *result = malloc(strlen(s1)+strlen(s2)+1);//+1 for the zero-terminator
+    //in real code you would check for errors in malloc here
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
+}
 
 
 //main Gibbs sampler program.
 
-SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_L, SEXP R_Linv, SEXP R_whNA ){
+SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_L, SEXP R_Linv, SEXP R_whNA , SEXP R_VARstore, SEXP R_ENVstore){
     //data and initial values
     PROTECT(R_y=AS_NUMERIC(R_y));
     PROTECT(R_IDL=AS_INTEGER(R_IDL));
@@ -18,13 +30,15 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     PROTECT(R_L=AS_NUMERIC(R_L));
     PROTECT(R_Linv=AS_NUMERIC(R_Linv));
     PROTECT(R_whNA=AS_INTEGER(R_whNA));
-    
-    
+    PROTECT(R_VARstore=AS_INTEGER(R_VARstore));
+    PROTECT(R_ENVstore=AS_INTEGER(R_ENVstore));    
     int i,j,k;
     int n= length(R_y);
     int ng=length(R_g);
     int nh=length(R_h);
     int nNa=length(R_whNA);
+    int nVAR_Store=length(R_VARstore);
+    int nENV_Store=length(R_ENVstore);
     double mu[1];mu[0]=NUMERIC_VALUE(R_mu);
     double var_e=NUMERIC_VALUE(R_var_e);
     double var_b=NUMERIC_VALUE(R_var_b);
@@ -40,6 +54,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int *IDE=INTEGER_POINTER(R_IDE);
     double *L=NUMERIC_POINTER(R_L);
     double *Linv=NUMERIC_POINTER(R_Linv);
+    int *VARstore=INTEGER_POINTER(R_VARstore);
+    int *ENVstore=INTEGER_POINTER(R_ENVstore);
     
     int C_IDL[n];
     int C_IDE[n];
@@ -84,8 +100,19 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     //saveFile
     FILE *fsaveFile = fopen(CHAR(STRING_ELT(R_saveFile,0)),"w");
     if (fsaveFile == NULL) error("Can't open input file !\n");
+   //The following code are to save each parameter separately in a folder.
+   // const char *saveAt =CHAR(STRING_ELT(R_saveAt, 0));
+   // FILE *fmu=fopen(concat(saveAt,"mu.dat"));
+   // FILE *fvar_e=fopen(concat(saveAt,"var_e.dat"));
+    //FILE *fvar_g=fopen(concat(saveAt,"var_g.dat"));
+    //FILE *fvar_b=fopen(concat(saveAt,"var_b.dat"));
+    //FILE *fvar_h=fopen(concat(saveAt,"var_h.dat"));
+    //FILE *fg=fopen(concat(saveAt,"g.dat"));
+    //FILE *fb=fopen(concat(saveAt,"b.dat"));
+    //FILE *fh=fopen(concat(saveAt,"h.dat"));
     
-    
+
+        
     /************************************************
      * posteria and yhat storage
      ************************************************/
@@ -325,16 +352,53 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
            }
         
         }
-        if(ISNAN(L[0])){
-            if(i==0)fprintf(fsaveFile,"%s,%s,%s,%s,%s,%s,%s,%s\n","mu","var_g","var_b","var_h","var_e","g[1]","b[1]","h[1]");
-            if((i+1)%thin==0)fprintf(fsaveFile,"%f,%f,%f,%f,%f,%f,%f,%f\n",mu[0],var_g,var_b,var_h,var_e,g[0],b[0],h[0]);
-            //if((i+1)%100==0){Rprintf("iter:%d\n",i+1);}
-        }else{
-            if(i==0)fprintf(fsaveFile,"%s,%s,%s,%s,%s,%s,%s,%s\n","mu","var_g","var_b","var_h","var_e","delta_g[0]","b[0]","p[0]");
-            if((i+1)%thin==0){
-                fprintf(fsaveFile,"%f,%f,%f,%f,%f,%f,%f,%f\n",mu[0],var_g,var_b,var_h,var_e,delta_g[0],b[0],h[0]);
+      
+       //store samples in file
+        if(i==0){
+            fprintf(fsaveFile,"%s,%s,%s,%s,%s","mu","var_g","var_b","var_h","var_e");
+            if(ISNAN(L[0])){
+            	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",g[%d]",VARstore[j]);
+            	}
+            }else{
+            	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",delta_g[%d]",VARstore[j]);
+            	}
+            }	
+            for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",b[%d]",VARstore[j]);
             }
+            for(j=0;j<nENV_Store;j++){
+            	fprintf(fsaveFile,",h[%d]",ENVstore[j]);
+            }
+            
+            fprintf(fsaveFile,"\n");
+            }
+             
+        if((i+1)%thin==0){
+            fprintf(fsaveFile,"%f,%f,%f,%f,%f",mu[0],var_g,var_b,var_h,var_e);
+            
+            if(ISNAN(L[0])){
+            	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",%f",g[(VARstore[j]-1)]);
+            	}
+            }else{
+            	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",%f",delta_g[(VARstore[j]-1)]);
+            	}
+            }
+            for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",%f",b[(VARstore[j]-1)]);
+            }
+            for(j=0;j<nENV_Store;j++){
+            	fprintf(fsaveFile,",%f",h[(ENVstore[j]-1)]);
+            }
+            fprintf(fsaveFile,"\n");
         }
+    
+            // print out iterations
+        if((i+1)%1000==0){Rprintf("iter:%d\n",i+1);}
+        
     }//end iteration
     //get post_g from post_delta_g
     if(!ISNAN(L[0])){Ldelta(post_g,L,post_delta_g,ng);}
@@ -362,7 +426,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     SET_VECTOR_ELT(list,8, R_post_yhat);
 
 
-    UNPROTECT(19);
+    UNPROTECT(21);
 
     return(list);
 

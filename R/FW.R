@@ -2,8 +2,8 @@
 FW=function(y,VAR,ENV,method=c("OLS","Gibbs")[2], saveAt="",nIter=5000,burnIn=3000,thin=1,df=5,dfg=5,dfh=5,dfb=5,priorVar_e=NULL,priorVar_g=NULL,priorVar_b=NULL,priorVar_h=NULL,A=NULL,nchain=1,seed=NULL){
 
 
-if(savedir==""){
-	savedir=getwd()
+if(saveAt==""){
+	saveAt=paste(getwd(),"/",sep="");
 }
 
 whNA=which(is.na(y))
