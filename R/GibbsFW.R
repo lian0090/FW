@@ -1,4 +1,4 @@
-GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVar_e=NULL,priorVar_g=NULL,priorVar_b=NULL,priorVar_h=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL,VARstore=c(1:2),ENVstore=c(1:2)){
+GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVar_e=NULL,priorVar_g=NULL,priorVar_b=NULL,priorVar_h=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
 #check thin and df: they are functions in coda
   if(!is.numeric(thin)){
   	stop("thin must be a numeric")
@@ -17,11 +17,11 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   	if(length(seed)!=nchain)stop("number of seed must be equal to the number of chains")
   	}	
   
-  if(!is.integer(VARstore)){
-  	stop("VARstore must be interger vector")
+  if(!is.integer(saveVAR)){
+  	stop("saveVAR must be interger vector")
   	}
-  if(!is.integer(ENVstore)){
-  	stop("ENVstore must be interger vector")
+  if(!is.integer(saveENV)){
+  	stop("saveENV must be interger vector")
   	}	
 
   	
@@ -48,8 +48,8 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   nh=length(ENVlevels)
   whNA=which(is.na(y))
   nNa=length(whNA)
-  if(max(VARstore)>ng | min(VARstore)<1){stop("VARstore must be in the value of 1 to ng")}
-  if(max(ENVstore)>nh | min(ENVstore)<1){stop("ENVstore must be in the value of 1 to nh")}
+  if(max(saveVAR)>ng | min(saveVAR)<1){stop("saveVAR must be in the value of 1 to ng")}
+  if(max(saveENV)>nh | min(saveENV)<1){stop("saveENV must be in the value of 1 to nh")}
   inits=initialize.Gibbs(y,ng=ng,nh=nh,inits=inits,nchain=nchain)
 
   #hyper parameters:
@@ -87,7 +87,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
       var_b=inits[[i]]$var_b
       var_h=inits[[i]]$var_h
       if(!is.null(seed)){set.seed(seed[i])}
-      outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, df, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA,VARstore,ENVstore)
+      outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, df, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA,saveVAR,saveENV)
       names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       gT[,i]=outi$g
       bT[,i]=outi$b
