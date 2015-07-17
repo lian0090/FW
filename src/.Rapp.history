@@ -1,0 +1,556 @@
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(1);#
+#
+return nNA;#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+#
+return  R_nNA;#
+')
+whNA=which(is.na(c(1:10)))
+whNA
+dummy(whNA)
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+Rprintf("%d\n",nNA);#
+return  R_nNA;#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\n",nNA);#
+return  R_nNA;#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d",nNA);#
+return  R_nNA;#
+')
+dummy(whNA)
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d",nNA);#
+printf("\n");#
+return  R_nNA;#
+')
+##inline package does not seem to support "\n" in printf#
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\\\n",nNA);#
+return  R_nNA;#
+')
+dummy(whNA)
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\n",nNA);#
+return  R_nNA;#
+')
+dummy(whNA)
+a=dummy(whNA)
+length(a)
+class(a)
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int whNA=INTEGER(R_whNA);#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\n",nNA);#
+printf("%d\\n",whNA[0])#
+return  R_nNA;#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int *whNA=INTEGER(R_whNA);#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\n",nNA);#
+printf("%d\\n",whNA[0])#
+return  R_nNA;#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int *whNA=INTEGER(R_whNA);#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\n",nNA);#
+printf("%d\\n",whNA[0]);#
+return  R_nNA;#
+')
+dummy(whNA)
+##
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int *whNA=INTEGER(R_whNA);#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\n",nNA);#
+printf("%d\\n",whNA[0]);#
+printf(whNA==NULL);#
+return  R_nNA;#
+')
+##inline package does not seem to support "\n" in printf, you need to use"\\n" to escape one \#
+##
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int *whNA=INTEGER(R_whNA);#
+int nNA=length(R_whNA);#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\n",nNA);#
+printf("%d\\n",whNA[0]);#
+printf("%d\\n",whNA==NULL);#
+return  R_nNA;#
+')
+dummy(whNA)
+log(1937258632)
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int *whNA=INTEGER(R_whNA);#
+#
+int nNA=length(R_whNA);#
+int CwhNA[nNA];#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\n",nNA);#
+printf("%d\\n",whNA[0]);#
+printf("%d\\n",whNA==NULL);#
+printf("%d\\n",CwhNA[0]);#
+return  R_nNA;#
+')
+dummy(whNA)
+##inline package does not seem to support "\n" in printf, you need to use"\\n" to escape one \#
+#if whNA is interger(0),when it passed into C, it is not a NULL pointer, it points to a very large negative value#
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int *whNA=INTEGER(R_whNA);#
+#
+int nNA=length(R_whNA);#
+int CwhNA[nNA]; ##if nNA=0, CwhNA would be a NULL pointer#
+int *pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(2);#
+printf("%d\\n",nNA);#
+printf("%d\\n",whNA[0]);#
+printf("%d\\n",whNA==NULL);#
+printf("%d\\n",CwhNA[0]);#
+printf("%d\\n",CwhNA==NULL);#
+return  R_nNA;#
+')
+load("/Users/lianlian/Dropbox/work/arvalisGxE/wheat/randomE0.2G0.2/seed3/GibbsV/Gibbs_samps.rda")
+library(coda)
+dim(Gibbs_samps[[1]])
+dim(samps[[1]])
+head(samps[[1]])
+library(devtools)
+install_github("lian0090/GibbsFW")
+library(GibbsFW)
+library(devtools)
+install_github("lian0090/GibbsFW")
+library(devtools)
+library(GibbsFW)
+FW()
+FW
+library(devtools)
+install_github("lian0090/FW")
+library(FW)
+library(FW) data(wheat)
+attach(wheat.Y50)
+fit2=FW(y=yNA,VAR=VAR,ENV=ENV,nchain=2,seed=c(1,2))
+load('samps.rda')
+head(samps)
+diffh1h2=lapply(samps,function(a){a[,'h[2]']-a[,'h1']})
+diffh1h2=lapply(samps,function(a){a[,'h[2]']-a[,'h[1]']})
+class(diffh1h2)
+head(diffh1h2)
+diffh1h2
+length(diffh1h2)
+class(diffh1h2)
+diffh1h2=mcmc.list(diffh1h2)
+plot(diffh1h2)
+plot(samps[,c('h[1]','h[2]')])
+plot(samps)
+plot(samps,density=F)
+?plot.mcmc
+plot(samps,density=F,ask=T)
+parmfrow=c(4,4);plot(samps,density=F)
+parmfrow=c(4,4);plot(samps,density=F,auto.layout=F)
+parmfrow=c(4,4);plot(samps,density=F,auto.layout=F,mfrow=c(4,4))
+plot(diffh1h2)
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+fit2=FW(y=yNA,VAR=VAR,ENV=ENV,nchain=2,seed=c(1,2))
+load('samps.rda')
+head(samps)
+dim(samps[[1]])
+source("/Users/lianlian/Dropbox/github/FW/R/FW.R")
+fit2=FW(y=yNA,VAR=VAR,ENV=ENV,nchain=2,seed=c(1,2))
+load('samps.rda')
+head(samps)
+plot(samps)
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+fit2=FW(y=yNA,VAR=VAR,ENV=ENV,nchain=2,seed=c(1,2))
+plot(samps)
+load(samps)
+load("samps.rda")
+head(samps)
+plot(samps,density=F,ask=T)
+plot(diffh1h2)
+diffh1h2=lapply(samps,function(a){a[,'h[2]']-a[,'h[1]']})diffh1h2=mcmc.list(diffh1h2)plot(diffh1h2)
+dat=rgamma(1000,0.5,0.0005)
+plot(dat)
+?chol
+library(pryr)
+dnorm
+pryr::show_c_source(.Call(C_dnorm, x, mean, sd, log))
+dnorm
+setdiff
+match
+pryr::show_c_source(.Internal(match(x, table, nomatch, incomparables)))
+library(inline)
+Csetdiff=cfunction(sig=c(R_whNA="integer",n="integer"),#
+ "   #
+ PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+ int *whNA=INTEGER_POINTER(R_whNA);#
+     int nNa=length(R_whNA);#
+#
+  int *C_whNotNA=(int *)R_alloc(n-nNa,sizeof(int));#
+    int countNotNA=0;#
+    int NAflag;#
+    for(i=0;i<n;i++){#
+    NAflag=0;#
+    for(j=0;j<nNa;j++){#
+    if(i+1==whNA[j])NAflag=1;#
+    }#
+    if(NAflag==0){#
+    C_whNotNA[countNotNA]=i;#
+    countNotNA+=1;#
+    }#
+    }#
+    SEXP out=PROTECT(allocVector(INTSXP,n-nNA));#
+    for(i=0;i<n-nNa,i++){#
+    	INTEGER(out)[i]=C_whNotNA[i];#
+    	    }#
+    	    return out;#
+    	    ")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+Csetdiff(c(1,29,100),100)
+source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
+Csetdiff(c(1,29,100),100)
+setdiff(1:100,Csetdiff(1,29,100,100))
+setdiff(1:100,Csetdiff(c(1,29,100),100))
+setdiff(1:100,Csetdiff(c(1,29,25,89,99,100),100))
+setdiff(1:100,Csetdiff(c(1,5,8,9,10),10))
+setdiff(1:10,Csetdiff(c(1,5,8,9,10),10))
+y=c(1:10)
+whNA=which(is.na(y))#
+  n=length(y)#
+  whNotNA=setdiff(1:n,whNA)
+whNotNA
+class(whNotNA)
+whNA
+setwd("~/Dropbox/github/GibbsFW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/GibbsFW/R/GibbsFW.R")#
+load("~/Dropbox/github/GibbsFW/data/wheat.rda")
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3
+names(gf3)
+gf3$pD
+gf3$DIC
+gf3$postMeanLogLik
+gf3$logLikAtPostMean
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(y,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3$postMeanLogLik
+gf3$logLikAtPostMean
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3
+source("/Users/lianlian/Dropbox/github/FW/R/FW.R")
+gf3
+names(gf3)
+gf3$postMeanLogLik
+gf3$logLikAtPostMean
+fg3$y-gf3$post_yhat
+gf3$y-gf3$post_yhat
+gf3$y-gf3$post_yhat
+gf3$y
+whNA
+dnorm(gf3$y-gf3$post_yhat[-],sd=gf3$var_e,log=T)
+dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=gf3$var_e,log=T)
+dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T)
+dnorm(gf3$y[-whNA]-gf3$yhat[-whNA],sd=sqrt(gf3$var_e),log=T)
+gf3
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3
+rm("plot.FW")
+rm("print.FW")
+gf3
+ng
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf4
+gf3
+dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T)
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)#
+>
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)#
+>gf2
+gf2
+gf3
+gf3$DIC
+gf2$DIC
+gf2$pD
+gf3$pD
+gf2$postMeanLogLik
+gf3$postMeanLogLik
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))
+(5000-3000)%%5
+(5000-3000)%5
+(5000-3000)%/%5
+load("/Users/lianlian/Dropbox/github/FW/src/samps.rda")
+dim(samps[[1]])
+head(samps)
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
+gf2
+gf3$pD
+gf2$pD
+sum(wheat.A)
+sum(diag(wheat.A))
+sum(wheat.G50)
+sum(diag(wheat.G50))
+gf2$DIX
+gf2$DIC
+gf3$DIC
+ymean_vali=aggregate(wheat.Y50$y[whNA],by=list(wheat.Y50$VAR[whNA],wheat.Y50$ENV[whNA]),mean)[,3]#
+yhat_vali=aggregate(gf3$yhat[whNA],by=list(wheat.Y50$VAR[whNA],wheat.Y50$ENV[whNA]),mean)[,3]#
+ymean_train=aggregate(wheat.Y50$y[-whNA],by=list(wheat.Y50$VAR[-whNA],wheat.Y50$ENV[-whNA]),mean)[,3]#
+yhat_train=aggregate(gf3$yhat[-whNA],by=list(wheat.Y50$VAR[-whNA],wheat.Y50$ENV[-whNA]),mean)[,3]
+cor(ymean_vali,yhat_vali)
+yhat_vali=aggregate(gf2$yhat[whNA],by=list(wheat.Y50$VAR[whNA],wheat.Y50$ENV[whNA]),mean)[,3]
+cor(ymean_vali,yhat_vali)
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,n-length(whNA)),0,sqrt(gf3$_var_e),log=T)
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,n-length(whNA)),0,sqrt(gf3$var_e),log=T)
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,n-length(whNA)),sd=sqrt(gf3$var_e),log=T)
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,lnength(y)-length(whNA)),sd=sqrt(gf3$var_e),log=T)
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,length(y)-length(whNA)),sd=sqrt(gf3$var_e),log=T)
+length(y)
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,length(gf3$y)-length(gf3$whNA)),sd=sqrt(gf3$var_e),log=T)
+sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(0,sd=sqrt(gf3$var_e),log=T)
+sum(dnorm(gf2$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf2$var_e),log=T))-dnorm(0,sd=sqrt(gf2$var_e),log=T)
+sum(dnorm(gf2$y[-whNA]-gf2$post_yhat[-whNA],sd=sqrt(gf2$var_e),log=T))-dnorm(0,sd=sqrt(gf2$var_e),log=T)
+-2*(sum(dnorm(gf2$y[-whNA]-gf2$post_yhat[-whNA],sd=sqrt(gf2$var_e),log=T))-dnorm(0,sd=sqrt(gf2$var_e),log=T))+2*gf2$pD
+-2*(sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(0,sd=sqrt(gf3$var_e),log=T))+2*gf3$pD
+dnorm(0,sd=sqrt(gf2$var_e),log=T)
+dnorm(0,sd=sqrt(gf3$var_e),log=T)
+whNA
+-2*(sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-300*dnorm(0,sd=sqrt(gf3$var_e),log=T))+2*gf3$pD
+-2*(sum(dnorm(gf2$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf2$var_e),log=T))-300*dnorm(0,sd=sqrt(gf2$var_e),log=T))+2*gf2$pD
+((-0.2736406)-(-0.301477))*300
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
+gf2
+gf3$DIC
+gf2$DIC
+gf3$postMeanLogLik
+gf2$postMeanLogLik
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)#
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENVg)
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)#
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENVg)
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)#
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
+gf3
+source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)#
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
+gf2$fit
+gf3$fit
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3
+setwd("~/Dropbox/github/FW/src")#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
+gf3$fit
+gf2$fit

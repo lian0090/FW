@@ -1,5 +1,5 @@
 #a wrapper for GibbsFW and lmFW
-FW=function(y,VAR,ENV,method=c("OLS","Gibbs")[2], saveAt="",nIter=5000,burnIn=3000,thin=1,df=5,dfg=5,dfh=5,dfb=5,priorVar_e=NULL,priorVar_g=NULL,priorVar_b=NULL,priorVar_h=NULL,A=NULL,nchain=1,seed=NULL){
+FW=function(y,VAR,ENV,method=c("OLS","Gibbs")[2], saveAt="",nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVar_e=NULL,priorVar_g=NULL,priorVar_b=NULL,priorVar_h=NULL,A=NULL,nchain=1,seed=NULL){
 
 
 if(saveAt==""){
@@ -97,10 +97,10 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
 ### print postMean and FW object
 ####################################################################################
 
-print.FW=function(FWobj){
-  cat("FW object\n")
-  print(FWobj[c("mu","g","b","h")])
-}
+#print.FW=function(FWobj){
+#  cat("FW object\n")
+ # print(FWobj[c("mu","g","b","h")])
+#}
 
 
 getIDEL=function(VAR,ENV,VARlevels=NULL,ENVlevels=NULL){
