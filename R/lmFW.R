@@ -32,7 +32,7 @@ lmFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL){
   yhat=matrix(g[VAR,]+(1+b[VAR,])*h[ENV,])
 
  
-  LSvalue=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels,mu=0,g=g,b=b,h=h,yhat=yhat) 
+  LSvalue=list(y=y,whichNa=which(is.na(y)),VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels,mu=0,g=g,b=b,h=h,yhat=yhat) 
 
   class(LSvalue)=c("FW","list")
 
