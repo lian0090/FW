@@ -38,7 +38,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int ng=length(R_g);
     int nh=length(R_h);
     int nNa=length(R_whNA);
-    int nNotNa=length(R_whNotNA);
     int nVAR_Store=length(R_VARstore);
     int nENV_Store=length(R_ENVstore);
     double mu[1];mu[0]=NUMERIC_VALUE(R_mu);
@@ -52,7 +51,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int nSamples=(nIter-burnIn)/thin;//burnIn is the number of discarded samples
     double *y=NUMERIC_POINTER(R_y);
     int *whNA=INTEGER_POINTER(R_whNA);
-    int *whNotNA=INTEGER_POINTER(R_whNotNA);
     int *IDL=INTEGER_POINTER(R_IDL);
     int *IDE=INTEGER_POINTER(R_IDE);
     double *L=NUMERIC_POINTER(R_L);
@@ -141,22 +139,18 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     /************************************************
      * posteria and yhat storage
      ************************************************/
-    SEXP R_post_mu,R_post_var_g,R_post_var_b,R_post_var_h,R_post_var_e,R_post_g,R_post_b,R_post_h, R_post_yhat, R_post_logLik;
+    SEXP R_post_mu,R_post_var_g,R_post_var_b,R_post_var_h,R_post_var_e,R_post_g,R_post_b,R_post_h, R_post_yhat;
     PROTECT(R_post_mu=allocVector(REALSXP,1)); nProtect+=1;
     PROTECT(R_post_var_g=allocVector(REALSXP,1)); nProtect+=1;
     PROTECT(R_post_var_b=allocVector(REALSXP,1));nProtect+=1;
     PROTECT(R_post_var_h=allocVector(REALSXP,1));nProtect+=1;
     PROTECT(R_post_var_e=allocVector(REALSXP,1));nProtect+=1;
-    PROTECT(R_post_logLik=allocVector(REALSXP,1));nProtect+=1;
     PROTECT(R_post_g=allocVector(REALSXP,ng));nProtect+=1;
     PROTECT(R_post_b=allocVector(REALSXP,ng));nProtect+=1;
     PROTECT(R_post_h=allocVector(REALSXP,nh));nProtect+=1;
     PROTECT(R_post_yhat=allocVector(REALSXP,n));nProtect+=1;
-   
-   
-
     
-    double post_mu=0, post_var_e=0,post_var_g=0,post_var_b=0,post_var_h=0,post_logLik=0,logLik=0;
+    double post_mu=0, post_var_e=0,post_var_g=0,post_var_b=0,post_var_h=0;
     double *post_g=NUMERIC_POINTER(R_post_g);
     double *post_b=NUMERIC_POINTER(R_post_b);
     double *post_h=NUMERIC_POINTER(R_post_h);
@@ -166,7 +160,14 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     for(i=0;i<nh;i++){post_h[i]=0;}
     for(i=0;i<n;i++){post_yhat[i]=0;}
     
-   
+  /*  //logLikelikelihood
+    int *whNotNA=INTEGER_POINTER(R_whNotNA);
+    int nNotNa=length(R_whNotNA);
+    SEXP R_post_logLik;
+    PROTECT(R_post_logLik=allocVector(REALSXP,1));nProtect+=1;
+    double post_logLik=0,logLik=0;
+  */
+    
  /*  //parameter to the power 2: needed for calculating SD.
     double post_mu2=0,post_var_e2=0,post_var_g2=0,post_var_b2=0,post_var_h2=0;
     double *post_b2= (double *) R_alloc(ng,sizeof(double));
@@ -442,7 +443,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
            post_yhat[j]+=yhat[j]/nSamples;
           // post_yhat2[j]+=pow(yhat[j],2)/nSamples;
            }
-         //post_logLik
+      
+       /* //post_logLik
     	logLik=0;
     	if (nNa > 0) {
         for(j=0;j<nNotNa;j++){
@@ -454,6 +456,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         }
         }
         post_logLik += logLik/nSamples;
+        //end of post_logLik
+        */
 
 
          //store samples in file
@@ -488,6 +492,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     
     //printout the number saved samples and number of samples expected to save
    // Rprintf("nSamples:%d, SampleCount:%d\n",nSamples,sampleCount);
+    
     //get post_g from post_delta_g
     if(!ISNAN(L[0])){Ldelta(post_g,L,post_delta_g,ng);}
 
@@ -502,7 +507,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     REAL(R_post_var_b)[0]=post_var_b;
     REAL(R_post_var_h)[0]=post_var_h;
     REAL(R_post_var_e)[0]=post_var_e;
-    //logLik
+  /*  //logLik
     REAL(R_post_logLik)[0]=post_logLik;
     double logLikAtPostMean;
     SEXP R_logLikAtPostMean;
@@ -523,6 +528,10 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     }
     
     REAL(R_logLikAtPostMean)[0]=logLikAtPostMean;
+   
+   //end of logLik
+   */
+    
 /*    //return standard deviations;
     SEXP R_SD.mu;
     PROTECT(R_SD.mu=allocVector(REALSXP,1);nProtect+=1;
@@ -570,7 +579,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     SEXP list;
     
     
-    PROTECT(list = allocVector(VECSXP, 11));nProtect+=1;
+    PROTECT(list = allocVector(VECSXP, 9));nProtect+=1;
    
     SET_VECTOR_ELT(list, 0, R_post_mu);
     SET_VECTOR_ELT(list, 1, R_post_var_g);
@@ -581,9 +590,11 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     SET_VECTOR_ELT(list, 6, R_post_b);
     SET_VECTOR_ELT(list,7, R_post_h);
     SET_VECTOR_ELT(list,8, R_post_yhat);
+   /* //return logLik
     SET_VECTOR_ELT(list,9,R_post_logLik);
     SET_VECTOR_ELT(list,10,R_logLikAtPostMean);
-   /*/return SD. 
+   */
+    /*/return SD.
     SET_VECTOR_ELT(list,11,R_SD.mu);
     SET_VECTOR_ELT(list,12,R_SD.var_g);
     SET_VECTOR_ELT(list,13,R_SD.var_b);

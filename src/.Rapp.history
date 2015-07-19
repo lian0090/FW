@@ -1,3 +1,273 @@
+head(map)
+head(fpgenomat)
+load("/Users/lianlian/Dropbox/github/F2imputation/data/map.RData")
+head(map)
+dim(map)
+map
+load("/Users/lianlian/Dropbox/github/F2imputation/data/pargeno.RData")
+dim(pargeno)
+head(pargeno)
+head(map)
+all.equal(1,1,1)
+all.equal(1,1,2)
+?all.equal
+nrow(map)==1==2
+nrow(map)==1
+isTRUE(c(1,1,1))
+isTRUE(c(1,1,2))
+?identitcal
+?identical
+?all.equal
+source("/Users/lianlian/Dropbox/github/simuPoisson/R/simuPoisson.R")
+simuPoisson(pargeno[,-1],chr=map$chr,cM=map$pos,N=5)
+dim(map)
+head(map)
+simuPoisson(pargeno[,-1],chr=map$chr,cM=map$cM,N=5)
+source("/Users/lianlian/Dropbox/github/simuPoisson/R/simuPoisson.R")
+simuPoisson(pargeno[,-1],chr=map$chr,cM=map$cM,N=5)
+class(pargeno[,-1])
+class(pargeno[,2])
+pargeno
+paentsGeno=pargneo[,-1]
+paentsGeno=pargeno[,-1]
+parentsGeno=pargeno[,-1]
+parentsGeno=apply(parentsGeno,2,as.numeric)
+parentsGeno
+source("/Users/lianlian/Dropbox/github/simuPoisson/R/simuPoisson.R")
+parentsGeno
+simuPoisson(pargeno[,-1],chr=map$chr,cM=map$cM,N=5)
+simuPoisson(parentsGeno,chr=map$chr,cM=map$cM,N=5)
+source("/Users/lianlian/Dropbox/github/simuPoisson/R/simuPoisson.R")
+simuPoisson(parentsGeno,chr=map$chr,cM=map$cM,N=5)
+geno1=simuPoisson(parentsGeno,chr=map$chr,cM=map$cM,N=5)
+tcrossprod(geno1)
+G=tcrossprod(geno1)
+G=G/sum(diag(G))
+G
+cor(t(geno1))
+geno1=apply(geon1-mean(geno1))
+geno1=simuPoisson(parentsGeno,chr=map$chr,cM=map$cM,N=5)
+geno1
+set.seed(1)
+geno1=simuPoisson(parentsGeno,chr=map$chr,cM=map$cM,N=5)
+geno1
+getwd()
+save(geno1,"geno1.RData")
+save(geno1,file="geno1.RData")
+rm(list=ls())
+library(simuPoisson)
+set.seed(1);geno2=simuPoisson(parentsGeno,map,"F2",5)
+data(pargeno)
+data(fpgenomat)
+data(map)
+load("/Users/lianlian/Dropbox/github/simuPoisson/data/map.RData")
+load("/Users/lianlian/Dropbox/github/simuPoisson/data/pargeno.RData")
+set.seed(1);geno2=simuPoisson(pargeno[,-1],map,"F2",5)
+parentsGeno=pargeno[,-1]
+parentsGeno=apply(parentsGeno,2,as.numeric)
+head(map)
+colnames(map)=c("chr","SNPid","pos")
+parentsGeno=apply(parentsGeno,2,as.numeric)
+set.seed(1);geno2=simuPoisson(pargeno[,-1],map,"F2",5)
+simuPisson
+simuPoisson
+samplegamete
+head(map)
+colnames(map)[2]="mkname"
+head(map)
+set.seed(1);geno2=simuPoisson(pargeno[,-1],map,"F2",5)
+set.seed(1);geno2=simuPoisson(parentsGeno,map,"F2",5)
+geno2
+geno2=geno2[-c(1:4),-1]
+geno2
+load("geno1.RData")
+all(geno1==geno2)
+geno1
+geno2
+save(parentsGeno,file="~/Dropbox/github/simuPoisson/data/parentsGeno.RData")
+load("/Users/lianlian/Dropbox/github/simuPoisson/data/map.RData")
+head(map)
+dim(map)
+cor(t(geno1))
+head(map)
+source("https://github.com/lian0090/simuPoisson/blob/master/R/simuPoisson.R")
+install_github("lian0090/simuPoisson")
+library(simuPoisson)
+data(geno)
+data(parentsGeno)
+data(map)
+head(map)
+head(parentsGeno)
+library(simuPoisson)#
+data(parentsGeno)#
+data(map)#
+#simulate 10 individuals#
+progeny=simuPoisson(parentsGeno,map$chr,map$cM,10)
+progeny
+rm(list=ls())
+library(simuPoisson)#
+data(parentsGeno)#
+data(map)
+parentsGeno
+parentsGeno2=parentsGeno+1
+parentsGeno2
+progeny=simuPoisson(parentsGeno,map$chr,map$cM,10)
+progeny
+progeny2=simuPoisson(parentsGeno2,map$chr,map$cM,10)
+progeny2
+set.seed(1);progeny2=simuPoisson(parentsGeno2,map$chr,map$cM,10)
+set.seed(1);progeny=simuPoisson(parentsGeno,map$chr,map$cM,10)
+all(progeny==progeny2-1)
+library(SKAT2)
+data(mouse)
+n=500#
+p=20 #work with a window of 20 markers#
+pheno=mouse.pheno[1:n,]#
+Z1=mouse.X[1:n,1:p]#
+X=cbind(model.matrix(~pheno$GENDER)[,-1],pheno$CageDensity)#
+X1=cbind(1,model.matrix(~pheno$GENDER)[,-1],pheno$CageDensity)#
+y=pheno$Obesity.BMI#
+##test the window of SNPs (Z1)#
+out=testWindow(y,X=X1,Zt=Z1)#
+out$p.SKAT$p.value#
+[1] 0.6564919#
+##test Z1, but account for genetic background#
+G=tcrossprod(scale(mouse.X[1:n,],T,F))#
+eigenG=getEigenZd(Kd=G)#
+out=testWindow(y,X=X1,Zt=Z1,eigenG=eigenG)#
+out$p.SKAT$p.value
+dim(G)
+G1=G[50:70,50:70]
+eigenG1=eigenG$U1[50:70,] %*% diag(eigenG$d1) %*% t(eigenG$U1[50:70,])
+eigenG1[1:10,1:10]
+G1[1:10,1:10]
+G12=G[3:10,6:10]
+eigenG12=eigenG$U1[3:10,] %*% diag(eigenG$d1) %*% t(eigenG$U1[6:10,])
+G12
+eigenG12
+source("/Users/lianlian/Dropbox/github/SKAT2/R/SKAT_General.R")
+source("/Users/lianlian/Dropbox/github/SKAT2/R/singleSNP.R")
+yNA=y
+yNA[c(3:5,6:10)]=NA
+out=testWindow(y,X=X1,Zt=Z1,eigenG=eigenG)
+out$p.Score
+out=testWindow(yNA,X=X1,Zt=Z1,eigenG=eigenG)
+source("/Users/lianlian/Dropbox/github/SKAT2/R/SKAT_General.R")
+out=testWindow(yNA,X=X1,Zt=Z1,eigenG=eigenG)
+out$p.Score
+a=c(matrix(4,4),matrix(4,4),matrix(3,3))
+a
+source("/Users/lianlian/Dropbox/github/SKAT2/R/SKAT_General.R")
+out=testWindow(yNA,X=X1,Zt=Z1,eigenG=eigenG)
+which(is.na(yNA))
+out
+source("/Users/lianlian/Dropbox/github/SKAT2/R/simuPower.R")
+Var=P3D.NULL(y,X=X1,eigenG=eigenG)#
+##p-vlaue for single SNP test while correction for multiple test by effective number of independent tests#
+GWAS.P3D(y,X0=X1,Xt=Z1,Var,eigenG,multipleCorrection=T)
+Var=P3D.NULL(y,X=X1,eigenG=eigenG)#
+##p-vlaue for single SNP test while correction for multiple test by effective number of independent tests#
+GWAS.P3D(yNA,X0=X1,Xt=Z1,Var,eigenG,multipleCorrection=T)
+source("/Users/lianlian/Dropbox/github/SKAT2/R/singleSNP.R")
+Var=P3D.NULL(y,X=X1,eigenG=eigenG)#
+##p-vlaue for single SNP test while correction for multiple test by effective number of independent tests#
+GWAS.P3D(yNA,X0=X1,Xt=Z1,Var,eigenG,multipleCorrection=T)
+GWAS.P3D(y,X0=X1,Xt=Z1,Var,eigenG,multipleCorrection=F)
+GWAS.P3D(yNA,X0=X1,Xt=Z1,Var,eigenG,multipleCorrection=F)
+out=testWindow(y,X=X1,Zt=Z1,eigenG=eigenG,removeZtFromG=T)
+out
+out=testWindow(yNA,X=X1,Zt=Z1,eigenG=eigenG,removeZtFromG=T)
+source("/Users/lianlian/Dropbox/github/SKAT2/R/SKAT_General.R")
+out=testWindow(yNA,X=X1,Zt=Z1,eigenG=eigenG,removeZtFromG=T)
+source("/Users/lianlian/Dropbox/github/SKAT2/R/SKAT_General.R")
+out=testWindow(yNA,X=X1,Zt=Z1,eigenG=eigenG,removeZtFromG=T)
+out
+out$p.Score
+out2=testWindow(y,X=X1,Zt=Z1,eigenG=eigenG,removeZtFromG=T)
+source("/Users/lianlian/Dropbox/github/SKAT2/R/SKAT_General.R")
+out2=testWindow(y,X=X1,Zt=Z1,eigenG=eigenG,removeZtFromG=T)
+out2
+out2$p.Score
+out$p.Score
+out2=testWindow(yNA,X=X1,Zt=Z1,eigenG=eigenG,removeZtFromG=T)
+out2$p.Score
+n=500#
+p=20 #work with a window of 20 markers#
+pheno=mouse.pheno[1:n,]#
+Z1=mouse.X[1:n,1:p]#
+X=cbind(model.matrix(~pheno$GENDER)[,-1],pheno$CageDensity)#
+X1=cbind(1,model.matrix(~pheno$GENDER)[,-1],pheno$CageDensity)#
+y=pheno$Obesity.BMI
+out=testWindow(y,X=X1,Zt=Z1)#
+out$p.SKAT$p.value
+out=testWindow(y,X=X1,Zt=Z1,eigenG=eigenG)
+out
+out=testWindow(y,X=X1,Zt=Z1,eigenG=eigenG,removeZtFromG=T)#
+out$p.SKAT$p.value
+Var=P3D.NULL(y,X=X1,eigenG=eigenG)
+GWAS.P3D(y,X0=X1,Xt=Z1,Var,eigenG,multipleCorrection=T)
+GWAS.P3D(y,X0=X1,Xt=Z1,Var,eigenG,multipleCorrection=F)
+2^12/4
+1024^3
+2^20
+2^10
+install_github("GuantGen/BEDMatrix")
+library(devtools)
+install_github("GuantGen/BEDMatrix")
+install_github("QuantGen/BEDMatrix")
+library(BEDMatrix)
+source("/Users/lianlian/Dropbox/github/SKAT2/R/simuPower.R")
+q("no")
+library(inline)
+dummy<-cfunction(body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA))#
+int nNA=length(R_whNA);#
+UNPROTECT(1)#
+rintf(":%d\n",whNA);}#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+int nNA=length(R_whNA);#
+UNPROTECT(1);#
+rintf(":%d\n",R_whNA);#
+rintf(":%d\n",nNA);#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+int nNA=length(R_whNA);#
+UNPROTECT(1);#
+Rprintf(":%d\n",R_whNA);#
+Rprintf(":%d\n",nNA);#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+int nNA=length(R_whNA);#
+UNPROTECT(1);#
+Rprintf("%d\n",R_whNA);#
+Rprintf("%d\n",nNA);#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+int nNA=length(R_whNA);#
+UNPROTECT(1);#
+Rprintf("%d\n",nNA);#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+int nNA=length(R_whNA);#
+UNPROTECT(1);#
+return nNA;#
+')
+dummy<-cfunction(c(R_whNA="integer"),body='#
+PROTECT(R_whNA=AS_INTEGER(R_whNA));#
+SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
+int nNA=length(R_whNA);#
+*pout=INTEGER(R_nNA);#
+pout[0]=nNA;#
+UNPROTECT(1);#
+#
+return nNA;#
+')
 dummy<-cfunction(c(R_whNA="integer"),body='#
 PROTECT(R_whNA=AS_INTEGER(R_whNA));#
 SEXP R_nNA = PROTECT(allocVector(INTSXP,1));#
@@ -207,350 +477,41 @@ library(devtools)
 library(GibbsFW)
 FW()
 FW
-library(devtools)
-install_github("lian0090/FW")
-library(FW)
-library(FW) data(wheat)
-attach(wheat.Y50)
-fit2=FW(y=yNA,VAR=VAR,ENV=ENV,nchain=2,seed=c(1,2))
-load('samps.rda')
-head(samps)
-diffh1h2=lapply(samps,function(a){a[,'h[2]']-a[,'h1']})
-diffh1h2=lapply(samps,function(a){a[,'h[2]']-a[,'h[1]']})
-class(diffh1h2)
-head(diffh1h2)
-diffh1h2
-length(diffh1h2)
-class(diffh1h2)
-diffh1h2=mcmc.list(diffh1h2)
-plot(diffh1h2)
-plot(samps[,c('h[1]','h[2]')])
-plot(samps)
-plot(samps,density=F)
-?plot.mcmc
-plot(samps,density=F,ask=T)
-parmfrow=c(4,4);plot(samps,density=F)
-parmfrow=c(4,4);plot(samps,density=F,auto.layout=F)
-parmfrow=c(4,4);plot(samps,density=F,auto.layout=F,mfrow=c(4,4))
-plot(diffh1h2)
+#but DIC is not a good indicator of prediction accuracy. it seesm that standardizing by saturated likelihood (when the variance unkown) helps.But we are not going to test this for now.
 source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
-fit2=FW(y=yNA,VAR=VAR,ENV=ENV,nchain=2,seed=c(1,2))
-load('samps.rda')
-head(samps)
-dim(samps[[1]])
-source("/Users/lianlian/Dropbox/github/FW/R/FW.R")
-fit2=FW(y=yNA,VAR=VAR,ENV=ENV,nchain=2,seed=c(1,2))
-load('samps.rda')
-head(samps)
-plot(samps)
-source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
-fit2=FW(y=yNA,VAR=VAR,ENV=ENV,nchain=2,seed=c(1,2))
-plot(samps)
-load(samps)
-load("samps.rda")
-head(samps)
-plot(samps,density=F,ask=T)
-plot(diffh1h2)
-diffh1h2=lapply(samps,function(a){a[,'h[2]']-a[,'h[1]']})diffh1h2=mcmc.list(diffh1h2)plot(diffh1h2)
-dat=rgamma(1000,0.5,0.0005)
-plot(dat)
-?chol
-library(pryr)
-dnorm
-pryr::show_c_source(.Call(C_dnorm, x, mean, sd, log))
-dnorm
-setdiff
-match
-pryr::show_c_source(.Internal(match(x, table, nomatch, incomparables)))
-library(inline)
-Csetdiff=cfunction(sig=c(R_whNA="integer",n="integer"),#
- "   #
- PROTECT(R_whNA=AS_INTEGER(R_whNA));#
- int *whNA=INTEGER_POINTER(R_whNA);#
-     int nNa=length(R_whNA);#
-#
-  int *C_whNotNA=(int *)R_alloc(n-nNa,sizeof(int));#
-    int countNotNA=0;#
-    int NAflag;#
-    for(i=0;i<n;i++){#
-    NAflag=0;#
-    for(j=0;j<nNa;j++){#
-    if(i+1==whNA[j])NAflag=1;#
-    }#
-    if(NAflag==0){#
-    C_whNotNA[countNotNA]=i;#
-    countNotNA+=1;#
-    }#
-    }#
-    SEXP out=PROTECT(allocVector(INTSXP,n-nNA));#
-    for(i=0;i<n-nNa,i++){#
-    	INTEGER(out)[i]=C_whNotNA[i];#
-    	    }#
-    	    return out;#
-    	    ")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-Csetdiff(c(1,29,100),100)
-source("/Users/lianlian/Dropbox/work/techmemo/R/get set difference in C.R")
-Csetdiff(c(1,29,100),100)
-setdiff(1:100,Csetdiff(1,29,100,100))
-setdiff(1:100,Csetdiff(c(1,29,100),100))
-setdiff(1:100,Csetdiff(c(1,29,25,89,99,100),100))
-setdiff(1:100,Csetdiff(c(1,5,8,9,10),10))
-setdiff(1:10,Csetdiff(c(1,5,8,9,10),10))
-y=c(1:10)
-whNA=which(is.na(y))#
-  n=length(y)#
-  whNotNA=setdiff(1:n,whNA)
-whNotNA
-class(whNotNA)
-whNA
-setwd("~/Dropbox/github/GibbsFW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/GibbsFW/R/GibbsFW.R")#
-load("~/Dropbox/github/GibbsFW/data/wheat.rda")
 setwd("~/Dropbox/github/FW/src")#
 dyn.load("C_GibbsFW.so")#
 source("~/Dropbox/github/FW/R/GibbsFW.R")#
 load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50
+G=wheat.G50#
+whNA=which(is.na(wheat.Y50$yNA))#
+attach(wheat.Y50)#
+gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+setwd("~/Dropbox/github/FW/src")#
+library(GibbsFW)#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
 whNA=which(is.na(wheat.Y50$yNA))#
 attach(wheat.Y50)#
 gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
 source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
+setwd("~/Dropbox/github/FW/src")#
+library(GibbsFW)#
+dyn.load("C_GibbsFW.so")#
+source("~/Dropbox/github/FW/R/GibbsFW.R")#
+load("~/Dropbox/github/FW/data/wheat.rda")#
+G=wheat.G50#
 whNA=which(is.na(wheat.Y50$yNA))#
 attach(wheat.Y50)#
 gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
+gf3$fit
 source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
 gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf3
-names(gf3)
-gf3$pD
-gf3$DIC
-gf3$postMeanLogLik
-gf3$logLikAtPostMean
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(y,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf3$postMeanLogLik
-gf3$logLikAtPostMean
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf3
-source("/Users/lianlian/Dropbox/github/FW/R/FW.R")
-gf3
-names(gf3)
-gf3$postMeanLogLik
-gf3$logLikAtPostMean
-fg3$y-gf3$post_yhat
-gf3$y-gf3$post_yhat
-gf3$y-gf3$post_yhat
-gf3$y
-whNA
-dnorm(gf3$y-gf3$post_yhat[-],sd=gf3$var_e,log=T)
-dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=gf3$var_e,log=T)
-dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T)
-dnorm(gf3$y[-whNA]-gf3$yhat[-whNA],sd=sqrt(gf3$var_e),log=T)
-gf3
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf3
-rm("plot.FW")
-rm("print.FW")
-gf3
-ng
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf4
-gf3
-dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T)
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf3
-gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)#
->
-gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)#
->gf2
-gf2
-gf3
-gf3$DIC
-gf2$DIC
-gf2$pD
-gf3$pD
-gf2$postMeanLogLik
-gf3$postMeanLogLik
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))
-(5000-3000)%%5
-(5000-3000)%5
-(5000-3000)%/%5
-load("/Users/lianlian/Dropbox/github/FW/src/samps.rda")
-dim(samps[[1]])
-head(samps)
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf3
+gf3$fit
 gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
-gf2
-gf3$pD
-gf2$pD
-sum(wheat.A)
-sum(diag(wheat.A))
-sum(wheat.G50)
-sum(diag(wheat.G50))
-gf2$DIX
-gf2$DIC
-gf3$DIC
-ymean_vali=aggregate(wheat.Y50$y[whNA],by=list(wheat.Y50$VAR[whNA],wheat.Y50$ENV[whNA]),mean)[,3]#
-yhat_vali=aggregate(gf3$yhat[whNA],by=list(wheat.Y50$VAR[whNA],wheat.Y50$ENV[whNA]),mean)[,3]#
-ymean_train=aggregate(wheat.Y50$y[-whNA],by=list(wheat.Y50$VAR[-whNA],wheat.Y50$ENV[-whNA]),mean)[,3]#
-yhat_train=aggregate(gf3$yhat[-whNA],by=list(wheat.Y50$VAR[-whNA],wheat.Y50$ENV[-whNA]),mean)[,3]
-cor(ymean_vali,yhat_vali)
-yhat_vali=aggregate(gf2$yhat[whNA],by=list(wheat.Y50$VAR[whNA],wheat.Y50$ENV[whNA]),mean)[,3]
-cor(ymean_vali,yhat_vali)
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,n-length(whNA)),0,sqrt(gf3$_var_e),log=T)
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,n-length(whNA)),0,sqrt(gf3$var_e),log=T)
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,n-length(whNA)),sd=sqrt(gf3$var_e),log=T)
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,lnength(y)-length(whNA)),sd=sqrt(gf3$var_e),log=T)
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,length(y)-length(whNA)),sd=sqrt(gf3$var_e),log=T)
-length(y)
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(rep(0,length(gf3$y)-length(gf3$whNA)),sd=sqrt(gf3$var_e),log=T)
-sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(0,sd=sqrt(gf3$var_e),log=T)
-sum(dnorm(gf2$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf2$var_e),log=T))-dnorm(0,sd=sqrt(gf2$var_e),log=T)
-sum(dnorm(gf2$y[-whNA]-gf2$post_yhat[-whNA],sd=sqrt(gf2$var_e),log=T))-dnorm(0,sd=sqrt(gf2$var_e),log=T)
--2*(sum(dnorm(gf2$y[-whNA]-gf2$post_yhat[-whNA],sd=sqrt(gf2$var_e),log=T))-dnorm(0,sd=sqrt(gf2$var_e),log=T))+2*gf2$pD
--2*(sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-dnorm(0,sd=sqrt(gf3$var_e),log=T))+2*gf3$pD
-dnorm(0,sd=sqrt(gf2$var_e),log=T)
-dnorm(0,sd=sqrt(gf3$var_e),log=T)
-whNA
--2*(sum(dnorm(gf3$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf3$var_e),log=T))-300*dnorm(0,sd=sqrt(gf3$var_e),log=T))+2*gf3$pD
--2*(sum(dnorm(gf2$y[-whNA]-gf3$post_yhat[-whNA],sd=sqrt(gf2$var_e),log=T))-300*dnorm(0,sd=sqrt(gf2$var_e),log=T))+2*gf2$pD
-((-0.2736406)-(-0.301477))*300
-source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf3
-gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
-gf2
-gf3$DIC
-gf2$DIC
-gf3$postMeanLogLik
-gf2$postMeanLogLik
-source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)#
-gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENVg)
-source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)#
-gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENVg)
-source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)#
-gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
-gf3
-source("/Users/lianlian/Dropbox/github/FW/R/GibbsFW.R")
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)#
-gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
+fg2$fit
 gf2$fit
-gf3$fit
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
-gf3
-setwd("~/Dropbox/github/FW/src")#
-dyn.load("C_GibbsFW.so")#
-source("~/Dropbox/github/FW/R/GibbsFW.R")#
-load("~/Dropbox/github/FW/data/wheat.rda")#
-G=wheat.G50#
-whNA=which(is.na(wheat.Y50$yNA))#
-attach(wheat.Y50)#
-gf3=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV,A=wheat.G50)
 gf2=GibbsFW(yNA,wheat.Y50$VAR,wheat.Y50$ENV)
-gf3$fit
 gf2$fit

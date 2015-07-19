@@ -75,8 +75,12 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   	samps=vector("list",nchain)
   	gT=bT=matrix(NA,ng,nchain)
   	hT=matrix(NA,nh,nchain)
-  	var_eT=var_gT=var_bT=var_hT=muT=postMeanlogLikT=logLikAtPostMeanT=rep(NA,nchain)
+  	var_eT=var_gT=var_bT=var_hT=muT=rep(NA,nchain)
   	post_yhatT=matrix(NA,nrow=length(y),ncol=nchain)
+  	
+  	#post_logLik
+  	#postMeanlogLikT=logLikAtPostMeanT=rep(NA,nchain)
+  	
     for(i in 1:nchain){
       sampFile=paste("sampsChain",i,".txt",sep="");
       if(file.exists(sampFile)) file.remove(sampFile) else file.create(sampFile)
@@ -90,7 +94,9 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
       var_h=inits[[i]]$var_h
       if(!is.null(seed)){set.seed(seed[i])}
       outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, df, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA,whNotNA,saveVAR,saveENV)
-      names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
+      names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
+      #when there is postlogLik
+      #names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
       gT[,i]=outi$g
       bT[,i]=outi$b
       hT[,i]=outi$h
@@ -100,22 +106,28 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
       var_hT[i]=outi$var_h
       muT[i]=outi$mu
       post_yhatT[,i]=outi$post_yhat
-      postMeanlogLikT[i]=outi$postlogLik
-      logLikAtPostMeanT[i]=outi$logLikAtPostMean
+     # postMeanlogLikT[i]=outi$postlogLik
+     # logLikAtPostMeanT[i]=outi$logLikAtPostMean
    
     }
     
       rownames(gT)=VARlevels
       rownames(bT)=VARlevels
       rownames(hT)=ENVlevels
-      colnames(post_yhatT)=colnames(gT)=colnames(bT)=colnames(hT)=names(muT)=names(var_eT)=names(var_gT)=names(var_bT)=names(var_hT)=names(postMeanlogLikT)=names(logLikAtPostMeanT)=paste("Init",c(1:nchain),sep="")
+      colnames(post_yhatT)=colnames(gT)=colnames(bT)=colnames(hT)=names(muT)=names(var_eT)=names(var_gT)=names(var_bT)=names(var_hT)=paste("Init",c(1:nchain),sep="")
+
+ yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F] 
+      
   
      #but DIC is not a good indicator of prediction accuracy. it seesm that standardizing by saturated likelihood (when the variance unkown) helps.But we are not going to test this for now.  
-     yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F]
-     pD=-2*(postMeanlogLikT-logLikAtPostMeanT)
-     DIC=pD-2*postMeanlogLikT
-     fit=list(postMeanlogLik=postMeanlogLikT,logLikAtPostMean=logLikAtPostMeanT,pD=pD,DIC=DIC)
-     postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT,fit=fit)
+    #names(postMeanlogLikT)=names(logLikAtPostMeanT)= paste("Init",c(1:nchain),sep="")   
+    # pD=-2*(postMeanlogLikT-logLikAtPostMeanT)
+    # DIC=pD-2*postMeanlogLikT
+    # fit=list(postMeanlogLik=postMeanlogLikT,logLikAtPostMean=logLikAtPostMeanT,pD=pD,DIC=DIC)
+    # postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT,fit=fit)
+    
+    postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT)
+    
     class(postMean)=c("FW","list")
     
      for(i in 1:nchain){
