@@ -1,23 +1,11 @@
 lmFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL){
 
-   if(!file.exists(savedir)){dir.create(savedir)}	
   #if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
-   IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
+  IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
   for(i in 1:length(IDEL)){
   	assign(names(IDEL)[i],IDEL[[i]])
   }
 
-
-  IDE=IDEL$IDE
-
-  IDL=IDEL$IDL
-
-  VARlevels=IDEL$VARlevels
-
-  ENVlevels=IDEL$ENVlevels
-
-  fVAR=IDEL$fVAR
-  
     
   h=tapply(y,INDEX=IDE,function(a)mean(a,na.rm=T))-mean(y,na.rm=T)
 
