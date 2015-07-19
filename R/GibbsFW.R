@@ -1,4 +1,4 @@
-GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVar_e=NULL,priorVar_g=NULL,priorVar_b=NULL,priorVar_h=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
+GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
 #check thin and df: they are functions in coda
   if(!is.numeric(thin)){
   	stop("thin must be a numeric")
@@ -56,10 +56,10 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 
   #hyper parameters:
   var_y=var(y,na.rm=T)
-  if(is.null(priorVar_e)) {priorVar_e=0.5*var_y}; S<-priorVar_e*(df+2)  #S is the scale times df
-  if(is.null(priorVar_g)) {priorVar_g=0.25*var_y};Sg<-priorVar_g*(dfg+2)
-  if(is.null(priorVar_b)) {priorVar_b=0.5*sqrt(var_y)}; Sb<-priorVar_b*(dfb+2)   
-  if(is.null(priorVar_h)) {priorVar_h=0.5*sqrt(var_y)}; Sh<-priorVar_h*(dfh+2)  
+  if(is.null(priorVARe)) {priorVARe=0.5*var_y}; S<-priorVARe*(df+2)  #S is the scale times df
+  if(is.null(priorVARg)) {priorVARg=0.25*var_y};Sg<-priorVARg*(dfg+2)
+  if(is.null(priorVARb)) {priorVARb=0.5*sqrt(var_y)}; Sb<-priorVARb*(dfb+2)   
+  if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
   if(!is.null(A)){
   	A=A[VARlevels,VARlevels] #when VARlevels was specifed by the user.
   	L<-t(chol(A));

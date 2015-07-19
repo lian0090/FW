@@ -1,5 +1,5 @@
 #a wrapper for GibbsFW and lmFW
-FW=function(y,VAR,ENV,method=c("OLS","Gibbs")[2], saveAt="",nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVar_e=NULL,priorVar_g=NULL,priorVar_b=NULL,priorVar_h=NULL,A=NULL,nchain=1,seed=NULL){
+FW=function(y,VAR,ENV,method=c("OLS","Gibbs")[2], saveAt="",nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,nchain=1,seed=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
 
 
 if(saveAt==""){
@@ -8,14 +8,13 @@ if(saveAt==""){
 
 whNA=which(is.na(y))
 #if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
-  
 
 if(method=="OLS"){
 	 predictedValue=lmFW(y,VAR,ENV)
 }
 
 if(method=="Gibbs"){
-	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,nIter=nIter,burnIn=burnIn,thin=thin,df=df,dfg=dfg,dfh=dfh,dfb=dfb,priorVar_e=priorVar_e,priorVar_g=priorVar_g,priorVar_b=priorVar_b,priorVar_h=priorVar_h, A=A,nchain=nchain,seed=seed,saveAt=saveAt);	
+	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,nIter=nIter,burnIn=burnIn,thin=thin,df=df,dfg=dfg,dfh=dfh,dfb=dfb,priorVARe=priorVARe,priorVARg=priorVARg,priorVARb=priorVARb,priorVARh=priorVARh, A=A,nchain=nchain,seed=seed,saveAt=saveAt);	
 	
 }
 
