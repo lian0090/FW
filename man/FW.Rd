@@ -72,7 +72,7 @@ A list with estimated posterior means and the parameters used to fit the model.
 	}
   \item{yhat}{(matrix) for both methods was the linear predictor obtained from estimated model parameters as \eqn{\hat{y}=\hat{\mu}+\hat{h}+\hat{b}\hat{h}}. For OLS, there is only one column for yhat. For Gibbs, each column of yhat represents a different chain.
   }
-  \item{var_e,var_g,var_b,var_h}  {are for Gibbs method only, and are the posterior means for the residual variance, genotype variance, genotype slope variance and environment variance
+  \item{var_e,var_g,var_b,var_h}{are for Gibbs method only, and are the posterior means for the residual variance, genotype variance, genotype slope variance and environment variance
 }
 \item{post_yhat}{(matrix) is for Gibbs method only, and is the posterior means of the linear predictor sampled from the corresponding fully conditional density.
 }
