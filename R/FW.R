@@ -1,5 +1,5 @@
 #a wrapper for GibbsFW and lmFW
-FW=function(y,VAR,ENV,method=c("OLS","Gibbs")[2], saveAt="",nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,nchain=1,seed=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
+FW=function(y,VAR,ENV,method=c("OLS","Gibbs")[2], A=NULL,saveAt="",nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,nchain=1,seed=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
 
 
 if(saveAt==""){
