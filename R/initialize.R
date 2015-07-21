@@ -1,11 +1,21 @@
 #initialize
 initialize.Gibbs=function(y,ng,nh,inits=NULL,nchain=1){
+	
 	#seed is to set the random seed for Gibbs Sampler for jags. Not for the random seed of inital values.
+	#the seed for setting up initial values is their chain index
 	var_y=var(y,na.rm=T)
 	mean_y=mean(y,na.rm=T)
 	sd_y=sqrt(var_y)
+	
+	priorVARe=0.5*var_y
+	priorVARg=0.25*var_y
+	priorVARb=0.5*sd_y
+	priorVARh=0.5*sd_y
+
+	
+	
 	default_inits=list(
-		list(mu=mean_y, g=rep(0,ng), b=rep(0,ng), h=rep(0,nh), var_e=sd_y, var_g=sd_y, var_b=sd_y, var_h=sd_y)
+		list(mu=mean_y, g=rep(0,ng), b=rep(0,ng), h=rep(0,nh), var_e=priorVARe, var_g=priorVARg, var_b=priorVARb, var_h=priorVARh)
 		)
 	  ##inits should be a list of lists, each list cannot have names, 
       ##because rjags will use whether it has names to determin whether it is a list of lists, 
@@ -31,8 +41,18 @@ initialize.Gibbs=function(y,ng,nh,inits=NULL,nchain=1){
           }
             if(n.null>0){
             	for(i in 1:n.null){
-            		set.seed(wh.null[i])
-            	inits[[(wh.null[i])]]=list(mu=rnorm(1,mean_y,var_y/2), g=rnorm(ng, 0, var_y/4), b=rnorm(ng, 0, var_y/2), h=rnorm(nh,0,var_y/2), var_e=var_y/2, var_g=var_y/4, var_b=var_y/2, var_h=var_y/2)
+            	set.seed(wh.null[i])
+            	df=10
+            	var_e=runif(1,0.5,2)*priorVARe
+            	var_g=runif(1,0.5,2)*priorVARg
+            	var_b=runif(1,0.5,2)*priorVARb
+            	var_h=runif(1,0.5,2)*priorVARh
+            	#sample initial values from scaled-inverse-chisquare distribution. But it can sample very rare values.
+            	#var_e=1/rchisq(1,df)*priorVARe*(df+2)	 #same as var_e2=1/rgamma(1,df/2,priorVARe*(df+2)/2)
+            	#var_g=1/rchisq(1,df)*priorVARg*(df+2)
+            	#var_b=1/rchisq(1,df)*priorVARb*(df+2)
+            	#var_h=1/rchisq(1,df)*priorVARh*(df+2)
+            	inits[[(wh.null[i])]]=list(mu=rnorm(1,mean_y,priorVARe), g=rnorm(ng, 0, priorVARg), b=rnorm(ng, 0, priorVARb), h=rnorm(nh,0,priorVARh), var_e=var_e, var_g=var_g, var_b=var_b, var_h=var_h)
             	}            		
     	}
       
