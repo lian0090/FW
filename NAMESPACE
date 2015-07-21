@@ -1,3 +1,4 @@
 useDynLib(FW,C_GibbsFW)
+#formal package output
 export(FW,plot.FW)
 

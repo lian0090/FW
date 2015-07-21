@@ -1,4 +1,4 @@
-GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,inits=NULL,nchain=1,seed=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
+GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
 #check thin and df: they are functions in coda
   if(!is.numeric(thin)){
   	stop("thin must be a numeric")
@@ -28,17 +28,21 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   ############################################# 
   # initialize
   ########################################################################################## 
-  if(is.null(VARlevels)){
   	if(!is.null(A)){
-  	 if(is.null(colnames(A))){
-  	 	stop("Variety names for variance matrix must be provided as column names")
+  	 if(is.null(colnames(A))| is.null(rownames(A))){
+  	 	stop("Variety names for variance matrix must be provided as column names and rownames\n")
   	 }
-  	 if(!is.null(VARlevels)){
-  	 	stop("When covariance matrix A is provided, VARlevels are automatically the column names of A, user should not specify VARlevels in this case")
-  	 }
-  		VARlevels=colnames(A)
+  	 
+  	 if(!all(colnames(A)==rownames(A))){
+  	 	stop("colnames of A must be equal to rownames of A\n")
+  	 } 	
+  	 
+  	 if(is.null(VARlevels)){
+  	 	VARlevels=colnames(A)  	 
+  	 	}else{
+  		A=A[VARlevels,VARlevels]
+  		}	
   	}	
-  }
   IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
   IDE=IDEL$IDE
   IDL=IDEL$IDL
@@ -61,7 +65,6 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   if(is.null(priorVARb)) {priorVARb=0.5*sqrt(var_y)}; Sb<-priorVARb*(dfb+2)   
   if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
   if(!is.null(A)){
-  	A=A[VARlevels,VARlevels] #when VARlevels was specifed by the user.
   	L<-t(chol(A));
   	Linv=solve(L);
   	}else {
