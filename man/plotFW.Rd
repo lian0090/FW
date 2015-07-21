@@ -20,3 +20,15 @@ plot.FW(FWobj,plotVAR=NULL,main=NULL,chain=1)
 \details{
 The x-axis is the estimated values of environment effects. The colored lines are the fitted values against environment gradients. The colored circles are the observed cell means for the variety environment combinations. 
 }
+\author{
+Lian Lian, Gustavo de los Campos
+}
+\examples{
+\dontrun{
+data(wheat.rda)
+attach(wheat.Y50)
+lm2=FW(y=y,VAR=VAR,ENV=ENV,method="Gibbs")
+plot(lm2)
+plot(lm2,plotVAR=c("1081265","1101307", "1295736", "13302", "1343502"))
+}
+}

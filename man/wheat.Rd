@@ -23,11 +23,11 @@ MMs after editting was 1279.
 }
 
 \usage{
-  data(wheat)
+data(wheat)
 }
 
 \format{
-The data.frame Y, Y.50 contain the phenotypes, Matrix G, G50 are the genomic relatinship matrix calculated from the DArt markers. 
+The data.frame \code{\link{wheat.Y}} and \code{\link{wheat.Y50}} contain the phenotypes, Matrix \code{\link{wheat.G}} and \code{\link{wheat.G50}} are the genomic relatinship matrix calculated from the DArT markers. 
 }
 
 \source{
