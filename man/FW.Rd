@@ -23,6 +23,8 @@ FW(y, VAR, ENV, method = c("OLS", "Gibbs")[2], saveAt = "",
   \item{ENV}{ 
   (character, \eqn{n}) is a vector whose elements are identifiers for the environments which are treated as labels.
   }
+  \item{VARlevels}{(character, \eqn{ng}) is the unique non-duplicated variety identifiers used to specify the order of fitting for the varieties and the order of output for the estimates of \bold{g} and \bold{b}. The order of fitting and output are the same as the order of appearances of variety identifiers in VARlevels; the default values are the unique values of VAR sorted into ascending order by string comparisons. }
+  \item{ENVlevels}{(character, \eqn{nh}) is the unique non-duplicated environment identifiers used to specify the order of fitting for the environments and the order of output for the estimates of \bold{h}. The order of fitting and output are the same as the order of appearances of environment identifiers in ENVlevels; the default values are the unique values of ENV sorted into ascending order by string comparison.}
   \item{method}{
   is used to describe what method to use: either "OLS" for ordinary least squares method or "Gibbs" for Gibbs method. The default is "Gibbs".
   }

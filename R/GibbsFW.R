@@ -29,18 +29,23 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   # initialize
   ########################################################################################## 
   	if(!is.null(A)){
-  	 if(is.null(colnames(A))| is.null(rownames(A))){
-  	 	stop("Variety names for variance matrix must be provided as column names and rownames\n")
-  	 }
+  		if(nrow(A)!=ncol(A)){
+  			stop("A must be square matrix")
+  		}
+  	 	if(is.null(colnames(A))| is.null(rownames(A))){
+  	 		stop("Variety names for variance matrix must be provided as column names and rownames\n")
+  	 	}
   	 
-  	 if(!all(colnames(A)==rownames(A))){
-  	 	stop("colnames of A must be equal to rownames of A\n")
-  	 } 	
+  		if(!all(colnames(A)==rownames(A))){
+  	 		stop("colnames of A must be equal to rownames of A\n")
+  	 	}
+  	 	
+  	 	if(any(!(unique(VAR) %in% colnames(A)))) stop("Covariance structure not available for some varieties")
   	 
-  	 if(is.null(VARlevels)){
-  	 	VARlevels=colnames(A)  	 
+  		if(is.null(VARlevels)){
+  	 		VARlevels=colnames(A)  	 
   	 	}else{
-  		A=A[VARlevels,VARlevels]
+  			A=A[VARlevels,VARlevels]
   		}	
   	}	
   IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
