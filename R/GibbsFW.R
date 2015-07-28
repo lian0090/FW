@@ -73,7 +73,8 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 	if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
 	if(!is.null(A)){
 		L<-t(chol(A));
-		Linv=solve(L);
+		#Linv=solve(L);
+		Linv=forwardsolve(L,upper.tri=F)
   	}else {
   		L<-NA;
   		Linv=NA;

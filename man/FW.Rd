@@ -30,7 +30,7 @@ FW(y, VAR, ENV, method = c("OLS", "Gibbs")[2], saveAt = "",
   }
    \item{A}{ (numeric), is the covariance structure for Normal distirubion of \bold{g} and \bold{b}: N(\bold{g}|\bold{0}, \bold{A}\eqn{\sigma^2_g}),  N(\bold{b}|\bold{0},\bold{A}\eqn{\sigma^2_b}). A may be NULL, this case, \bold{g} and \bold{b} are assumed to be IID}
   \item{saveAt}{ 
-  (character) can be used to indicate where to store the samples and to provide a pre-fix to be appended to the name of the file where the samples are stored. By default samples are saved in the current working directory and no pre-fix is added to the file names.   
+  (character) can be used to indicate where to store the samples and to provide a pre-fix to be appended to 'samps.rda' (the name of the file where the samples are stored). By default samples are saved in the current working directory and no pre-fix is added to the file names.   
   }
   \item{nIter, burnIn, thin}{
   (integer) control the number of iterations of the sampler, the number of samples discarded, and the thinning used to compute posterior means, respectively.
