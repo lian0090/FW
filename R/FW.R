@@ -1,5 +1,5 @@
 #a wrapper for GibbsFW and lmFW
-FW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,method=c("OLS","Gibbs")[2], A=NULL,saveAt="",nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
+FW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,method=c("OLS","Gibbs")[2], A=NULL,saveAt="",nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
 
 
 if(saveAt==""){
@@ -14,7 +14,7 @@ if(method=="OLS"){
 }
 
 if(method=="Gibbs"){
-	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels,nIter=nIter,burnIn=burnIn,thin=thin,df=df,dfg=dfg,dfh=dfh,dfb=dfb,priorVARe=priorVARe,priorVARg=priorVARg,priorVARb=priorVARb,priorVARh=priorVARh, A=A,nchain=nchain,seed=seed,inits=inits,saveAt=saveAt);	
+	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels,nIter=nIter,burnIn=burnIn,thin=thin,dfe=dfe,dfg=dfg,dfh=dfh,dfb=dfb,priorVARe=priorVARe,priorVARg=priorVARg,priorVARb=priorVARb,priorVARh=priorVARh, A=A,nchain=nchain,seed=seed,inits=inits,saveAt=saveAt);	
 	
 }
 

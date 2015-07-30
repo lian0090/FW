@@ -4,7 +4,7 @@
 Finlay-Wilkinson Regression
 }
 \description{
-The FW (`Finlay-Wilkinson') function fits Finlay-Wilkinson regression with Ordinary least squares method or Bayesian method (Gibbs Sampler) to continuous traits.
+The FW ("Finlay-Wilkinson") function fits the Finlay-Wilkinson regression with Ordinary least squares method or Bayesian method (Gibbs Sampler) to continuous traits.
 }
 \usage{
 FW(y, VAR, ENV, method = c("OLS", "Gibbs")[2], saveAt = "", 
@@ -36,13 +36,15 @@ FW(y, VAR, ENV, method = c("OLS", "Gibbs")[2], saveAt = "",
   (integer) control the number of iterations of the sampler, the number of samples discarded, and the thinning used to compute posterior means, respectively.
   }
   \item{dfe, dfg, dfh, dfb, priorVARe, priorVARg, priorVARb, priorVARh}{
-  (numeric) define the hyper parameters of scaled inverse chi-squared distributions for \eqn{\sigma^2_\epsilon}, \eqn{\sigma^2_g}, \eqn{\sigma^2_b} and \eqn{\sigma^2_h}, with dfe, dfg, dfb, dfh degrees of freedom respectively. priorVARe, priorVARg, priorVARb, and  priorVARh defined the prior estimates for  \eqn{\sigma^2_\epsilon}, \eqn{\sigma^2_g}, \eqn{\sigma^2_b} and \eqn{\sigma^2_h}. For a scaled inverse chi-squared variable \eqn{\sigma^2} with degrees of freedom df=\eqn{\nu} and scale parameter \eqn{S^2}, the scale paramter \eqn{S^2} in FW is obtained by satisfying the mode of the density: \eqn{\frac{\nu S^2}{\nu+2}}{\nuS^2/(\nu+2)}. If the prior estimate of \eqn{\sigma^2} is set to be priorVAR=\eqn{\hat{\sigma}^2}, then \eqn{S^2=\hat{\sigma^2}\frac{\nu+2}{\nu}}{S^2=\hat{\sigma}^2(\nu+2)/\nu}. 
+  (numeric) define the hyper parameters of scaled inverse chi-squared distributions for \eqn{\sigma^2_\epsilon}, \eqn{\sigma^2_g}, \eqn{\sigma^2_b} and \eqn{\sigma^2_h}, with dfe, dfg, dfb, dfh degrees of freedom respectively. priorVARe, priorVARg, priorVARb, and  priorVARh defined the prior estimates for  \eqn{\sigma^2_\epsilon}, \eqn{\sigma^2_g}, \eqn{\sigma^2_b} and \eqn{\sigma^2_h}. For a scaled inverse chi-squared variable \eqn{\sigma^2} with degrees of freedom df=\eqn{\nu} and scale parameter \eqn{S^2}, the scale paramter \eqn{S^2} in FW is obtained by satisfying the mode of the density: \eqn{\frac{\nu S^2}{\nu+2}}{\nuS^2/(\nu+2)}. If the prior estimate of \eqn{\sigma^2} is set to be priorVAR, then \eqn{S^2=priorVAR\frac{\nu+2}{\nu}}{S^2=\hat{\sigma}^2(\nu+2)/\nu}. 
   	}
   \item{nchain}{
   (integer) specifies the number of chains for Gibbs Sampler to run. 
   }
   \item{seed}{ 
   (integer vector whose length is equal to the number of chains) is the starting seed for Gibbs Sampler for each chain. If seed=NULL, no seed is set. 
+  }
+  \item{inits}{ (list of names lists), is used to specify the initial values for Gibbs sampler. The parameters taken by R are: mu, g, b, h, var_e, var_g, var_b, var_h. These values must be supplied in a list as inits=list(inits1=list(mu=,g=,b=,h=,var_e=,var_g=,var_b=,var_h=),inits2=list(...)). The default initial values for chain 1 are setting mu, g, b, h all to 0, and setting var_e as 0.5 var_y ,var_g as 0.25 var_y, var_b as 0.5 sd_y, var_h as 0.5 sd_y, where var_y and sd_y are the total phenotypic variance and standard deviation. The default initial values for all other chains are set by random sampling: mu from N(0, 0.5 var_y), g from N(0, 0.25 var_y ), b and h from N(0, 0.5 sd_y ), var_e, var_g , var_b and var_h  all from uniform distribution with the boundaries as half and twice the values used in chain 1; var_e from U(0.5, 2) 0.5 var_y , var_g from U(0.5, 2) 0.25 var_y, var_b as U(0.5, 2) 0.5 sd_y , var_h as U(0.5, 2) 0.5 sd_y.
   }
   \item{saveVAR, saveENV}{
   (integer) can be used to specify for which variety or environment the samples of parameter should be saved. For example, saveVAR=c(1,5,10) will save the samples of g and b for variety 1, 5, and 10; saveENV=c(1,5,10) will save the samples of h for environment 1, 5 and 10. By default, only the parameter samples for the first two varieties and first two environments are saved. 
@@ -54,7 +56,7 @@ FW implements Gibbs sampler (Gibbs) or Ordinary least square (OLS) method to fit
 
 \eqn{y_{ijk}}{y_ijk} is the phenotype performance for variety \eqn{i}, environment \eqn{j} and replicate \eqn{k}. \eqn{\mu} is the overall mean, \eqn{g_i} is the effect of variety \eqn{i}, \eqn{h_j} is the effect of environment \eqn{j}, \eqn{b_i}  is the slope effect of variety \eqn{i} on all the environment gradients,\eqn{\epsilon_{ijk}}{\epsilon_ijk} is the normal residual with mean zero and variance \eqn{\sigma^2_\epsilon} . When there are no replicates under variety environment combination, index k can be removed and the above equation reduces to \eqn{y_{ij} = \mu  + {g_i} + {h_j} + {b_i}{h_j}+\epsilon_{ij}}{y_ij = \mu  + g_i + h_j + b_i * h_j +\epsilon_ij}. 
 
-Only the arguments \code{y}, \code{VAR}, \code{ENV} and \code{method} are used for fitting the OLS model. All other arguments are for the Gibbs method.  
+Only the arguments \code{y}, \code{VAR}, \code{ENV}, \code{VARlevels}, \code{ENVlevels} and \code{method} are used for fitting the OLS model. All other arguments are for the Gibbs method.  
 
 Details for model setup can be found in the vignettes in the package. 
 

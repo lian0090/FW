@@ -1,10 +1,10 @@
-GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,df=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
-#check thin and df: they are functions in coda
-	if(!is.numeric(thin)){
-  		stop("thin must be a numeric")
+GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
+#check Input type
+	if(any(!is.numeric(nIter,burnIn,thin,dfe,dfg,dfh,dfb)))){
+  		stop("thin and df must be a numeric")
   	}
-	if(!is.numeric(df)){
-  		stop("df must be a numeric")
+	if(any(!is.numeric(c(saveVAR,saveENV)))){
+  		stop("saveVAR and saveENV must be a numeric")
   	}	
 	if(is.null(saveAt)){
 		saveAt=paste(getwd(),"/",sep="")
@@ -67,7 +67,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 
 	#hyper parameters:
 	var_y=var(y,na.rm=T)
-	if(is.null(priorVARe)) {priorVARe=0.5*var_y}; S<-priorVARe*(df+2)  #S is the scale times df
+	if(is.null(priorVARe)) {priorVARe=0.5*var_y}; S<-priorVARe*(dfe+2)  #S is the scale times df
 	if(is.null(priorVARg)) {priorVARg=0.25*var_y};Sg<-priorVARg*(dfg+2)
 	if(is.null(priorVARb)) {priorVARb=0.5*sqrt(var_y)}; Sb<-priorVARb*(dfb+2)   
 	if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
@@ -104,7 +104,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_b=inits[[i]]$var_b
 			var_h=inits[[i]]$var_h
 			if(!is.null(seed)){set.seed(seed[i])}
-			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, df, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA,whNotNA,saveVAR,saveENV)
+			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA,whNotNA,saveVAR,saveENV)
 			names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       		#when there is postlogLik
 			#names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
