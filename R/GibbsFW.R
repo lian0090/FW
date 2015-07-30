@@ -160,8 +160,8 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   
 	#end of runSampler function.
 	
-  	postMean=runSampler(inits=inits,nchain=nchain,nIter=nIter,burnIn=burnIn,save_samps=T,seed=seed)
-  	#save(postMean,file=file.path(savedir,"postMean_Gibbs.rda"))	
+  postMean=runSampler(inits=inits,nchain=nchain,nIter=nIter,burnIn=burnIn,save_samps=T,seed=seed)
+  #save(postMean,file=file.path(savedir,"postMean_Gibbs.rda"))	
 
 	return(postMean)
 }

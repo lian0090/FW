@@ -1,25 +1,25 @@
 #a wrapper for GibbsFW and lmFW
-FW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,method=c("OLS","Gibbs")[2], A=NULL,saveAt="",nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
-
-
-if(saveAt==""){
-	saveAt=paste(getwd(),"/",sep="");
-}
-
-whNA=which(is.na(y))
-#if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
-
-if(method=="OLS"){
-	 predictedValue=lmFW(y,VAR,ENV,VARlevels=VARlevels,ENVlevels=ENVlevels)
-}
-
-if(method=="Gibbs"){
-	 	 predictedValue=GibbsFW(y=y,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels,nIter=nIter,burnIn=burnIn,thin=thin,dfe=dfe,dfg=dfg,dfh=dfh,dfb=dfb,priorVARe=priorVARe,priorVARg=priorVARg,priorVARb=priorVARb,priorVARh=priorVARh, A=A,nchain=nchain,seed=seed,inits=inits,saveAt=saveAt);	
-	
-}
-
-return(predictedValue)
-
+FW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,method=c("OLS","Gibbs")[2], A=NULL,saveAt="",nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2))
+{
+  
+  
+  if(saveAt==""){
+    saveAt=paste(getwd(),"/",sep="");
+  }
+  
+  whNA=which(is.na(y))
+  #if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
+  
+  if(method=="OLS"){
+    predictedValue=lmFW(y,VAR,ENV,VARlevels=VARlevels,ENVlevels=ENVlevels)
+  }
+  
+  if(method=="Gibbs"){
+    predictedValue=GibbsFW(y=y, VAR=VAR, ENV=ENV, VARlevels=VARlevels, ENVlevels=ENVlevels, nIter=nIter, burnIn=burnIn, thin=thin, dfe=dfe, dfg=dfg, dfh=dfh, dfb=dfb, priorVARe=priorVARe, priorVARg=priorVARg, priorVARb=priorVARb, priorVARh=priorVARh, A=A, nchain=nchain, seed=seed, inits=inits, saveAt=saveAt);	
+  }
+  
+  return(predictedValue)
+  
 }
 
 
@@ -33,15 +33,15 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
   for(i in 1:length(namesFWobj)){
     assign(namesFWobj[i],FWobj[[i]])
   }
-
+  
   if(!is.null(plotVAR)){
     if(is.numeric(plotVAR)){
-    	plotIDL=plotVAR
-    	    	}else if (is.character(plotVAR)){
-    	    	plotIDL=which(VARlevels %in% plotVAR)
-    	    		
-    	    	}
-    	
+      plotIDL=plotVAR
+    }else if (is.character(plotVAR)){
+      plotIDL=which(VARlevels %in% plotVAR)
+      
+    }
+    
     VARlevels=VARlevels[plotIDL]
     whVAR=which(VAR %in% VARlevels)
     y=y[whVAR]
@@ -49,7 +49,7 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
     ENV=ENV[whVAR]
     yhat=yhat[whVAR,chain]
   }else{
-  	yhat=yhat[,chain]
+    yhat=yhat[,chain]
   }
   yhat=aggregate(yhat,by=list(VAR,ENV),function(a)mean(a,na.rm=T))
   y=data.frame(aggregate(y,by=list(VAR,ENV),function(a)mean(a,na.rm=T)))
@@ -61,7 +61,7 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
   y=y[,3]
   n.VAR=length(VARlevels)
   plot(c(min(c(y,yhat),na.rm=T),max(c(y,yhat),na.rm=T))~ c(min(h,na.rm=T),min(h,na.rm=T)+(max(h,na.rm=T)-min(h,na.rm=T))*1.05),type="n",xlab="",ylab="Variety performance",main=main)
- 
+  
   h=h[order(h[,chain]),chain]
   
   sorth1=h[seq(1,length(h),by=2)]
@@ -98,7 +98,7 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
 
 #print.FW=function(FWobj){
 #  cat("FW object\n")
- # print(FWobj[c("mu","g","b","h")])
+# print(FWobj[c("mu","g","b","h")])
 #}
 
 
@@ -106,7 +106,7 @@ getIDEL=function(VAR,ENV,VARlevels=NULL,ENVlevels=NULL){
   VAR=as.character(VAR)
   ENV=as.character(ENV)
   if(is.null(VARlevels)){
-  VARlevels=sort(unique(VAR))
+    VARlevels=sort(unique(VAR))
   }
   if(is.null(ENVlevels)){
     ENVlevels=sort(unique(ENV))
