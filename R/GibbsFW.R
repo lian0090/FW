@@ -1,6 +1,6 @@
 GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
 #check Input type
-	if(any(!is.numeric(nIter,burnIn,thin,dfe,dfg,dfh,dfb)))){
+	if(any(!is.numeric(c(nIter,burnIn,thin,dfe,dfg,dfh,dfb)))){
   		stop("thin and df must be a numeric")
   	}
 	if(any(!is.numeric(c(saveVAR,saveENV)))){
