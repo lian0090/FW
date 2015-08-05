@@ -72,12 +72,9 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 	if(is.null(priorVARb)) {priorVARb=0.5*sqrt(var_y)}; Sb<-priorVARb*(dfb+2)   
 	if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
 	if(!is.null(A)){
-		L<-t(chol(A));
-		#Linv=solve(L);
-		Linv=forwardsolve(L,x=diag(1,nrow(L)),upper.tri=F)
+		Ainv=chol2inv(chol(A))
   	}else {
-  		L<-NA;
-  		Linv=NA;
+  		Ainv=NA;
   	}
 	############################################# 
 	# runSampler: A private function to run multiple chains
@@ -104,7 +101,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_b=inits[[i]]$var_b
 			var_h=inits[[i]]$var_h
 			if(!is.null(seed)){set.seed(seed[i])}
-			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA,whNotNA,saveVAR,saveENV)
+			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(Ainv),whNA,whNotNA,saveVAR,saveENV)
 			names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       		#when there is postlogLik
 			#names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
@@ -117,10 +114,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_hT[i]=outi$var_h
 			muT[i]=outi$mu
 			post_yhatT[,i]=outi$post_yhat
-			# postMeanlogLikT[i]=outi$postlogLik
-			# logLikAtPostMeanT[i]=outi$logLikAtPostMean
-	
-    	}
+	    	}
     
 		rownames(gT)=VARlevels
 		rownames(bT)=VARlevels
@@ -129,15 +123,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 
  		yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F] 
       
-  
-		#but DIC is not a good indicator of prediction accuracy. it seesm that standardizing by saturated likelihood (when the variance unkown) helps.But we are not going to test this for now.  
-		#names(postMeanlogLikT)=names(logLikAtPostMeanT)= paste("Init",c(1:nchain),sep="")   
-		# pD=-2*(postMeanlogLikT-logLikAtPostMeanT)
-		# DIC=pD-2*postMeanlogLikT
-		# fit=list(postMeanlogLik=postMeanlogLikT,logLikAtPostMean=logLikAtPostMeanT,pD=pD,DIC=DIC)
-		# postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT,fit=fit)
-    
-		 postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT)
+		postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT)
     
 		class(postMean)=c("FW","list")
     
@@ -152,9 +138,6 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			save(samps,file=paste(saveAt,"samps.rda",sep=""))
 		}
     
-		#mpsrf=gelman.diag(samps)$mpsrf
-		#return(list(postMean=postMean,mpsrf=mpsrf))
-      
 		return(postMean)
 	}
   
@@ -163,7 +146,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   postMean=runSampler(inits=inits,nchain=nchain,nIter=nIter,burnIn=burnIn,save_samps=T,seed=seed)
   #save(postMean,file=file.path(savedir,"postMean_Gibbs.rda"))	
 
-	return(postMean)
+  return(postMean)
 }
 
 
