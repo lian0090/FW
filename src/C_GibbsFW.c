@@ -19,7 +19,7 @@ char* concat(const char *s1, char *s2)
 
 //main Gibbs sampler program.
 
-SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_L, SEXP R_Linv, SEXP R_whNA , SEXP R_whNotNA, SEXP R_VARstore, SEXP R_ENVstore){
+SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_L, SEXP R_whNA , SEXP R_whNotNA, SEXP R_VARstore, SEXP R_ENVstore){
     int nProtect=0;
     //data and initial values
     PROTECT(R_y=AS_NUMERIC(R_y));  nProtect+=1;
@@ -29,7 +29,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     PROTECT(R_b=AS_NUMERIC(R_b)); nProtect+=1;
     PROTECT(R_h=AS_NUMERIC(R_h)); nProtect+=1;
     PROTECT(R_L=AS_NUMERIC(R_L)); nProtect+=1;
-    PROTECT(R_Linv=AS_NUMERIC(R_Linv)); nProtect+=1;
     PROTECT(R_whNA=AS_INTEGER(R_whNA)); nProtect+=1;
     PROTECT(R_VARstore=AS_INTEGER(R_VARstore)); nProtect+=1;
     PROTECT(R_ENVstore=AS_INTEGER(R_ENVstore)); nProtect+=1;   
@@ -54,7 +53,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int *IDL=INTEGER_POINTER(R_IDL);
     int *IDE=INTEGER_POINTER(R_IDE);
     double *L=NUMERIC_POINTER(R_L);
-    double *Linv=NUMERIC_POINTER(R_Linv);
     int *VARstore=INTEGER_POINTER(R_VARstore);
     int *ENVstore=INTEGER_POINTER(R_ENVstore);
     
@@ -215,9 +213,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             XL[n*j+i]=L[j*ng+C_IDL[i]];
             }
         }
-        //Ldelta calculates b=L%*%delta_b or delta_b=Linv%*%b
-        Ldelta(delta_g,Linv,g,ng);
-        Ldelta(delta_b,Linv,b,ng);
     }
     //for SD.g
     //if(ISNAN(L[0])){

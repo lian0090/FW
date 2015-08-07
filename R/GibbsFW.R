@@ -74,10 +74,10 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 	if(!is.null(A)){
 		L<-t(chol(A));
 		#Linv=solve(L);
-		Linv=forwardsolve(L,x=diag(1,nrow(L)),upper.tri=F)
+		#Linv=forwardsolve(L,x=diag(1,nrow(L)),upper.tri=F)
   	}else {
   		L<-NA;
-  		Linv=NA;
+  		#Linv=NA;
   	}
 	############################################# 
 	# runSampler: A private function to run multiple chains
@@ -104,7 +104,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_b=inits[[i]]$var_b
 			var_h=inits[[i]]$var_h
 			if(!is.null(seed)){set.seed(seed[i])}
-			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L), as.vector(Linv),whNA,whNotNA,saveVAR,saveENV)
+			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L),whNA,whNotNA,saveVAR,saveENV)
 			names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       		#when there is postlogLik
 			#names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
