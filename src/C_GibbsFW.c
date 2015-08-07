@@ -115,21 +115,21 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     //headers for samples file.
   
     fprintf(fsaveFile,"%s,%s,%s,%s,%s","mu","var_g","var_b","var_h","var_e");
+    		for(j=0;j<nENV_Store;j++){
+            	fprintf(fsaveFile,",h[%d]",ENVstore[j]);
+            }
+            
             if(ISNAN(L[0])){
             	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",b[%d]",VARstore[j]);
             	fprintf(fsaveFile,",g[%d]",VARstore[j]);
             	}
             }else{
             	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",delta_b[%d]",VARstore[j]);
             	fprintf(fsaveFile,",delta_g[%d]",VARstore[j]);
             	}
             }	
-            for(j=0;j<nVAR_Store;j++){
-            	fprintf(fsaveFile,",b[%d]",VARstore[j]);
-            }
-            for(j=0;j<nENV_Store;j++){
-            	fprintf(fsaveFile,",h[%d]",ENVstore[j]);
-            }
             
     fprintf(fsaveFile,"\n");
             
@@ -199,6 +199,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         delta_g=(double *)R_alloc(ng,sizeof(double));
         delta_b=(double *)R_alloc(ng,sizeof(double));
         post_delta_g=(double *)R_alloc(ng,sizeof(double));
+        post_delta_b=(double *)R_alloc(ng,sizeof(double));
       /*for SD.g
        // SEXP R_post_delta_g;
         //PROTECT(R_post_delta_g=allocVector(REALSXP,ng)); nProtect+=1;
@@ -416,19 +417,18 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             post_h[j] += h[j]/nSamples;
             //post_h2[j] += pow(h[j],2)/nSamples;
             }
-            for(j=0;j<ng;j++) {
-            post_b[j] += b[j]/nSamples;
-            //post_b2[j] += pow(b[j],2)/nSamples;
-            }
-            
-            //post_g
+           
+            //post_b and post_g
             if(ISNAN(L[0])){
                 for(j=0;j<ng;j++){
+                 	post_b[j] += b[j]/nSamples;
+            		//post_b2[j] += pow(b[j],2)/nSamples;
                     post_g[j] += g[j]/nSamples;
                     //post_g2[j] += pow(g[j],2)/nSamples;
                 }
             }else{
                 for(j=0;j<ng;j++){
+                    post_delta_b[j] += delta_b[j]/nSamples;
                     post_delta_g[j] += delta_g[j]/nSamples;
                     //post_delta_g2[j] += pow(delta_g[j],2)/nSamples;
                 }
@@ -436,10 +436,10 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
            //post_yhat
            for(j=0;j<n;j++){
            post_yhat[j]+=yhat[j]/nSamples;
-          // post_yhat2[j]+=pow(yhat[j],2)/nSamples;
+           // post_yhat2[j]+=pow(yhat[j],2)/nSamples;
            }
       
-       /* //post_logLik
+        /* //post_logLik
     	logLik=0;
     	if (nNa > 0) {
         for(j=0;j<nNotNa;j++){
@@ -458,22 +458,21 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
          //store samples in file
          
             fprintf(fsaveFile,"%f,%f,%f,%f,%f",mu[0],var_g,var_b,var_h,var_e);
-            
+            for(j=0;j<nENV_Store;j++){
+            	fprintf(fsaveFile,",%f",h[(ENVstore[j]-1)]);
+            }
             if(ISNAN(L[0])){
             	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",%f",b[(VARstore[j]-1)]);
             	fprintf(fsaveFile,",%f",g[(VARstore[j]-1)]);
             	}
             }else{
             	for(j=0;j<nVAR_Store;j++){
+            	fprintf(fsaveFile,",%f",delta_b[(VARstore[j]-1)]);
             	fprintf(fsaveFile,",%f",delta_g[(VARstore[j]-1)]);
             	}
             }
-            for(j=0;j<nVAR_Store;j++){
-            	fprintf(fsaveFile,",%f",b[(VARstore[j]-1)]);
-            }
-            for(j=0;j<nENV_Store;j++){
-            	fprintf(fsaveFile,",%f",h[(ENVstore[j]-1)]);
-            }
+            
             fprintf(fsaveFile,"\n");
     	  }
         
@@ -489,7 +488,10 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
    // Rprintf("nSamples:%d, SampleCount:%d\n",nSamples,sampleCount);
     
     //get post_g from post_delta_g
-    if(!ISNAN(L[0])){Ldelta(post_g,L,post_delta_g,ng);}
+    if(!ISNAN(L[0])){
+    Ldelta(post_g,L,post_delta_g,ng);
+    Ldelta(post_b,L,post_delta_b,ng);
+    }
 
     fclose(fsaveFile);
 
