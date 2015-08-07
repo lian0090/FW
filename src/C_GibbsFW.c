@@ -189,7 +189,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     double *X=(double *) R_alloc(n,sizeof(double));
     // including covariance matrix for g and b
     // SD.g was only done when L is NA, othersie, SD.delta_g is saved.
-    double *XL, *XLh,*delta_g,*delta_b,*post_delta_g,*Xkb,*Xkg;
+    double *XL, *XLh,*delta_g,*delta_b,*post_delta_g,*post_delta_b,*Xkb,*Xkg;
     
     if(!ISNAN(L[0])){
         //XL is the incidence matrix for delta_g
@@ -208,6 +208,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         */
         for(j=0;j<ng;j++){
             post_delta_g[j]=0;
+            post_delta_b[j]=0;
            // post_delta_g2[j]=0;
             for(i=0;i<n;i++){
             //XL is the incidence matrix for delta_g
