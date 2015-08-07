@@ -60,9 +60,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int C_IDE[n];
     for(i=0;i<n;i++){C_IDL[i]=IDL[i]-1; C_IDE[i]=IDE[i]-1;}
   
- 
-
-    
     //g, b, h are duplicates of R_g, R_b, R_h, they do not point to R_g, R_b, R_h, and do not modify them
     double *g=(double *) R_alloc(ng,sizeof(double));
     double *b=(double *) R_alloc(ng,sizeof(double));
@@ -84,8 +81,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
                 yStar[(whNA[j]-1)]=mu[0];
             }
         }
-    
-    
     
     // int nParameters=length(R_parameters);//will include this later so we can define parameter names to print out.
     double S=NUMERIC_VALUE(R_S);
@@ -209,12 +204,16 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         for(j=0;j<ng;j++){
             post_delta_g[j]=0;
             post_delta_b[j]=0;
+        	//initial values for delta_g and delta_b (same as g and b)
+        	delta_g[j]= NUMERIC_POINTER(R_g)[j];
+        	delta_b[j]= NUMERIC_POINTER(R_b)[j];
            // post_delta_g2[j]=0;
             for(i=0;i<n;i++){
             //XL is the incidence matrix for delta_g
             XL[n*j+i]=L[j*ng+C_IDL[i]];
             }
         }
+        
     }
     //for SD.g
     //if(ISNAN(L[0])){

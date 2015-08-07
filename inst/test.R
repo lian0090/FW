@@ -12,8 +12,9 @@ sourceDir <- function(path, trace = TRUE, ...) {
  }
 
 sourceDir(file.path(FWdir,"R"))
-load("~/Dropbox/work/arvalisGxE/wheat/wheatAll.rda")
 library(coda)
+
+load("~/Dropbox/work/arvalisGxE/wheat/wheatAll.rda")
 
 attach(wheat.Y50)
 lm1=FW(y,VAR,ENV)
