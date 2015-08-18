@@ -6,20 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-//create a new string, which is the combination of two strings.
-char* concat(const char *s1, char *s2)
+
+SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_LA, SEXP R_LH, SEXP R_whNA , SEXP R_whNotNA, SEXP R_VARstore, SEXP R_ENVstore)
 {
-    char *result = malloc(strlen(s1)+strlen(s2)+1);//+1 for the zero-terminator
-    //in real code you would check for errors in malloc here
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
-}
-
-
-//main Gibbs sampler program.
-
-SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_L, SEXP R_whNA , SEXP R_whNotNA, SEXP R_VARstore, SEXP R_ENVstore){
     int nProtect=0;
     //data and initial values
     PROTECT(R_y=AS_NUMERIC(R_y));  nProtect+=1;
@@ -28,7 +17,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     PROTECT(R_g=AS_NUMERIC(R_g)); nProtect+=1;
     PROTECT(R_b=AS_NUMERIC(R_b)); nProtect+=1;
     PROTECT(R_h=AS_NUMERIC(R_h)); nProtect+=1;
-    PROTECT(R_L=AS_NUMERIC(R_L)); nProtect+=1;
+    PROTECT(R_LA=AS_NUMERIC(R_LA)); nProtect+=1;
+    PROTECT(R_LH=AS_NUMERIC(R_LH)); nProtect+=1;
     PROTECT(R_whNA=AS_INTEGER(R_whNA)); nProtect+=1;
     PROTECT(R_VARstore=AS_INTEGER(R_VARstore)); nProtect+=1;
     PROTECT(R_ENVstore=AS_INTEGER(R_ENVstore)); nProtect+=1;   
@@ -52,7 +42,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     int *whNA=INTEGER_POINTER(R_whNA);
     int *IDL=INTEGER_POINTER(R_IDL);
     int *IDE=INTEGER_POINTER(R_IDE);
-    double *L=NUMERIC_POINTER(R_L);
+    double *L=NUMERIC_POINTER(R_LA);
+    double *LH=NUMERIC_POINTER(R_LH);
     int *VARstore=INTEGER_POINTER(R_VARstore);
     int *ENVstore=INTEGER_POINTER(R_ENVstore);
     
@@ -110,9 +101,13 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     //headers for samples file.
   
     fprintf(fsaveFile,"%s,%s,%s,%s,%s","mu","var_g","var_b","var_h","var_e");
-    		for(j=0;j<nENV_Store;j++){
-            	fprintf(fsaveFile,",h[%d]",ENVstore[j]);
-            }
+    		
+    		if(ISNAN(LH[0])){
+    			for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",h[%d]",ENVstore[j]);
+    		}else{
+    			for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",delta_h[%d]",ENVstore[j]);
+    		}	
+            
             
             if(ISNAN(L[0])){
             	for(j=0;j<nVAR_Store;j++){
@@ -152,49 +147,35 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     for(i=0;i<ng;i++){post_g[i]=0;post_b[i]=0;}
     for(i=0;i<nh;i++){post_h[i]=0;}
     for(i=0;i<n;i++){post_yhat[i]=0;}
-    
-  /*  //logLikelikelihood
-    int *whNotNA=INTEGER_POINTER(R_whNotNA);
-    int nNotNa=length(R_whNotNA);
-    SEXP R_post_logLik;
-    PROTECT(R_post_logLik=allocVector(REALSXP,1));nProtect+=1;
-    double post_logLik=0,logLik=0;
-  */
-    
- /*  //parameter to the power 2: needed for calculating SD.
-    double post_mu2=0,post_var_e2=0,post_var_g2=0,post_var_b2=0,post_var_h2=0;
-    double *post_b2= (double *) R_alloc(ng,sizeof(double));
-    double *post_h2= (double *) R_alloc(nh,sizeof(double));
-    double *post_yhat2=(double *) R_alloc(n,sizeof(double));
-    for(i=0;i<ng;i++){
-    post_b2[i]=0;
-    }
-    for(i=0;j<nh,i++){
-    post_h2[i]=0;
-    }
-    for(i=0;i<n;i++){
-    post_yhat2[i]=0;
-    }
-*/ 
-    
-    
-   
-    
+
     double *e=(double *) R_alloc(n,sizeof(double));
     double *X=(double *) R_alloc(n,sizeof(double));
-    // including covariance matrix for g and b
-    // SD.g was only done when L is NA, othersie, SD.delta_g is saved.
-    double *XL, *XLh,*delta_g,*delta_b,*post_delta_g,*post_delta_b,*Xkb,*Xkg;
+    // including covariance matrix for g , b ,h
+    double *ZgL, *ZgLh,*delta_g,*post_delta_g, *delta_b, *Xkb,*Xkg;
+    double *ZhL, *ZhLb, *delta_h, *Xkh;
+    if(!ISNAN(LH[0])){
+        //ZhL : multiplier for delta_h
+        ZhL=(double *) R_alloc(n*nh,sizeof(double));
+        //ZhLb is the incidence matrix for delta_h
+        ZhLb=(double *) R_alloc(n*nh,sizeof(double));
+        delta_h=(double *)R_alloc(nh,sizeof(double));
+        for(j=0;j<nh;j++){
+            //initial values for delta_h  (same as h)
+            delta_h[j]= NUMERIC_POINTER(R_h)[j];
+            for(i=0;i<n;i++){
+                ZhL[i+n*j]=LH[C_IDE[i]+j*nh];//only k=C_IDE[i] Zh_ik!=0, ZhL=LH[k,j]
+            }
+        }
+    }
     
     if(!ISNAN(L[0])){
-        //XL is the incidence matrix for delta_g
-        XL=(double *) R_alloc(n*ng,sizeof(double));
-        //XLh is the incidence matrix for delta_b
-        XLh=(double *) R_alloc(n*ng,sizeof(double));
+        //ZgL is the incidence matrix for delta_g
+        ZgL=(double *) R_alloc(n*ng,sizeof(double));
+        //ZgLh is the incidence matrix for delta_b
+        ZgLh=(double *) R_alloc(n*ng,sizeof(double));
         delta_g=(double *)R_alloc(ng,sizeof(double));
         delta_b=(double *)R_alloc(ng,sizeof(double));
         post_delta_g=(double *)R_alloc(ng,sizeof(double));
-        post_delta_b=(double *)R_alloc(ng,sizeof(double));
       /*for SD.g
        // SEXP R_post_delta_g;
         //PROTECT(R_post_delta_g=allocVector(REALSXP,ng)); nProtect+=1;
@@ -203,14 +184,13 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         */
         for(j=0;j<ng;j++){
             post_delta_g[j]=0;
-            post_delta_b[j]=0;
         	//initial values for delta_g and delta_b (same as g and b)
         	delta_g[j]= NUMERIC_POINTER(R_g)[j];
         	delta_b[j]= NUMERIC_POINTER(R_b)[j];
            // post_delta_g2[j]=0;
             for(i=0;i<n;i++){
-            //XL is the incidence matrix for delta_g
-            XL[n*j+i]=L[j*ng+C_IDL[i]];
+            //ZgL is the incidence matrix for delta_g
+            ZgL[i+n*j]=L[C_IDL[i]+j*ng];
             }
         }
         
@@ -231,28 +211,48 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     /************************************************
      * //begin Gibbs sampler
      ************************************************/
-    
+    double tXX;
+    double tXy;
+
     GetRNGstate();
     int sampleCount=0;
     for(i=0; i<nIter;i++){
         
-        //sample environment effect h before b and g
-        for(j=0;j<n;j++)X[j]=(1.0+b[C_IDL[j]]);
-        sample_beta_ID(h,e,C_IDE,X,n,nh,var_e,var_h);
-        
-        double tXX;
-        double tXy;
-
+        //sample h
+        if(ISNAN(LH[0])){
+        	for(j=0;j<n;j++)X[j]=(1.0+b[C_IDL[j]]);
+        	sample_beta_ID(h,e,C_IDE,X,n,nh,var_e,var_h);
+        }else{
+        //update ZhLb (incidence matrix for delta_h)
+            for(j=0;j<n;j++) {
+                for(k=0;k<nh;k++){
+                    ZhLb[j+k*n]=ZhL[j+k*n]*(b[C_IDL[j]]+1);
+                }
+            }            
+            for(k=0;k<nh;k++){
+                tXy=0;
+                tXX=0;
+                Xkh=ZhLb+k*n;
+                //sample b
+                for(j=0;j<n;j++){
+                    
+                    e[j]=e[j]+delta_h[k]*Xkh[j];
+                    tXX+=Xkh[j]*Xkh[j];
+                    tXy+=Xkh[j]*e[j];
+                    
+                }
+                delta_h[k]=sample_betaj(tXX,tXy,var_e,var_h);
+                for(j=0;j<n;j++){
+                    e[j]=e[j]-delta_h[k]*Xkh[j];
+                }
+        	}    
+           //update h from delta_h
+            Ldelta(h,LH,delta_h,nh);      
+        }
+     
         if(ISNAN(L[0])){
             
-            //sample b and g separately;
-            //sample  b
-            //	for(j=0;j<n;j++) X[j]=h[C_IDE[j]];
-            //	sample_beta_ID(b,e,C_IDL,X,n,ng,var_e,var_b);
-            //sample  g
-            //	sample_beta_ID_x1(g,e,C_IDL,n,ng,var_e,var_g);
-            
-            //sample b and g together
+            //sample b and g 
             for(j=0;j<n;j++) X[j]=h[C_IDE[j]];
             for(k=0;k<ng;k++){
                 tXy=0;
@@ -290,27 +290,17 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             }
             
         }else{
-            //update XLh (incidence matrix for delta_b)
+            //update ZgLh (incidence matrix for delta_b)
             for(j=0;j<n;j++) {
                 for(k=0;k<ng;k++){
-                    XLh[k*n+j]=XL[k*n+j]*h[C_IDE[j]];
+                    ZgLh[k*n+j]=ZgL[k*n+j]*h[C_IDE[j]];
                 }
-            }
-            
-            /*
-             //sample b and g separately with L
-             //sample delta_b
-             sample_betaX(delta_b,e,XLh,n,ng,var_e,var_b);
-             //sample delta_g
-             sample_betaX(delta_g,e, XL, n, ng,var_e,var_g);
-             */
-            //sample b and g together
-            
+            }            
             for(k=0;k<ng;k++){
                 tXy=0;
                 tXX=0;
-                Xkg=XL+k*n;
-                Xkb=XLh+k*n;
+                Xkg=ZgL+k*n;
+                Xkb=ZgLh+k*n;
                 //sample b
                 for(j=0;j<n;j++){
                     
@@ -353,11 +343,17 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         var_e=SS/rchisq(DF);
         //var_h
         SS=Sh;
-        for(j=0;j<nh;j++) SS+=h[j]*h[j];
-        DF=nh+dfh;
-        var_h=SS/rchisq(DF);
-        //var_b;
-        SS=Sb;
+        if(ISNAN(LH[0])){
+        	for(j=0;j<nh;j++) SS+=h[j]*h[j];
+        	DF=nh+dfh;
+        	var_h=SS/rchisq(DF);
+        }else{
+        	for(j=0;j<nh;j++) SS+=pow(delta_h[j],2);
+            	DF=ng+dfh;
+            	var_h=SS/rchisq(DF);
+        }
+        //var_b and var_g;
+      
         if(ISNAN(L[0])){
             SS=Sb;
             for(j=0;j<ng;j++) SS+=b[j]*b[j];
@@ -369,6 +365,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             DF=ng+dfg;
             var_g=SS/rchisq(DF);
         }else{
+        	SS=Sb;
             for(j=0;j<ng;j++) SS+=delta_b[j]*delta_b[j];
             DF=ng+dfb;
             var_b=SS/rchisq(DF);
@@ -412,25 +409,24 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             */
             
            
-            
+            //post_h
             for(j=0;j<nh;j++) {
             post_h[j] += h[j]/nSamples;
             //post_h2[j] += pow(h[j],2)/nSamples;
             }
            
-            //post_b and post_g
+            //post_b 
+            for(j=0;j<ng;j++){
+                 	post_b[j] += b[j]/nSamples;
+            }
+            // post_g
             if(ISNAN(L[0])){
                 for(j=0;j<ng;j++){
-                 	post_b[j] += b[j]/nSamples;
-            		//post_b2[j] += pow(b[j],2)/nSamples;
                     post_g[j] += g[j]/nSamples;
-                    //post_g2[j] += pow(g[j],2)/nSamples;
                 }
             }else{
                 for(j=0;j<ng;j++){
-                    post_delta_b[j] += delta_b[j]/nSamples;
                     post_delta_g[j] += delta_g[j]/nSamples;
-                    //post_delta_g2[j] += pow(delta_g[j],2)/nSamples;
                 }
             }
            //post_yhat
@@ -458,8 +454,10 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
          //store samples in file
          
             fprintf(fsaveFile,"%f,%f,%f,%f,%f",mu[0],var_g,var_b,var_h,var_e);
-            for(j=0;j<nENV_Store;j++){
-            	fprintf(fsaveFile,",%f",h[(ENVstore[j]-1)]);
+            if(ISNAN(LH[0])){
+            	for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",%f",h[(ENVstore[j]-1)]);
+            }else{
+            	for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",%f",delta_h[(ENVstore[j]-1)]);
             }
             if(ISNAN(L[0])){
             	for(j=0;j<nVAR_Store;j++){
@@ -490,7 +488,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     //get post_g from post_delta_g
     if(!ISNAN(L[0])){
     Ldelta(post_g,L,post_delta_g,ng);
-    Ldelta(post_b,L,post_delta_b,ng);
     }
 
     fclose(fsaveFile);
@@ -615,7 +612,3 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     return(list);
 
 }
-
-
-
-

@@ -1,4 +1,4 @@
-GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
+GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,H=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
 #check Input type
 	if(any(!is.numeric(c(nIter,burnIn,thin,dfe,dfg,dfh,dfb)))){
   		stop("thin and df must be a numeric")
@@ -34,6 +34,29 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   ############################################# 
   # initialize
   ########################################################################################## 
+  	if(!is.null(H)){
+  		if(nrow(H)!=ncol(H)){
+  			stop("H must be square matrix")
+  		}
+  	 	if(is.null(colnames(H))| is.null(rownames(H))){
+  	 		stop("Environment names for variance matrix must be provided as column names and rownames\n")
+  	 	}
+  	 
+  		if(!all(colnames(H)==rownames(H))){
+  	 		stop("colnames of H must be equal to rownames of H\n")
+  	 	}
+  	 	
+  	 	if(any(!(unique(ENV) %in% colnames(H)))) stop("Covariance structure not available for some environments")
+  	 
+  		if(is.null(ENVlevels)){
+  	 		ENVlevels=colnames(H)  	 
+  	 	}else{
+  			H=H[ENVlevels,ENVlevels] ##changed the order of A to correspond to user defined or default VARlevels.
+  		}	
+  	}	
+ 
+  	
+  	
   	if(!is.null(A)){
   		if(nrow(A)!=ncol(A)){
   			stop("A must be square matrix")
@@ -71,14 +94,9 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 	if(is.null(priorVARg)) {priorVARg=0.25*var_y};Sg<-priorVARg*(dfg+2)
 	if(is.null(priorVARb)) {priorVARb=0.5*sqrt(var_y)}; Sb<-priorVARb*(dfb+2)   
 	if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
-	if(!is.null(A)){
-		L<-t(chol(A));
-		#Linv=solve(L);
-		#Linv=forwardsolve(L,x=diag(1,nrow(L)),upper.tri=F)
-  	}else {
-  		L<-NA;
-  		#Linv=NA;
-  	}
+	if(!is.null(A)) LA<-t(chol(A)) else LA=NA
+	#Linv=forwardsolve(L,x=diag(1,nrow(L)),upper.tri=F)
+  	if(!is.null(H)) LH=t(chol(H)) else LH=NA
 	############################################# 
 	# runSampler: A private function to run multiple chains
 	#############################################
@@ -104,7 +122,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_b=inits[[i]]$var_b
 			var_h=inits[[i]]$var_h
 			if(!is.null(seed)){set.seed(seed[i])}
-			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(L),whNA,whNotNA,saveVAR,saveENV)
+			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(LA),as.vector(LH),whNA,whNotNA,saveVAR,saveENV)
 			names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       		#when there is postlogLik
 			#names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
@@ -127,7 +145,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 		rownames(hT)=ENVlevels
 		colnames(post_yhatT) = colnames(gT) = colnames(bT) = colnames(hT) = names(muT) = names(var_eT) = names(var_gT) = names(var_bT) = names(var_hT) = paste("Init",c(1:nchain),sep="")
 
- 		yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F] 
+ 		#yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F] 
       
   
 		#but DIC is not a good indicator of prediction accuracy. it seesm that standardizing by saturated likelihood (when the variance unkown) helps.But we are not going to test this for now.  
@@ -137,7 +155,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 		# fit=list(postMeanlogLik=postMeanlogLikT,logLikAtPostMean=logLikAtPostMeanT,pD=pD,DIC=DIC)
 		# postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT,fit=fit)
     
-		 postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT)
+		 postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,yhat=post_yhatT)
     
 		class(postMean)=c("FW","list")
     
