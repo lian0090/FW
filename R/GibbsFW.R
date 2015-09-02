@@ -9,7 +9,8 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 	if(is.null(saveAt)){
 		saveAt=paste(getwd(),"/",sep="")
 	} 
-	savedir=gsub("/[^/]*$","",saveAt)
+	##need to change this d
+	savedir=ifelse(grepl("/[^/]*$",saveAt),gsub("/[^/]*$","",saveAt),".")
    
 	if(!file.exists(savedir)){
 		dir.create(savedir)
