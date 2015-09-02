@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-
+// R_g, R_b,and R_h are actually the initial values for delta_g, delta_b, delta_h
 SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, SEXP R_nIter, SEXP R_burnIn, SEXP R_thin, SEXP R_saveFile, SEXP R_S, SEXP R_Sg, SEXP R_Sb, SEXP R_Sh, SEXP R_df, SEXP R_dfg, SEXP R_dfb, SEXP R_dfh,SEXP R_var_e, SEXP R_var_g, SEXP R_var_b, SEXP R_var_h,SEXP R_mu,SEXP R_LA, SEXP R_LH, SEXP R_whNA , SEXP R_whNotNA, SEXP R_VARstore, SEXP R_ENVstore)
 {
     int nProtect=0;
@@ -55,13 +55,41 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     double *g=(double *) R_alloc(ng,sizeof(double));
     double *b=(double *) R_alloc(ng,sizeof(double));
     double *h=(double *) R_alloc(nh,sizeof(double));
+    
+    double *delta_g, *delta_b, *delta_h;
+    //starting values for g, b
+    if(!ISNAN(L[0])){
+        delta_g=(double *)R_alloc(ng,sizeof(double));
+        delta_b=(double *)R_alloc(ng,sizeof(double));
+        for(j=0;j<ng;j++){
+        	//initial values for delta_g and delta_b (same as g and b)
+        	delta_g[j]= NUMERIC_POINTER(R_g)[j];
+        	delta_b[j]= NUMERIC_POINTER(R_b)[j];
+        }
+      Ldelta(b,L,delta_b,ng);  
+      Ldelta(g,L,delta_g,ng); 
+    }else{
+    	for(i=0;i<ng;i++){
+        	g[i]= NUMERIC_POINTER(R_g)[i];
+        	b[i]= NUMERIC_POINTER(R_b)[i];
+    	}
+    }
+    delta_h=(double *)R_alloc(nh,sizeof(double));
+    for(j=0;j<nh;j++){
+            //initial values for delta_h  
+            delta_h[j]= NUMERIC_POINTER(R_h)[j];
+    }
+    //starting values for h.
+    if(ISNAN(LH[0])){
+    	for(j=0;j<nh;j++)h[j]=delta_h[j]+mu[0];   
+    }else{
+    	  Ldelta(h,LH,delta_h,nh);  
+    	  for(j=0;j<nh;j++)h[j]=delta_h[j]+mu[0];   
+    }
+    
     double *yhat=(double *) R_alloc(n,sizeof(double));
     double *yStar=(double *)R_alloc(n,sizeof(double));
-    for(i=0;i<ng;i++){
-        g[i]= NUMERIC_POINTER(R_g)[i];
-        b[i]= NUMERIC_POINTER(R_b)[i];
-    }
-    for(i=0;i<nh;i++)h[i]=NUMERIC_POINTER(R_h)[i];
+    
     for(i=0;i<n;i++){
     yhat[i]=mu[0];
     yStar[i]=y[i];
@@ -87,39 +115,15 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     //saveFile
     FILE *fsaveFile = fopen(CHAR(STRING_ELT(R_saveFile,0)),"w");
     if (fsaveFile == NULL) error("Can't open input file !\n");
-   //The following code are to save each parameter separately in a folder.
-   // const char *saveAt =CHAR(STRING_ELT(R_saveAt, 0));
-   // FILE *fmu=fopen(concat(saveAt,"mu.dat"));
-   // FILE *fvar_e=fopen(concat(saveAt,"var_e.dat"));
-    //FILE *fvar_g=fopen(concat(saveAt,"var_g.dat"));
-    //FILE *fvar_b=fopen(concat(saveAt,"var_b.dat"));
-    //FILE *fvar_h=fopen(concat(saveAt,"var_h.dat"));
-    //FILE *fg=fopen(concat(saveAt,"g.dat"));
-    //FILE *fb=fopen(concat(saveAt,"b.dat"));
-    //FILE *fh=fopen(concat(saveAt,"h.dat"));
-    
+  
     //headers for samples file.
   
-    fprintf(fsaveFile,"%s,%s,%s,%s,%s","mu","var_g","var_b","var_h","var_e");
-    		
-    		if(ISNAN(LH[0])){
-    			for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",h[%d]",ENVstore[j]);
-    		}else{
-    			for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",delta_h[%d]",ENVstore[j]);
-    		}	
-            
-            
-            if(ISNAN(L[0])){
-            	for(j=0;j<nVAR_Store;j++){
-            	fprintf(fsaveFile,",b[%d]",VARstore[j]);
-            	fprintf(fsaveFile,",g[%d]",VARstore[j]);
-            	}
-            }else{
-            	for(j=0;j<nVAR_Store;j++){
-            	fprintf(fsaveFile,",delta_b[%d]",VARstore[j]);
-            	fprintf(fsaveFile,",delta_g[%d]",VARstore[j]);
-            	}
-            }	
+    fprintf(fsaveFile,"%s,%s,%s,%s","var_g","var_b","var_h","var_e");
+    for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",h[%d]",ENVstore[j]);
+	for(j=0;j<nVAR_Store;j++){
+        fprintf(fsaveFile,",b[%d]",VARstore[j]);
+        fprintf(fsaveFile,",g[%d]",VARstore[j]);
+    }
             
     fprintf(fsaveFile,"\n");
             
@@ -127,8 +131,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     /************************************************
      * posteria and yhat storage
      ************************************************/
-    SEXP R_post_mu,R_post_var_g,R_post_var_b,R_post_var_h,R_post_var_e,R_post_g,R_post_b,R_post_h, R_post_yhat;
-    PROTECT(R_post_mu=allocVector(REALSXP,1)); nProtect+=1;
+    SEXP R_post_var_g,R_post_var_b,R_post_var_h,R_post_var_e,R_post_g,R_post_b,R_post_h, R_post_yhat;
     PROTECT(R_post_var_g=allocVector(REALSXP,1)); nProtect+=1;
     PROTECT(R_post_var_b=allocVector(REALSXP,1));nProtect+=1;
     PROTECT(R_post_var_h=allocVector(REALSXP,1));nProtect+=1;
@@ -138,7 +141,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     PROTECT(R_post_h=allocVector(REALSXP,nh));nProtect+=1;
     PROTECT(R_post_yhat=allocVector(REALSXP,n));nProtect+=1;
     
-    double post_mu=0, post_var_e=0,post_var_g=0,post_var_b=0,post_var_h=0;
+    double post_var_e=0,post_var_g=0,post_var_b=0,post_var_h=0;
     double *post_g=NUMERIC_POINTER(R_post_g);
     double *post_b=NUMERIC_POINTER(R_post_b);
     double *post_h=NUMERIC_POINTER(R_post_h);
@@ -151,17 +154,16 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     double *e=(double *) R_alloc(n,sizeof(double));
     double *X=(double *) R_alloc(n,sizeof(double));
     // including covariance matrix for g , b ,h
-    double *ZgL, *ZgLh,*delta_g,*post_delta_g, *delta_b, *Xkb,*Xkg;
-    double *ZhL, *ZhLb, *delta_h, *Xkh;
+    double *ZgL, *ZgLh, *Xkb,*Xkg;
+
+    double *ZhL, *ZhLb,  *Xkh;
+   
     if(!ISNAN(LH[0])){
         //ZhL : multiplier for delta_h
         ZhL=(double *) R_alloc(n*nh,sizeof(double));
         //ZhLb is the incidence matrix for delta_h
         ZhLb=(double *) R_alloc(n*nh,sizeof(double));
-        delta_h=(double *)R_alloc(nh,sizeof(double));
         for(j=0;j<nh;j++){
-            //initial values for delta_h  (same as h)
-            delta_h[j]= NUMERIC_POINTER(R_h)[j];
             for(i=0;i<n;i++){
                 ZhL[i+n*j]=LH[C_IDE[i]+j*nh];//only k=C_IDE[i] Zh_ik!=0, ZhL=LH[k,j]
             }
@@ -173,21 +175,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         ZgL=(double *) R_alloc(n*ng,sizeof(double));
         //ZgLh is the incidence matrix for delta_b
         ZgLh=(double *) R_alloc(n*ng,sizeof(double));
-        delta_g=(double *)R_alloc(ng,sizeof(double));
-        delta_b=(double *)R_alloc(ng,sizeof(double));
-        post_delta_g=(double *)R_alloc(ng,sizeof(double));
-      /*for SD.g
-       // SEXP R_post_delta_g;
-        //PROTECT(R_post_delta_g=allocVector(REALSXP,ng)); nProtect+=1;
-        //post_delta_g=NUMERIC_POINTER(R_post_delta_g);
-        //post_delta_g2=(double *)R_alloc(ng,sizeof(double));
-        */
+     
         for(j=0;j<ng;j++){
-            post_delta_g[j]=0;
-        	//initial values for delta_g and delta_b (same as g and b)
-        	delta_g[j]= NUMERIC_POINTER(R_g)[j];
-        	delta_b[j]= NUMERIC_POINTER(R_b)[j];
-           // post_delta_g2[j]=0;
             for(i=0;i<n;i++){
             //ZgL is the incidence matrix for delta_g
             ZgL[i+n*j]=L[C_IDL[i]+j*ng];
@@ -195,19 +184,11 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         }
         
     }
-    //for SD.g
-    //if(ISNAN(L[0])){
-    //SEXP R_SD.g;
-    //PROTECT(R_SD.g=allocVector(REALSXP,ng);nProtect+=1;
-    //post_g2=(double *)R_alloc(ng,sizeof(double));
-    //for(j=0;j<ng;j++){
-    //post_g2[j]=0;
-    //}
-    //}
+   
     
     
     //*initial values for e.//yStar is y except for the NA values;
-    for(j=0;j<n;j++) e[j]=yStar[j]-mu[0]-g[C_IDL[j]]-(1+b[C_IDL[j]])*(h[C_IDE[j]]);
+    for(j=0;j<n;j++) e[j]=yStar[j]-g[C_IDL[j]]-(1+b[C_IDL[j]])*(h[C_IDE[j]]);
     /************************************************
      * //begin Gibbs sampler
      ************************************************/
@@ -217,11 +198,23 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     GetRNGstate();
     int sampleCount=0;
     for(i=0; i<nIter;i++){
-        
-        //sample h
+         //sample intercept
+         tXy=0;
+         tXX=0;
+         for(j=0;j<n;j++){
+         	X[j]=b[C_IDL[j]]+1;
+            e[j]=e[j]+X[j]*mu[0];
+            tXX+=pow(X[j],2);
+            tXy+=X[j]*e[j];
+        }
+        mu[0]=tXy/tXX+sqrtf(var_e/tXX)*norm_rand();
+        for(j=0;j<n;j++)e[j]=e[j]-X[j]*mu[0];
+        //sample delta_h
         if(ISNAN(LH[0])){
         	for(j=0;j<n;j++)X[j]=(1.0+b[C_IDL[j]]);
-        	sample_beta_ID(h,e,C_IDE,X,n,nh,var_e,var_h);
+        	sample_beta_ID(delta_h,e,C_IDE,X,n,nh,var_e,var_h);
+        	//update h from delta_h
+        	for(j=0;j<nh;j++)h[j]=delta_h[j]+mu[0];
         }else{
         //update ZhLb (incidence matrix for delta_h)
             for(j=0;j<n;j++) {
@@ -233,7 +226,7 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
                 tXy=0;
                 tXX=0;
                 Xkh=ZhLb+k*n;
-                //sample b
+                //sample h
                 for(j=0;j<n;j++){
                     
                     e[j]=e[j]+delta_h[k]*Xkh[j];
@@ -247,7 +240,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
                 }
         	}    
            //update h from delta_h
-            Ldelta(h,LH,delta_h,nh);      
+            Ldelta(h,LH,delta_h,nh);
+            for(j=0;j<nh;j++) h[j]+=mu[0];      
         }
      
         if(ISNAN(L[0])){
@@ -301,10 +295,10 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
                 tXX=0;
                 Xkg=ZgL+k*n;
                 Xkb=ZgLh+k*n;
-                //sample b
+                //sample delta_b
                 for(j=0;j<n;j++){
                     
-                    e[j]=e[j]+delta_b[k]*Xkb[j];
+                    e[j]+=delta_b[k]*Xkb[j];
                     tXX+=Xkb[j]*Xkb[j];
                     tXy+=Xkb[j]*e[j];
                     
@@ -313,12 +307,12 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
                 for(j=0;j<n;j++){
                     e[j]=e[j]-delta_b[k]*Xkb[j];
                 }
-                // sample g
+                // sample delta_g
                 tXy=0;
                 tXX=0;
                 for(j=0;j<n;j++){
                     
-                    e[j]=e[j]+delta_g[k]*Xkg[j];
+                    e[j]+=delta_g[k]*Xkg[j];
                     tXX+=Xkg[j]*Xkg[j];
                     tXy+=Xkg[j]*e[j];
                     
@@ -331,8 +325,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
             
             //update b from delta_b
             Ldelta(b,L,delta_b,ng);
-            //update g from delta_g //this is needed to get SD.g, but it is better not to do this for many lines, we can report delta_g
-            //Ldelta(g,L,delta_g,ng);//
+            //update g from delta_g //this is needed to get SD.g, (it is better not to do this for many lines, we can report delta_g, however, it is easy for explaining to the reader with g than delta_g)
+            Ldelta(g,L,delta_g,ng);//
             
         }
         
@@ -343,15 +337,9 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         var_e=SS/rchisq(DF);
         //var_h
         SS=Sh;
-        if(ISNAN(LH[0])){
-        	for(j=0;j<nh;j++) SS+=h[j]*h[j];
-        	DF=nh+dfh;
-        	var_h=SS/rchisq(DF);
-        }else{
-        	for(j=0;j<nh;j++) SS+=pow(delta_h[j],2);
-            	DF=ng+dfh;
-            	var_h=SS/rchisq(DF);
-        }
+        for(j=0;j<nh;j++) SS+=pow(delta_h[j],2);
+        DF=nh+dfh;
+        var_h=SS/rchisq(DF);
         //var_b and var_g;
       
         if(ISNAN(L[0])){
@@ -377,8 +365,8 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         }
         
         
-        //sample intercept
-        sample_mu(mu,e,var_e,n);
+    
+                
         
         //yhat & missing values
         for(j=0;j<n;j++){
@@ -395,24 +383,14 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         if(i>=(burnIn)){
             if((i+1)%thin==0){
             sampleCount+=1;
-            post_mu += mu[0]/nSamples;
             post_var_e += var_e/nSamples;
             post_var_g += var_g/nSamples;
             post_var_b += var_b/nSamples;
             post_var_h += var_h/nSamples;
-           /*//SD 
-            post_mu2 += pow(mu[0],2)/nSamples;
-            post_var_b2 += pow(var_b,2)/nSamples;
-            post_var_e2 += pow(var_e,2)/nSamples;
-            post_var_g2 += pow(var_g,2)/nSamples;
-            post_var_h2 += pow(var_h,2)/nSamples;
-            */
-            
-           
+       
             //post_h
             for(j=0;j<nh;j++) {
             post_h[j] += h[j]/nSamples;
-            //post_h2[j] += pow(h[j],2)/nSamples;
             }
            
             //post_b 
@@ -420,57 +398,23 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
                  	post_b[j] += b[j]/nSamples;
             }
             // post_g
-            if(ISNAN(L[0])){
-                for(j=0;j<ng;j++){
+            for(j=0;j<ng;j++){
                     post_g[j] += g[j]/nSamples;
-                }
-            }else{
-                for(j=0;j<ng;j++){
-                    post_delta_g[j] += delta_g[j]/nSamples;
-                }
             }
            //post_yhat
            for(j=0;j<n;j++){
            post_yhat[j]+=yhat[j]/nSamples;
-           // post_yhat2[j]+=pow(yhat[j],2)/nSamples;
            }
-      
-        /* //post_logLik
-    	logLik=0;
-    	if (nNa > 0) {
-        for(j=0;j<nNotNa;j++){
-        logLik += dnorm4(e[(whNotNA[j]-1)], 0, sqrtf(var_e), 1);
-         }
-        }else{
-        for(j=0;j<n;j++){
-        logLik += dnorm4(e[j], 0, sqrtf(var_e), 1);
-        }
-        }
-        post_logLik += logLik/nSamples;
-        //end of post_logLik
-        */
 
 
-         //store samples in file
+         	//store samples in file
          
-            fprintf(fsaveFile,"%f,%f,%f,%f,%f",mu[0],var_g,var_b,var_h,var_e);
-            if(ISNAN(LH[0])){
+            fprintf(fsaveFile,"%f,%f,%f,%f",var_g,var_b,var_h,var_e);
             	for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",%f",h[(ENVstore[j]-1)]);
-            }else{
-            	for(j=0;j<nENV_Store;j++)fprintf(fsaveFile,",%f",delta_h[(ENVstore[j]-1)]);
-            }
-            if(ISNAN(L[0])){
             	for(j=0;j<nVAR_Store;j++){
             	fprintf(fsaveFile,",%f",b[(VARstore[j]-1)]);
             	fprintf(fsaveFile,",%f",g[(VARstore[j]-1)]);
-            	}
-            }else{
-            	for(j=0;j<nVAR_Store;j++){
-            	fprintf(fsaveFile,",%f",delta_b[(VARstore[j]-1)]);
-            	fprintf(fsaveFile,",%f",delta_g[(VARstore[j]-1)]);
-            	}
-            }
-            
+            	}            
             fprintf(fsaveFile,"\n");
     	  }
         
@@ -485,10 +429,6 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
     //printout the number saved samples and number of samples expected to save
    // Rprintf("nSamples:%d, SampleCount:%d\n",nSamples,sampleCount);
     
-    //get post_g from post_delta_g
-    if(!ISNAN(L[0])){
-    Ldelta(post_g,L,post_delta_g,ng);
-    }
 
     fclose(fsaveFile);
 
@@ -496,116 +436,24 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
 
 //return value to R
 
-    REAL(R_post_mu)[0]=post_mu;
     REAL(R_post_var_g)[0]=post_var_g;
     REAL(R_post_var_b)[0]=post_var_b;
     REAL(R_post_var_h)[0]=post_var_h;
     REAL(R_post_var_e)[0]=post_var_e;
-  /*  //logLik
-    REAL(R_post_logLik)[0]=post_logLik;
-    double logLikAtPostMean;
-    SEXP R_logLikAtPostMean;
-    PROTECT(R_logLikAtPostMean=allocVector(REALSXP,1));nProtect+=1;
-    double tmpE;
-   logLikAtPostMean=0;
-    if(nNa>0){
-    for(j=0;j<nNotNa;j++){	
-    tmpE=y[(whNotNA[j]-1)]-post_yhat[(whNotNA[j]-1)];
-    logLikAtPostMean += dnorm4(tmpE, 0, sqrtf(post_var_e), 1);
-    }
-    }else{
     
-    for(j=0;j<n;j++){	
-    tmpE=y[j]-post_yhat[j];
-    logLikAtPostMean += dnorm4(tmpE, 0, sqrtf(post_var_e), 1);
-    }
-    }
-    
-    REAL(R_logLikAtPostMean)[0]=logLikAtPostMean;
-   
-   //end of logLik
-   */
-    
-/*    //return standard deviations;
-    SEXP R_SD.mu;
-    PROTECT(R_SD.mu=allocVector(REALSXP,1);nProtect+=1;
-    SEXP R_SD.var_e;
-    PROTECT(R_SD.var_e=allocVector(REALSXP,1);nProtect+=1;
-    SEXP R_SD.var_g;
-    PROTECT(R_SD.var_g=allocVector(REALSXP,1);nProtect+=1;
-    SEXP R_SD.var_b;
-    PROTECT(R_SD.var_b=allocVector(REALSXP,1);nProtect+=1;
-    SEXP R_SD.var_h;
-    PROTECT(R_SD.var_h=allocVector(REALSXP,1);nProtect+=1;
-    SEXP R_SD.b;
-    PROTECT(R_SD.b=allocVector(REALSXP,ng);nProtect+=1;
-    SEXP R_SD.h;
-    PROTECT(R_SD.h=allocVector(REALSXP,nh);nProtect+=1;
-    SEXP R_SD.yhat;
-    PROTECT(R_SD.yhat=allocVector(REALSXP,n);nProtect+=1;
-    REAL(R_SD.mu)[0]=sqrt(post_mu2-post_mu*post_mu);
-    REAL(R_SD.var_g)[0]=sqrtf(post_var_g2-post_var_g*post_var_g);
-    REAL(R_SD.var_b)[0]=sqrtf(post_var_b2-post_var_b*post_var_b);
-    REAL(R_SD.var_h)[0]=sqrtf(post_var_h2-post_var_h*post_var_h);
-    REAL(R_SD.var_e)[0]=sqrtf(post_var_e2-post_var_e*post_var_e);
-    if(ISNAN(L[0])){
-    for(j=0;j<ng;j++){
-    REAL(R_SD.g)[j]=sqrtf(post_g2[j]-pow(post_g[j],2));
-    }
-    }else{
-    for(j=0;j<ng;j++){
-    REAL(R_SD.delta_g)[j]=sqrtf(post_delta_g2[j]-pow(post_delta_g[j],2));
-    }
-    }
-    for(j=0;j<ng;j++){    
-    REAL(R_SD.b)[j]=sqrtf(post_b2[j]-pow(post_b[j],2));
-    }
-    for(j=0;j<nh;j++){
-    REAL(R_SD.h)[j]=sqrtf(post_h2[j]-pow(post_h[j],2));
-    }
-    for(j=0;j<n;j++){
-    REAL(R_SD.yhat)[j]=sqrtf(post_yhat2[j]-pow(post_yhat[j],2));
-    }
-    // end of return SD
-    */
- 
-
     SEXP list;
     
     
-    PROTECT(list = allocVector(VECSXP, 9));nProtect+=1;
+    PROTECT(list = allocVector(VECSXP, 8));nProtect+=1;
    
-    SET_VECTOR_ELT(list, 0, R_post_mu);
-    SET_VECTOR_ELT(list, 1, R_post_var_g);
-    SET_VECTOR_ELT(list, 2, R_post_var_b);
-    SET_VECTOR_ELT(list, 3, R_post_var_h);
-    SET_VECTOR_ELT(list, 4, R_post_var_e);
-    SET_VECTOR_ELT(list, 5, R_post_g);
-    SET_VECTOR_ELT(list, 6, R_post_b);
-    SET_VECTOR_ELT(list,7, R_post_h);
-    SET_VECTOR_ELT(list,8, R_post_yhat);
-   /* //return logLik
-    SET_VECTOR_ELT(list,9,R_post_logLik);
-    SET_VECTOR_ELT(list,10,R_logLikAtPostMean);
-   */
-    /*/return SD.
-    SET_VECTOR_ELT(list,11,R_SD.mu);
-    SET_VECTOR_ELT(list,12,R_SD.var_g);
-    SET_VECTOR_ELT(list,13,R_SD.var_b);
-    SET_VECTOR_ELT(list,14,R_SD.var_h);
-    SET_VECTOR_ELT(list,15,R_SD.var_e);
-    SET_VECTOR_ELT(list,16,R_SD.yhat);
-    SET_VECTOR_ELT(list,17,R_SD.b);
-    SET_VECTOR_ELT(list,18,R_SD.h);
-
-    if(ISNAN(L[0])){
-    SET_VECTOR_ELT(list,19,R_SD.g);
-    }else{
-    SET_VECTOR_ELT(list,20,R_post_delta_g);
-    SET_VECTOR_ELT(list,21,R_SD.delta_g);
-    }
-   */ 
-
+    SET_VECTOR_ELT(list, 0, R_post_var_g);
+    SET_VECTOR_ELT(list, 1, R_post_var_b);
+    SET_VECTOR_ELT(list, 2, R_post_var_h);
+    SET_VECTOR_ELT(list, 3, R_post_var_e);
+    SET_VECTOR_ELT(list, 4, R_post_g);
+    SET_VECTOR_ELT(list, 5, R_post_b);
+    SET_VECTOR_ELT(list,6, R_post_h);
+    SET_VECTOR_ELT(list,7, R_post_yhat);
     UNPROTECT(nProtect);
    
 

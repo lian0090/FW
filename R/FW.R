@@ -89,7 +89,7 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
     #text(x=min(p.i)+1.05*(max(p.i)-min(p.i)),y=y.i[whmax],labels=IDLi,col=col)
     
   }
-  abline(a=mean(g[,chain]+mu[chain]),b=1,lty=2,col=1)
+  abline(a=mean(g[,chain]),b=1,lty=2,col=1)
   legend("bottomright",legend=c(VARlevels, "slope = 1"),lty=c(rep(1,n.VAR),2),col=c(cols,1))
 }
 ####################################################################################

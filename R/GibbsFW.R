@@ -25,15 +25,14 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 	if(!is.integer(saveENV)){
 		stop("saveENV must be interger vector")
   	}	
-	IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
+  	#setup VARlevels and ENVlevels (if VARlevels and ENVlevels are NULL, they are set to default increasing orders)
+  	IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
 	IDE=IDEL$IDE
 	IDL=IDEL$IDL
 	VARlevels=IDEL$VARlevels
 	ENVlevels=IDEL$ENVlevels
   	
-  ############################################# 
-  # initialize
-  ########################################################################################## 
+
   	if(!is.null(H)){
   		if(nrow(H)!=ncol(H)){
   			stop("H must be square matrix")
@@ -77,6 +76,11 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
   			A=A[VARlevels,VARlevels] ##changed the order of A to correspond to user defined or default VARlevels.
   		}	
   	}	
+  	
+	  ############################################# 
+  # initialize
+  ########################################################################################## 
+
  
 	ng=length(VARlevels)
 	nh=length(ENVlevels)
@@ -94,9 +98,11 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 	if(is.null(priorVARg)) {priorVARg=0.25*var_y};Sg<-priorVARg*(dfg+2)
 	if(is.null(priorVARb)) {priorVARb=0.5*sqrt(var_y)}; Sb<-priorVARb*(dfb+2)   
 	if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
-	if(!is.null(A)) LA<-t(chol(A)) else LA=NA
-	#Linv=forwardsolve(L,x=diag(1,nrow(L)),upper.tri=F)
-  	if(!is.null(H)) LH=t(chol(H)) else LH=NA
+	if(!is.null(A)) {LA<-t(chol(A))} else {LA=NA}
+  	if(!is.null(H)) {LH=t(chol(H))} else {LH=NA}
+	##LAinv and LHinv is only used to get initial values for delta_h, delta_b and delta_g
+	#if(!is.null(A)) {LA<-t(chol(A)); LAinv=forwardsolve(LA,x=diag(1,nrow(LA)),upper.tri=F)} else {LA=NA;LAinv=NA}
+  	#if(!is.null(H)) {LH=t(chol(H));LHinv=forwardsolve(LH,x=diag(1,nrow(LH)),upper.tri=F)} else {LH=NA;LHinv=NA}
 	############################################# 
 	# runSampler: A private function to run multiple chains
 	#############################################
@@ -123,7 +129,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_h=inits[[i]]$var_h
 			if(!is.null(seed)){set.seed(seed[i])}
 			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(LA),as.vector(LH),whNA,whNotNA,saveVAR,saveENV)
-			names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
+			names(outi)=c("var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       		#when there is postlogLik
 			#names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
 			gT[,i]=outi$g
@@ -133,7 +139,6 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_gT[i]=outi$var_g
 			var_bT[i]=outi$var_b
 			var_hT[i]=outi$var_h
-			muT[i]=outi$mu
 			post_yhatT[,i]=outi$post_yhat
 			# postMeanlogLikT[i]=outi$postlogLik
 			# logLikAtPostMeanT[i]=outi$logLikAtPostMean
@@ -143,7 +148,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 		rownames(gT)=VARlevels
 		rownames(bT)=VARlevels
 		rownames(hT)=ENVlevels
-		colnames(post_yhatT) = colnames(gT) = colnames(bT) = colnames(hT) = names(muT) = names(var_eT) = names(var_gT) = names(var_bT) = names(var_hT) = paste("Init",c(1:nchain),sep="")
+		colnames(post_yhatT) = colnames(gT) = colnames(bT) = colnames(hT) =  names(var_eT) = names(var_gT) = names(var_bT) = names(var_hT) = paste("Init",c(1:nchain),sep="")
 
  		#yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F] 
       
@@ -155,7 +160,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 		# fit=list(postMeanlogLik=postMeanlogLikT,logLikAtPostMean=logLikAtPostMeanT,pD=pD,DIC=DIC)
 		# postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT,fit=fit)
     
-		 postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=post_yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT)
+		 postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels,g=gT,b=bT,h=hT,yhat=post_yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT)
     
 		class(postMean)=c("FW","list")
     

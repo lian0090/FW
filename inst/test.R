@@ -33,6 +33,8 @@ cor(lm1$yhat[whichNa],y[whichNa])
 lm2=FW(yNA,VAR,ENV,A=wheat.G,H=H,seed=2)
 cor(lm2$yhat[whichNa],y[whichNa])
 
+lm3=FW(yNA,VAR,ENV,method="OLS")
+cor(lm3$yhat[whichNa],y[whichNa])
 
 load("samps.rda")
 plot(samps,ask=T,density=F)
