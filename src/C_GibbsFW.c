@@ -211,10 +211,25 @@ SEXP C_GibbsFW(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h, S
         for(j=0;j<n;j++)e[j]=e[j]-X[j]*mu[0];
         //sample delta_h
         if(ISNAN(LH[0])){
-        	for(j=0;j<n;j++)X[j]=(1.0+b[C_IDL[j]]);
-        	sample_beta_ID(delta_h,e,C_IDE,X,n,nh,var_e,var_h);
-        	//update h from delta_h
-        	for(j=0;j<nh;j++)h[j]=delta_h[j]+mu[0];
+            for(j=0;j<n;j++)X[j]=(1.0+b[C_IDL[j]]);
+            for(k=0;k<nh;k++){
+                tXy=0;
+                tXX=0;
+                for(j=0;j<n;j++){
+                    if(C_IDE[j]==k){
+                        e[j]+=X[j]*delta_h[k];
+                        tXX+=pow(X[j],2);
+                        tXy+=X[j]*e[j];
+                    }
+                }
+                delta_h[k]=sample_betaj(tXX,tXy,var_e,var_h);
+            }
+            for(j=0;j<n;j++){
+                e[j]=e[j]-delta_h[C_IDE[j]]*X[j];
+            }
+            
+            //update h from delta_h
+            for(j=0;j<nh;j++)h[j]=delta_h[j]+mu[0];
         }else{
         //update ZhLb (incidence matrix for delta_h)
             for(j=0;j<n;j++) {
