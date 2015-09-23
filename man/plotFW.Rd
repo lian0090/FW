@@ -25,9 +25,9 @@ Lian Lian, Gustavo de los Campos
 }
 \examples{
 \dontrun{
-data(wheat.rda)
-attach(wheat.Y50)
-lm2=FW(y=y,VAR=VAR,ENV=ENV,method="Gibbs")
+data(wheat)
+attach(wheat)
+lm2=FW(y=y,VAR=VAR,ENV=ENV,method="Gibbs",nIter=200, burnIn=100)
 plot(lm2)
 plot(lm2,plotVAR=c("1081265","1101307", "1295736", "13302", "1343502"))
 }

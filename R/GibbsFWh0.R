@@ -1,4 +1,4 @@
-GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,H=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2)){
+GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,H=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2),saveyhat=NULL){
 #check Input type
 	if(any(!is.numeric(c(nIter,burnIn,thin,dfe,dfg,dfh,dfb)))){
   		stop("thin and df must be a numeric")
@@ -32,7 +32,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 	IDL=IDEL$IDL
 	VARlevels=IDEL$VARlevels
 	ENVlevels=IDEL$ENVlevels
-  	
+  	if(is.null(saveyhat))saveyhat=which((VAR %in% VARlevels[saveVAR]) & (ENV %in% ENVlevels[saveENV]))
 
   	if(!is.null(H)){
   		if(nrow(H)!=ncol(H)){
@@ -129,8 +129,8 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_b=inits[[i]]$var_b
 			var_h=inits[[i]]$var_h
 			if(!is.null(seed)){set.seed(seed[i])}
-			outi  =.Call("C_GibbsFW", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(LA),as.vector(LH),whNA,whNotNA,saveVAR,saveENV)
-			names(outi)=c("var_g","var_b","var_h","var_e","g","b","h","post_yhat");
+			outi  =.Call("C_GibbsFWh0", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(LA),as.vector(LH),whNA,whNotNA,saveVAR,saveENV,saveyhat)
+			names(outi)=names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
       		#when there is postlogLik
 			#names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
 			gT[,i]=outi$g
@@ -140,6 +140,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 			var_gT[i]=outi$var_g
 			var_bT[i]=outi$var_b
 			var_hT[i]=outi$var_h
+			muT[i]=outi$mu
 			post_yhatT[,i]=outi$post_yhat
 			# postMeanlogLikT[i]=outi$postlogLik
 			# logLikAtPostMeanT[i]=outi$logLikAtPostMean
@@ -149,7 +150,7 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 		rownames(gT)=VARlevels
 		rownames(bT)=VARlevels
 		rownames(hT)=ENVlevels
-		colnames(post_yhatT) = colnames(gT) = colnames(bT) = colnames(hT) =  names(var_eT) = names(var_gT) = names(var_bT) = names(var_hT) = paste("Init",c(1:nchain),sep="")
+		colnames(post_yhatT) = colnames(gT) = colnames(bT) = colnames(hT) = names(muT) = names(var_eT) = names(var_gT) = names(var_bT) = names(var_hT) = paste("Init",c(1:nchain),sep="")
 
  		#yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F] 
       
@@ -161,9 +162,8 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 		# fit=list(postMeanlogLik=postMeanlogLikT,logLikAtPostMean=logLikAtPostMeanT,pD=pD,DIC=DIC)
 		# postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT,fit=fit)
     
-		 postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels,g=gT,b=bT,h=hT,yhat=post_yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT)
-    
-		class(postMean)=c("FW","list")
+		  postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=post_yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT)		
+		  class(postMean)=c("FW","list")
     
 		for(i in 1:nchain){
 			sampFile=paste("sampsChain",i,".txt",sep="");
@@ -193,5 +193,5 @@ GibbsFW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=5000,
 
 
 
-.onUnload<-function(libpath){library.dynam.unload("FW",libpath)}
+.onUnload<-function(libpath){library.dynam.unload("FWd",libpath)}
 

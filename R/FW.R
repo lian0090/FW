@@ -1,7 +1,7 @@
 #a wrapper for GibbsFW and lmFW
 FW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,method=c("OLS","Gibbs")[2], A=NULL,H=NULL,saveAt="",nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2))
 {
-  
+  model="h0"
   
   if(saveAt==""){
     saveAt=paste(getwd(),"/",sep="");
@@ -10,13 +10,14 @@ FW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,method=c("OLS","Gibbs")[2], 
   whNA=which(is.na(y))
   #if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
   
+ 
   if(method=="OLS"){
-    predictedValue=lmFW(y,VAR,ENV,VARlevels=VARlevels,ENVlevels=ENVlevels)
+    predictedValue=lmFWh0(y,VAR,ENV,VARlevels=VARlevels,ENVlevels=ENVlevels)
   }
-  
   if(method=="Gibbs"){
-    predictedValue=GibbsFW(y=y, VAR=VAR, ENV=ENV, VARlevels=VARlevels, ENVlevels=ENVlevels, nIter=nIter, burnIn=burnIn, thin=thin, dfe=dfe, dfg=dfg, dfh=dfh, dfb=dfb, priorVARe=priorVARe, priorVARg=priorVARg, priorVARb=priorVARb, priorVARh=priorVARh, A=A, H=H,nchain=nchain, seed=seed, inits=inits, saveAt=saveAt);	
+    predictedValue=GibbsFWh0(y=y, VAR=VAR, ENV=ENV, VARlevels=VARlevels, ENVlevels=ENVlevels, nIter=nIter, 	burnIn=burnIn, thin=thin, dfe=dfe, dfg=dfg, dfh=dfh, dfb=dfb, priorVARe=priorVARe, priorVARg=priorVARg, priorVARb=priorVARb, priorVARh=priorVARh, A=A, H=H,nchain=nchain, seed=seed, inits=inits, saveAt=saveAt);	
   }
+ 
   
   return(predictedValue)
   
@@ -60,7 +61,7 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
   yhat=yhat$yhat
   y=y[,3]
   n.VAR=length(VARlevels)
-  plot(c(min(c(y,yhat),na.rm=T),max(c(y,yhat),na.rm=T))~ c(min(h,na.rm=T),min(h,na.rm=T)+(max(h,na.rm=T)-min(h,na.rm=T))*1.05),type="n",xlab="",ylab="Variety performance",main=main)
+  plot(c(min(c(y,yhat),na.rm=T),max(c(y,yhat),na.rm=T))~ c(min(h,na.rm=T),min(h,na.rm=T)+(max(h,na.rm=T)-min(h,na.rm=T))*1.05),type="n",xlab="Environment effect",ylab="Variety performance",main=main)
   
   h=h[order(h[,chain]),chain]
   
@@ -89,7 +90,8 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
     #text(x=min(p.i)+1.05*(max(p.i)-min(p.i)),y=y.i[whmax],labels=IDLi,col=col)
     
   }
-  abline(a=mean(g[,chain]),b=1,lty=2,col=1)
+  #the intercept denpends on g
+  abline(a=mean(y,na.rm=T),b=1,lty=2,col=1)
   legend("bottomright",legend=c(VARlevels, "slope = 1"),lty=c(rep(1,n.VAR),2),col=c(cols,1))
 }
 ####################################################################################

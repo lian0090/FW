@@ -27,7 +27,7 @@ data(wheat)
 }
 
 \format{
-The data.frame \code{\link{wheat.Y}} and \code{\link{wheat.Y50}} contain the phenotypes, Matrix \code{\link{wheat.G}} and \code{\link{wheat.G50}} are the genomic relatinship matrix calculated from the DArT markers. 
+The data.frame \code{\link{wheat.Y}} contains the phenotypes, Matrix \code{\link{wheat.G}} is the genomic relatinship matrix calculated from the DArT markers. 
 }
 
 \source{
