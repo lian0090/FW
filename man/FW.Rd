@@ -25,13 +25,13 @@ Only the arguments \code{y}, \code{VAR}, \code{ENV}, \code{VARlevels}, \code{ENV
   \item{ENV}{ 
   (character, \eqn{n}) is a vector whose elements are identifiers for the environments which are treated as labels (NAs are not allowed).
   }
-  \item{VARlevels}{(character, \eqn{qg}) unique levels of variety identifiers used to specify the order of fitting for the varieties and the order of output for the estimates of \bold{g} and \bold{b}. The default values are the unique values of VAR sorted into ascending order by string comparisons. }
-  \item{ENVlevels}{(character, \eqn{qh}) unique levels of environment identifiers used to specify the order of fitting for the environments and the order of output for the estimates of \bold{h}. The default values are the unique values of ENV sorted into ascending order by string comparison.}
+  \item{VARlevels}{(character, \eqn{qg}) unique levels of variety identifiers used to specify the order of fitting for the varieties and the order of output for the estimates of g and b. The default values are the unique values of VAR sorted into ascending order by string comparisons. }
+  \item{ENVlevels}{(character, \eqn{qh}) unique levels of environment identifiers used to specify the order of fitting for the environments and the order of output for the estimates of h. The default values are the unique values of ENV sorted into ascending order by string comparison.}
   \item{method}{
   Describes what method to use: either "OLS" for ordinary least squares method or "Gibbs" for Bayesian method using Gibbs Sampler. The default is "Gibbs".
   }
-   \item{A}{ (numeric, \eqn{qg*qg}), is the covariance structure for Normal distirubion of \bold{g} and \bold{b}: N(\bold{g}|\bold{0}, \bold{A}\eqn{\sigma^2_g}),  N(\bold{b}|\bold{0},\bold{A}\eqn{\sigma^2_b}). In case A is NULL, A is automatically set to be Identiy matrix}
-   \item{H}{ (numeric,\eqn{qh*qh}), is the covariance structure for Normal distirubion of \bold{h}: N(\bold{h}|\bold{0}, \bold{H}\eqn{\sigma^2_h}). In case H is NULL, H will be automatically set to be Identiy matrix }
+   \item{A}{ (numeric, \eqn{qg*qg}), is the covariance structure for Normal distirubion of g and b: N(0, A\eqn{\sigma^2_g}),  N(b|0,A\eqn{\sigma^2_b}). In case A is NULL, A is automatically set to be Identiy matrix}
+   \item{H}{ (numeric,\eqn{qh*qh}), is the covariance structure for Normal distirubion of h: N(0, H\eqn{\sigma^2_h}). In case H is NULL, H will be automatically set to be Identiy matrix }
   \item{saveAt}{ 
   (character) can be used to indicate where to store the samples and to provide a pre-fix to be appended to 'samps.rda' (the name of the file where the samples are stored). By default samples are saved in the current working directory and no pre-fix is added to the file names.   
   }
@@ -76,7 +76,7 @@ A list with estimated posterior means and the parameters used to fit the model.
   \item{ENVlevels}{
   levels of the environments (the environments are fitted in the order of the ENVlevels
   }
-  \item{mu,g,b,h}{are the parameter estimates (OLS method) or estimates of posterior means (Gibbs method) for \eqn{\mu}, \bold{g}, \bold{b}, \bold{h}; mu is a vector; with OLS method, mu has only one element;with Gibbs method, each element of mu represents a different chain. g, b, h are all matrix; with OLS method, g, b, h all have only one column; wiht Gibbs method, each column of g, b, h provides estimates derived from one MCMC chain. 
+  \item{mu,g,b,h}{are the estimated parameters. mu is a vector: with OLS method, mu has only one element; with Gibbs method, each element of mu is an estimate from a different chain. g, b, h are all matrix: with OLS method, g, b, h all have only one column; with Gibbs method, each column of g, b, h provides estimates derived from one MCMC chain. 
 	}
   \item{yhat}{(matrix) is the estimates of the predictor: \eqn{yhat = mu+ g + h + b*h}. For OLS, there is only one column for yhat. For Gibbs method, each column of yhat corresponds to a different chain.
   }
