@@ -198,5 +198,5 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 
 
 
-.onUnload<-function(libpath){library.dynam.unload("FWd",libpath)}
+.onUnload<-function(libpath){library.dynam.unload("FW",libpath)}
 
