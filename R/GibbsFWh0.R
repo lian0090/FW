@@ -9,8 +9,9 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 	if(is.null(saveAt)){
 		saveAt=paste(getwd(),"/",sep="")
 	}else{
-		saveAt=normalizePath(saveAt)##to replace "~" by true home directory, therefore, C can recognize the path
-		
+		if(grepl("/$",saveAt)) saveAt=paste(normalizePath(saveAt,mustWork=F),"/",sep="")else{
+			saveAt=normalizePath(saveAt,mustWork=F)##to replace "~" by true home directory, therefore, C can recognize the path
+		}
 	} 
 	
 	##need to change this d
