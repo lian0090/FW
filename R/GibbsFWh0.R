@@ -104,11 +104,11 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 	if(is.null(priorVARg)) {priorVARg=0.25*var_y};Sg<-priorVARg*(dfg+2)
 	if(is.null(priorVARb)) {priorVARb=0.5*sqrt(var_y)}; Sb<-priorVARb*(dfb+2)   
 	if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
-	if(!is.null(A)) {LA<-t(chol(A))} else {LA=NA}
-  	if(!is.null(H)) {LH=t(chol(H))} else {LH=NA}
+	#if(!is.null(A)) {LA<-t(chol(A))} else {LA=NA}
+  	#if(!is.null(H)) {LH=t(chol(H))} else {LH=NA}
 	##LAinv and LHinv is only used to get initial values for delta_h, delta_b and delta_g
-	#if(!is.null(A)) {LA<-t(chol(A)); LAinv=forwardsolve(LA,x=diag(1,nrow(LA)),upper.tri=F)} else {LA=NA;LAinv=NA}
-  	#if(!is.null(H)) {LH=t(chol(H));LHinv=forwardsolve(LH,x=diag(1,nrow(LH)),upper.tri=F)} else {LH=NA;LHinv=NA}
+	if(!is.null(A)) {LA<-t(chol(A)); LAinv=forwardsolve(LA,x=diag(1,nrow(LA)),upper.tri=F)} else {LA=NA;LAinv=NA}
+  	if(!is.null(H)) {LH=t(chol(H));LHinv=forwardsolve(LH,x=diag(1,nrow(LH)),upper.tri=F)} else {LH=NA;LHinv=NA}
 	############################################# 
 	# runSampler: A private function to run multiple chains
 	#############################################
@@ -118,7 +118,14 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
   		hT=matrix(NA,nh,nchain)
   		var_eT=var_gT=var_bT=var_hT=muT=rep(NA,nchain)
   		post_yhatT=matrix(NA,nrow=length(y),ncol=nchain)
-  	
+  		##standard deviations
+  		SD.gT=SD.bT=matrix(NA,ng,nchain)
+  		SD.hT=matrix(NA,nh,nchain)
+  		SD.var_eT=SD.var_gT=SD.var_bT=SD.var_hT=SD.muT=rep(NA,nchain)
+  		SD.yhatT=matrix(NA,nrow=length(y),ncol=nchain)
+
+  		
+  		
   		#post_logLik
   		#postMeanlogLikT=logLikAtPostMeanT=rep(NA,nchain)
   	
@@ -134,8 +141,8 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 			var_b=inits[[i]]$var_b
 			var_h=inits[[i]]$var_h
 			if(!is.null(seed)){set.seed(seed[i])}
-			outi  =.Call("C_GibbsFWh0", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(LA),as.vector(LH),whNA,whNotNA,saveVAR,saveENV,saveyhat)
-			names(outi)=names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat");
+			outi  =.Call("C_GibbsFWh0", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(LA),as.vector(LH),whNA,whNotNA,saveVAR,saveENV,saveyhat,LAinv,LHinv)
+			names(outi)=names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","SD.mu","SD.var_g","SD.var_b","SD.var_h","SD.var_e","SD.g","SD.b","SD.h","SD.yhat");
       		#when there is postlogLik
 			#names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
 			gT[,i]=outi$g
@@ -147,6 +154,18 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 			var_hT[i]=outi$var_h
 			muT[i]=outi$mu
 			post_yhatT[,i]=outi$post_yhat
+			##standard deviations
+  			SD.gT[,i]=outi$SD.g
+  			SD.bT[,i]=outi$SD.b
+  			SD.hT[,i]=outi$SD.h
+  			SD.var_eT[i]=outi$SD.var_e
+  			SD.var_gT[i]=outi$SD.var_g
+  			SD.var_bT[i]=outi$SD.var_b
+  			SD.var_hT[i]=outi$SD.var_h
+  			SD.muT[i]=outi$SD.mu
+  			SD.yhatT[,i]=outi$SD.yhat
+
+
 			# postMeanlogLikT[i]=outi$postlogLik
 			# logLikAtPostMeanT[i]=outi$logLikAtPostMean
 	
@@ -156,6 +175,12 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 		rownames(bT)=VARlevels
 		rownames(hT)=ENVlevels
 		colnames(post_yhatT) = colnames(gT) = colnames(bT) = colnames(hT) = names(muT) = names(var_eT) = names(var_gT) = names(var_bT) = names(var_hT) = paste("Init",c(1:nchain),sep="")
+		
+		##rownames and colnames for SD
+		rownames(SD.gT)=VARlevels
+		rownames(SD.bT)=VARlevels
+		rownames(SD.hT)=ENVlevels
+		colnames(SD.yhatT)=colnames(SD.gT)=colnames(SD.bT)=colnames(SD.hT)=names(SD.muT)=names(SD.var_eT)=names(SD.var_gT)=names(SD.var_bT)=names(SD.var_hT)=paste("Init",c(1:nchain),sep="")
 
  		#yhatT=muT+gT[VAR,,drop=F]+(1+bT[VAR,,drop=F])*hT[ENV,,drop=F] 
       
@@ -167,7 +192,7 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 		# fit=list(postMeanlogLik=postMeanlogLikT,logLikAtPostMean=logLikAtPostMeanT,pD=pD,DIC=DIC)
 		# postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT,fit=fit)
     
-		  postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=post_yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT)		
+		  postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,SD.mu=SD.muT,g=gT,SD.g=SD.gT,b=bT,SD.b=SD.bT,h=hT,SD.h=SD.hT,yhat=post_yhatT,SD.yhat=SD.yhatT,var_e=var_eT,SD.var_e=SD.var_eT,var_g=var_gT,SD.var_g=SD.var_gT,var_b=var_bT,SD.var_b=SD.var_bT,var_h=var_hT,SD.var_h=SD.var_hT)		
 		  class(postMean)=c("FW","list")
     
 		for(i in 1:nchain){

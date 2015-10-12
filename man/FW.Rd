@@ -80,9 +80,11 @@ A list with estimated posterior means and the parameters used to fit the model.
 	}
   \item{yhat}{(matrix) is the estimates of the predictor: \eqn{yhat = mu+ g + h + b*h}. For OLS, there is only one column for yhat. For Gibbs method, each column of yhat corresponds to a different chain.
   }
-  \item{var_e,var_g,var_b,var_h}{are only for Gibbs method, and are the posterior means for the variance of \eqn{\epsilon}, g, b, h.
+  \item{SD.mu,SD.g,SD.b,SD.h,SD.yhat}{only for Gibbs method, the posterior standard deviation for mu, g, b, h and yhat}
+  \item{var_e,var_g,var_b,var_h}{only for Gibbs method, the posterior means for \eqn{\sigma^2_\epsilon}, \eqn{\sigma^2_g}, \eqn{\sigma^2_b}, \eqn{\sigma^2_h}
+  }
+  \item{SD.var_e,SD.var_g,SD.var_b,SD.var_h}{only for Gibbs method, the posterior standard deviation for \eqn{\sigma^2_\epsilon}, \eqn{\sigma^2_g}, \eqn{\sigma^2_b}, \eqn{\sigma^2_h}
 }
-
 }
 \author{
 Lian Lian, Gustavo de los Campos
