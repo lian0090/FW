@@ -118,7 +118,7 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
   		#postMeanlogLikT=logLikAtPostMeanT=rep(NA,nchain)
   	
     	for(i in 1:nchain){
-			sampFile=paste("sampsChain",i,".txt",sep="");
+			sampFile=paste(saveAt, "sampsChain",i,".txt",sep="");
 			if(file.exists(sampFile)) file.remove(sampFile) else file.create(sampFile)
 			mu=inits[[i]]$mu
 			g=inits[[i]]$g
@@ -166,7 +166,7 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 		  class(postMean)=c("FW","list")
     
 		for(i in 1:nchain){
-			sampFile=paste("sampsChain",i,".txt",sep="");
+			sampFile=paste(saveAt, "sampsChain",i,".txt",sep="");
 			samps[[i]] = mcmc(read.table(sampFile,sep=",", stringsAsFactors=F, header=T, check.names=F), start=burnIn+thin, end=nIter, thin=thin)
 			file.remove(sampFile)
 		}
