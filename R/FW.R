@@ -7,6 +7,8 @@ FW=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,method=c("OLS","Gibbs")[2], 
     saveAt=paste(getwd(),"/",sep="");
   }
   
+  if(nIter<=burnIn) stop("nIter must be larger than burnIn\n")
+  
   whNA=which(is.na(y))
   #if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
   
@@ -92,7 +94,7 @@ plot.FW=function(FWobj,plotVAR=NULL,main=NULL,chain=1){
   }
   #the intercept denpends on g
   abline(a=mean(y,na.rm=T),b=1,lty=2,col=1)
-  legend("bottomright",legend=c(VARlevels, "slope = 1"),lty=c(rep(1,n.VAR),2),col=c(cols,1))
+  legend("bottomright",legend=c(VARlevels, "slope = 1"),lty=c(rep(1,n.VAR),2),col=c(cols,1),bg="transparent")
 }
 ####################################################################################
 ### print postMean and FW object
