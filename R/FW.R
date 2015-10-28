@@ -33,16 +33,15 @@ FW = function(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS",
 ####################################################################################
 ### function to plot FW object
 ####################################################################################
-plot.FW = function(FWobj, plotVAR = NULL, chain = 1, xlab = "Environment effect", ylab = "Variety performance", ...) {
-	#plotVAR: the variety names for which the plot should be generated
-	#default to print the frist chain
+plot.FW = function(FWobj, plotVAR = NULL, chain = 1, ...) {
+	
 namesFWobj = names(FWobj)
 	for (i in 1:length(namesFWobj)) {
 		assign(namesFWobj[i], FWobj[[i]])
 	}
 
 	if (!is.null(plotVAR)) {
-		if (is.numeric(plotVAR)) {
+		if (is.integer(plotVAR)) {
 			plotIDL = plotVAR
 		} else if (is.character(plotVAR)) {
 			plotIDL = which(VARlevels %in% plotVAR)
@@ -71,8 +70,16 @@ namesFWobj = names(FWobj)
 	par(xpd = T, mar = oripar + c(0, 0, 0, 5))
 	range.h = range(h, na.rm = T)
 	range.y = range(y, na.rm = T)
+	
+	#default valus for ...
+	bty=list(...)$bty
+	xlab=list(...)$xlab
+	ylab=list(...)$ylab
+	if(is.null(bty))bty="l"
+	if(is.null(xlab))xlab="Environment effect"
+	if(is.null(ylab))ylab = "Variety performance"
 
-	plot(range.y ~ range.h, type = "n", xlab = xlab, ylab = ylab, ..., bty = "l")
+	plot(range.y ~ range.h, type = "n", xlab = xlab, ylab = ylab, bty = bty,...)
 
 	h = h[order(h[, chain]), chain]
 
