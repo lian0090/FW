@@ -8,5 +8,9 @@ a data.frame (2396 × 3) containing the grain yield of 599 lines in four environ
 \source{
   International Maize and Wheat Improvement Center (CIMMYT), Mexico.
 }
-\seealso{\code{\link{wheat}},\code{\link{wheat.G}}}
+\references{
+ Crossa, J., G. de Los Campos, P. Pérez, D. Gianola, J. Burgueño, J. L. Araus, D. Makumbi, R. P. Singh, S. Dreisigacker, and J. Yan. 2010. Prediction of genetic values of quantitative traits in plant breeding using pedigree and molecular markers. Genetics. 186: 713-724.  
+
+}
+\seealso{\code{\link{wheat}}, \code{\link{wheat.G}}}
 \keyword{datasets}

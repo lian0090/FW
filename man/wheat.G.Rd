@@ -12,7 +12,6 @@ wheat.G (matrix, 599 x 599), was calculated from DArT markers. The markers were 
 }
 
 \references{
-McLaren, C. G., R. Bruskiewich, A.M. Portugal, and A.B. Cosico. 2005. The International Rice Information System. 
-A platform for meta-analysis of rice crop data. \emph{Plant Physiology} \bold{139}: 637-642.
+ Crossa, J., G. de Los Campos, P. Pérez, D. Gianola, J. Burgueño, J. L. Araus, D. Makumbi, R. P. Singh, S. Dreisigacker, and J. Yan. 2010. Prediction of genetic values of quantitative traits in plant breeding using pedigree and molecular markers. Genetics. 186: 713-724.  
 }
 \keyword{datasets}

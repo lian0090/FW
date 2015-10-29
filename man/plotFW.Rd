@@ -20,7 +20,7 @@ plot.FW(FWobj,plotVAR=NULL,chain=1,...)
 }
 
 \details{
-The x-axis is the estimated values of environment effects. The y-axis is the variety performance. The colored lines are the fitted values against environment gradients. The colored circles are the observed cell means for the variety environment combinations. 
+The x-axis is the estimated values of environment effects. The y-axis is the variety performance. Each color represents a different variety. Lines are fitted values and circles are the cell means of genotype by environment combination.  
 }
 \author{
 Lian Lian, Gustavo de los Campos

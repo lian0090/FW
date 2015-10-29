@@ -35,9 +35,7 @@ The data.frame \code{\link{wheat.Y}} contains the phenotypes, Matrix \code{\link
 }
 
 \references{
-McLaren, C. G., R. Bruskiewich, A.M. Portugal, and A.B. Cosico. 2005. The International Rice Information System. 
-A platform for meta-analysis of rice crop data. \emph{Plant Physiology} \bold{139}: 637-642.
+ Crossa, J., G. de Los Campos, P. Pérez, D. Gianola, J. Burgueño, J. L. Araus, D. Makumbi, R. P. Singh, S. Dreisigacker, and J. Yan. 2010. Prediction of genetic values of quantitative traits in plant breeding using pedigree and molecular markers. Genetics. 186: 713-724.  
 
-Purcell, S., B. Neale, K. Todd-Brown, L. Thomas, M. A. Ferreira, D. Bender, J. Maller, P. Sklar, P. I. De Bakker, M. J. Daly, and others. 2007. Plink: a tool set for whole-genome association and population-based linkage analyses. \emph{The American Journal Of Human Genetics} \bold{81}:559-575.  
 }
 \keyword{datasets}
