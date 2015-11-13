@@ -31,7 +31,7 @@ Lian Lian, Gustavo de los Campos
 \examples{
 data(wheat)
 attach(wheat.Y)
-lm2=FW(y=y[1:100],VAR=VAR[1:100],ENV=ENV[1:100])
+lm2=FW(y=y,VAR=VAR,ENV=ENV,nIter=500,burnIn=200)
 plot(lm2)
 plot(lm2,plotVAR=c("1081265","1101307", "1295736", "13302", "1343502"))
 }

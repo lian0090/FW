@@ -93,6 +93,6 @@ Lian Lian, Gustavo de los Campos
 data(wheat)
 attach(wheat.Y)
 lm1=FW(y=y[1:100],VAR=VAR[1:100],ENV=ENV[1:100],method="OLS")
-lm2=FW(y=y[1:100],VAR=VAR[1:100],ENV=ENV[1:100],method="Gibbs",nIter=500,burnIn=100)
+lm2=FW(y=y[1:100],VAR=VAR[1:100],ENV=ENV[1:100],method="Gibbs")
 }
 \keyword{models}
