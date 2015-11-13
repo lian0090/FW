@@ -7,7 +7,7 @@ An R package for Genomic/Pedigree and Spatial analysis using the Finlay-Wilkinso
 The FW ("Finlay-Wilkinson") function fits the Finlay-Wilkinson regression with Ordinary least squares method or Bayesian method to continuous traits. Genomic informationa and Spatial correlations can be included in the model. 
 }
 \usage{
-function (y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS", 
+FW(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS", 
     "Gibbs")[2], A = NULL, H = NULL, saveAt = "", nIter = 5000, 
     burnIn = 3000, thin = 5, dfe = 5, dfg = 5, dfh = 5, dfb = 5, 
     priorVARe = NULL, priorVARg = NULL, priorVARb = NULL, priorVARh = NULL, 
@@ -90,11 +90,9 @@ A list with estimated posterior means and the parameters used to fit the model.
 Lian Lian, Gustavo de los Campos
 }
 \examples{
-\dontrun{
 data(wheat)
 attach(wheat.Y)
-lm1=FW(y=y,VAR=VAR,ENV=ENV,method="OLS")
-lm2=FW(y=y,VAR=VAR,ENV=ENV,method="Gibbs",nIter=500,burnIn=100)
-}
+lm1=FW(y=y[1:100],VAR=VAR[1:100],ENV=ENV[1:100],method="OLS")
+lm2=FW(y=y[1:100],VAR=VAR[1:100],ENV=ENV[1:100],method="Gibbs",nIter=500,burnIn=100)
 }
 \keyword{models}

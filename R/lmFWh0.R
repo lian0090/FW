@@ -1,9 +1,14 @@
 lmFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL){
   #if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
   IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
-  for(i in 1:length(IDEL)){
-    assign(names(IDEL)[i],IDEL[[i]])
-  } 
+  
+  IDL = IDEL$IDL
+  IDE = IDEL$IDE
+  VARlevels = IDEL$VARlevels
+  ENVlevels = IDEL$ENVlevels
+  fVAR = IDEL$fVAR
+  fENV = IDEL$fENV
+  
   h=tapply(y,INDEX=IDE,function(a)mean(a,na.rm=T))-mean(y,na.rm=T) 
   n.var=length(VARlevels)
   ZX=sweep(model.matrix(~fVAR-1),1,h[IDE],"*")

@@ -1,4 +1,5 @@
 useDynLib(FW,C_GibbsFWh0)
 #formal package output
 export(FW,plot.FW)
+import(coda,MASS)
 

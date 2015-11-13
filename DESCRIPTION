@@ -1,11 +1,11 @@
 Package: FW
 Type: Package
-Title: Performs Gibbs Sampler and Least Square models for Finlay-Wilkinson regressions. 
+Title: Performs Gibbs Sampler and Least Square models for Finlay-Wilkinson regressions
 Version: 0.0
 Date: 2014-12-17
 Author: Lian Lian
 Maintainer: Lian Lian <lian0090@umn.edu>
 Description: This package runs Finley-Wilkinson regression with Gibbs Sampler. The ordinary least square model with environment means as environment gradients for Finley-Wilkinson regression can also be performed. 
-Depends: coda,MASS
+Depends: R(>= 2.10.0), coda,MASS
 License: GPL-3
 NeedsCompilation: yes

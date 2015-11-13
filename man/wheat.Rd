@@ -35,7 +35,7 @@ The data.frame \code{\link{wheat.Y}} contains the phenotypes, Matrix \code{\link
 }
 
 \references{
- Crossa, J., G. de Los Campos, P. Pérez, D. Gianola, J. Burgueño, J. L. Araus, D. Makumbi, R. P. Singh, S. Dreisigacker, and J. Yan. 2010. Prediction of genetic values of quantitative traits in plant breeding using pedigree and molecular markers. Genetics. 186: 713-724.  
+ Crossa, J., G. de Los Campos, P. Perez, D. Gianola, J. Burgueno, J. L. Araus, D. Makumbi, R. P. Singh, S. Dreisigacker, and J. Yan. 2010. Prediction of genetic values of quantitative traits in plant breeding using pedigree and molecular markers. Genetics. 186: 713-724.  
 
 }
 \keyword{datasets}
