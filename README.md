@@ -1,5 +1,5 @@
 # FW
-Gibbs Sampler for Finlay-Wilkinson Regression
+Bayesian method and ordinary least square methods for Finlay-Wilkinson Regression. 
 
 # Install
 ```R
