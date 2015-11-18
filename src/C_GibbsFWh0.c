@@ -375,7 +375,7 @@ SEXP C_GibbsFWh0(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h,
             var_h=SS/rchisq(DF);
         }else{
             for(j=0;j<nh;j++) SS+=pow(delta_h[j],2);
-            DF=ng+dfh;
+            DF=nh+dfh;
             var_h=SS/rchisq(DF);
         }
         //var_b and var_g;
