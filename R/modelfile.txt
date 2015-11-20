@@ -1,0 +1,42 @@
+model
+{ 
+ dfe<-5
+ dfg<-5
+ dfh<-5
+ dfb<-5
+ S<-2.84310049451149
+ Sg<-1.42155024725575
+ Sb<-3.1544970646349
+ Sh<-3.1544970646349
+ 
+      for (i in 1 : n) {
+      y[i] ~ dnorm(mu+g[IDL[i]]+h[IDE[i]]*(1+b[IDL[i]]),tau_e)
+      }
+
+      for ( i in 1:ng){
+      g[i] ~ dnorm(0,tau_g)
+      b[i] ~ dnorm(0,tau_b)
+      }
+      
+h[1]~dnorm(0,tau_h)
+ h[2]~dnorm(0,tau_h)
+ h[3]~dnorm(0,tau_h)
+ h[4]~dnorm(0,tau_h)
+ h[5]~dnorm(0,tau_h)
+ h[6]~dnorm(0,tau_h)
+ h[7]~dnorm(0,tau_h)
+ h[8]~dnorm(0,tau_h)
+ h[9]~dnorm(0,tau_h)
+ h[10]~dnorm(0,tau_h)
+
+##this should be priors, Bugs will use MCMC to sample from the unnormalized posteria.  
+mu ~ dunif(-1E-5,1E05)  
+tau_g ~ dgamma(dfg/2,Sg/2)
+tau_b ~ dgamma(dfb/2,Sb/2)
+tau_h ~ dgamma(dfh/2,Sh/2)
+tau_e ~ dgamma(dfe/2,S/2)
+var_g <- 1/tau_g
+var_b<- 1/tau_b
+var_h<-1/tau_h
+var_e<-1/tau_e
+   }

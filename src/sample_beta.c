@@ -130,4 +130,40 @@ for(j=0;j<=i;j++){
 }
 }
 }
+//calculate b=U%*%delta
+void Udelta(double *b, const double *U, const double *delta, const int nb, const int ndelta){
+    int i,j;
+    for(i=0;i<nb;i++){
+        b[i]=0;
+        for(j=0;j<ndelta;j++){
+            b[i]+=U[i+j*nb]*delta[j];
+        }
+    }
+}
 
+
+/*
+//testing in R
+
+SEXP R_Udelta(SEXP R_U, SEXP R_delta){
+    int nProtect=0;
+    PROTECT(R_U=AS_NUMERIC(R_U));nProtect+=1;
+    PROTECT(R_delta=AS_NUMERIC(R_delta));nProtect+=1;
+    SEXP R_b;
+    double *U= REAL(R_U);
+    double *delta=REAL(R_delta);
+    int nb;
+    int ndelta;
+    SEXP RdimU;
+    PROTECT(RdimU=getAttrib(R_U,R_DimSymbol));nProtect+=1;
+    if(isNull(RdimU)){nb=length(R_U);ndelta=1;}else {nb=INTEGER(RdimU)[0];ndelta=INTEGER(RdimU)[1];}
+    printf("nb:%d, ndelta:%d\n",nb,ndelta);
+    PROTECT(R_b=allocVector(REALSXP, nb));nProtect+=1;
+    double *b;
+    b=REAL(R_b);
+    Udelta(b,U,delta,nb,ndelta);
+    UNPROTECT(nProtect);
+    return(R_b);
+}
+*/
+ 

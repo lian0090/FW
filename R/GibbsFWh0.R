@@ -53,11 +53,8 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
   	 	
   	 	if(any(!(unique(ENV) %in% colnames(H)))) stop("Covariance structure not available for some environments")
   	 
-  		if(is.null(ENVlevels)){
-  	 		ENVlevels=colnames(H)  	 
-  	 	}else{
-  			H=H[ENVlevels,ENVlevels] ##changed the order of A to correspond to user defined or default VARlevels.
-  		}	
+  		H=H[ENVlevels,ENVlevels] ##changed the order of A to correspond to user defined or default VARlevels.
+  	
   	}	
  
   	
@@ -76,11 +73,9 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
   	 	
   	 	if(any(!(unique(VAR) %in% colnames(A)))) stop("Covariance structure not available for some varieties")
   	 
-  		if(is.null(VARlevels)){
-  	 		VARlevels=colnames(A)  	 
-  	 	}else{
-  			A=A[VARlevels,VARlevels] ##changed the order of A to correspond to user defined or default VARlevels.
-  		}	
+  	
+  		A=A[VARlevels,VARlevels] ##changed the order of A to correspond to user defined or default VARlevels.
+  		
   	}	
   	
 	  ############################################# 
@@ -105,10 +100,39 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 	if(is.null(priorVARb)) {priorVARb=0.5*sqrt(var_y)}; Sb<-priorVARb*(dfb+2)   
 	if(is.null(priorVARh)) {priorVARh=0.5*sqrt(var_y)}; Sh<-priorVARh*(dfh+2)  
 	#if(!is.null(A)) {LA<-t(chol(A))} else {LA=NA}
-  	#if(!is.null(H)) {LH=t(chol(H))} else {LH=NA}
+  #if(!is.null(H)) {LH=t(chol(H))} else {LH=NA}
 	##LAinv and LHinv is only used to get initial values for delta_h, delta_b and delta_g
-	if(!is.null(A)) {LA<-t(chol(A)); LAinv=forwardsolve(LA,x=diag(1,nrow(LA)),upper.tri=F)} else {LA=NA;LAinv=NA}
-  	if(!is.null(H)) {LH=t(chol(H));LHinv=forwardsolve(LH,x=diag(1,nrow(LH)),upper.tri=F)} else {LH=NA;LHinv=NA}
+  if(!is.null(A)) {
+    LA<-try(t(chol(A)),silent=T); 
+    if(inherits(LA,"try-error")) stop("A is not full rank, try add small values to the diagonal of A to make it full rank.  ");
+    LAinv=forwardsolve(LA,x=diag(1,nrow(LA)),upper.tri=F)
+  } else {
+    LA=NA;
+    LAinv=NA
+  }
+  if(!is.null(H)) {
+    LH<-try(t(chol(H)),silent=T);  
+    if(inherits(LH,"try-error")) stop("H is not full rank, try add small values to the diagonal of H to make it full rank."); 
+    LHinv=forwardsolve(LH,x=diag(1,nrow(LH)),upper.tri=F)
+  } else {
+    LH=NA;
+    LHinv=NA
+  }
+# this is used for eigen decomposition method.   
+# 	if(!is.null(A)) {
+#     eigenA=eigen(A,symmetric=T); whichEigen=which(eigenA$values>1e-7); 
+#     U1=eigenA$vectors[,whichEigen]
+#    d1=eigenA$values[whichEigen]
+#    LA=U1%*%diag(sqrt(d1))
+#    LAinv=diag(sqrt(1/d1))%*%t(U1)
+# 	}else {LA=NA;LAinv=NA}
+#  	 if(!is.null(H)) {
+#  	   eigenH=eigen(H,symmetric=T); whichEigen=which(eigenH$values>1e-7); 
+#  	   U1=eigenH$vectors[,whichEigen]
+#  	   d1=eigenH$values[whichEigen]
+# 	   LH=U1%*%diag(sqrt(d1))
+#  	   LHinv=diag(sqrt(1/d1))%*%t(U1)
+#  	 } else {LH=NA;LHinv=NA}
 	############################################# 
 	# runSampler: A private function to run multiple chains
 	#############################################
@@ -141,7 +165,7 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt=NULL,nIter=500
 			var_b=inits[[i]]$var_b
 			var_h=inits[[i]]$var_h
 			if(!is.null(seed)){set.seed(seed[i])}
-			outi  =.Call("C_GibbsFWh0", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, as.vector(LA),as.vector(LH),whNA,whNotNA,saveVAR,saveENV,saveyhat,LAinv,LHinv)
+			outi  =.Call("C_GibbsFWh0", y, IDL, IDE, g, b, h, nIter, burnIn, thin, sampFile,S, Sg, Sb, Sh, dfe, dfg, dfb, dfh, var_e, var_g, var_b, var_h, mu, LA, LH,whNA,whNotNA,saveVAR,saveENV,saveyhat,LAinv,LHinv)
 			names(outi)=names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","SD.mu","SD.var_g","SD.var_b","SD.var_h","SD.var_e","SD.g","SD.b","SD.h","SD.yhat");
       		#when there is postlogLik
 			#names(outi)=c("mu","var_g","var_b","var_h","var_e","g","b","h","post_yhat","postlogLik","logLikAtPostMean");
