@@ -1,6 +1,11 @@
 #initialize
 initialize.Gibbs=function(y,ng,nh,inits=NULL,nchain=1){
-  
+  whichNa=which(is.na(y))
+  ynNA=y[-whichNa]
+  VAR_nNA=VAR[-whichNa]
+  ENV_nNA=ENV[-whichNa]
+  ng_nNA=length(unique(VAR_nNA))
+  nh_nNA=length(unique(ENV_nNA))
   #seed is to set the random seed for Gibbs Sampler for jags. Not for the random seed of inital values.
   #the seed for setting up initial values is their chain index
   var_y=var(y,na.rm=T)
@@ -18,7 +23,9 @@ initialize.Gibbs=function(y,ng,nh,inits=NULL,nchain=1){
   ##inits should be a list of lists, each list cannot have names, 
   ##because rjags will use whether it has names to determin whether it is a list of lists, 
   ##or a single list with variable names. That's bad. 
-  
+  #if (!all(c("mu","g","b","h","var_e","var_g","var_h","var_h") %in% names(inits[[i]]))){
+  #  stop("mu, g, b, h, var_e, var_g, var_h, var_h for initial values")
+  #}
   if(!missing(inits) && !is.null(inits)) {
     if (!is.list(inits)) {
       return("inits parameter must be a list")

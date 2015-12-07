@@ -8,7 +8,7 @@ the plot.FW function plot the fitted object from calling the function \code{\lin
 }
 
 \usage{
-\method{plot}{FW}(x,plotVAR=NULL,chain=1,\dots)
+\method{plot}{FW}(x,plotVAR=NULL,chain=1,ENVlabel=T,\dots)
 }
 \arguments{
 \item{x}{(class 'FW') returned from calling \code{\link{FW}} function.}
@@ -17,6 +17,7 @@ the plot.FW function plot the fitted object from calling the function \code{\lin
 
 \item{chain}{(integer), only used for Gibbs method, when there are fitted values from multiple chains. This specifies from which chain the fitted value is to be plotted
 }
+\item{ENVlabel}{(logical), if true, environment labels will be printed on x-axis. Otherwise, no enviroment lables will be printed}
 \item{\dots}{
 other arguments to be passed for plot.FW and plot function (e.g., xlab, ylab, main).
 }

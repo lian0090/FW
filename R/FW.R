@@ -21,7 +21,7 @@ FW = function(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS",
 	if (method == "Gibbs") {
 		predictedValue = GibbsFWh0(y = y, VAR = VAR, ENV = ENV, VARlevels = VARlevels, ENVlevels = ENVlevels, nIter = nIter, burnIn = burnIn, 
 			thin = thin, dfe = dfe, dfg = dfg, dfh = dfh, dfb = dfb, priorVARe = priorVARe, priorVARg = priorVARg, priorVARb = priorVARb, priorVARh = priorVARh, 
-			A = A, H = H, nchain = nchain, seed = seed, inits = inits, saveAt = saveAt)
+			A = A, H = H, nchain = nchain, seed = seed, inits = inits, saveAt = saveAt,saveVAR=saveVAR,saveENV=saveENV)
 	}
 
 
@@ -33,7 +33,7 @@ FW = function(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS",
 ####################################################################################
 ### function to plot FW object
 ####################################################################################
-plot.FW = function(x,plotVAR=NULL,chain=1, ...) {
+plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T, ...) {
   ##first argument name must be x to be consistent with S3 generic methods
   namesx = names(x)
   for (i in 1:length(namesx)) {
@@ -67,26 +67,40 @@ plot.FW = function(x,plotVAR=NULL,chain=1, ...) {
   y = y[, 3]
   n.VAR = length(VARlevels)
   oripar = par()$mar
-  par(xpd = T, mar = oripar + c(0, 0, 0, 5))
+  if(!ENVlabel){
+  par(xpd = T, mar = oripar + c(1.5, 0, 0, 5))
+  }else{
+  par(xpd = T, mar = oripar + c(0, 0, 0, 5))  
+  }
   range.h = range(h, na.rm = T)
   range.y = range(y, na.rm = T)
   
   #default valus for ...
-  bty=list(...)$bty
-  xlab=list(...)$xlab
-  ylab=list(...)$ylab
-  if(is.null(bty))bty="l"
-  if(is.null(xlab))xlab="Environment effect"
-  if(is.null(ylab))ylab = "Variety performance"
+  args1=list(xlab="Environment effect",ylab="Variety performance",bty="l",type="n")
+  inargs<-list(...)
+  args1[names(inargs)]<-inargs
   
-  plot(range.y ~ range.h, type = "n", xlab = xlab, ylab = ylab, bty = bty,...)
-  
+  if(!ENVlabel){
+  do.call(plot,c(list(formula=range.y ~ range.h),args1))
+  }else{
+    args2=args1
+    args2$xlab=""
+    do.call(plot,c(list(formula=range.y ~ range.h), args2))
+    args2=args1
+    args2$main=""
+    args2$ylab=""
+    args2$line=4
+    args2$type=NULL
+    do.call(title,args2)    
+  }
   h = h[order(h[, chain]), chain]
   
   sorth1 = h[seq(1, length(h), by = 2)]
   sorth2 = h[seq(2, length(h), by = 2)]
-  axis(side = 1, at = sorth1, labels = names(sorth1), line = 1, las = 2)
-  axis(side = 3, at = sorth2, labels = names(sorth2), line = 1, las = 2)
+  if(ENVlabel){
+  axis(side = 1, at = sorth1, labels = names(sorth1), line = 2)
+  axis(side = 3, at = sorth2, labels = names(sorth2), line = 1)
+  }
   cols = NULL
   pchs = NULL
   for (i in 1:n.VAR) {
@@ -102,8 +116,8 @@ plot.FW = function(x,plotVAR=NULL,chain=1, ...) {
     p.i = h[ENV.i]
     order.E.i = order(p.i)
     sortp.i = sort(p.i)
-    lines(yhat.i[order.E.i] ~ sortp.i, col = col, type = "l")
-    points(y.i[order.E.i] ~ sortp.i, col = col, pch = pch)
+    lines(yhat.i[order.E.i] ~ sortp.i, col = col, type = "l",...)
+    points(y.i[order.E.i] ~ sortp.i, col = col, pch = pch,...)
     whmax = which.max(p.i)
     #text(x=min(p.i)+1.05*(max(p.i)-min(p.i)),y=y.i[whmax],labels=IDLi,col=col)
     
@@ -112,7 +126,7 @@ plot.FW = function(x,plotVAR=NULL,chain=1, ...) {
   usr <- par("usr")
   clip(range.h[1], range.h[2], range.y[1], range.y[2])
   abline(a = mean(y, na.rm = T), b = 1, lty = 2, col = 1)
-  clip(usr[1], usr[2] * 10, usr[3], usr[4])
+  clip(usr[1], usr[2] + (usr[2]-usr[1])* 10, usr[3], usr[4])
   legend(x = usr[2], y = usr[4], legend = c(VARlevels, "slope = 1"), lty = c(rep(1, n.VAR), 2), col = c(cols, 1), bg = "transparent", bty = "n")
   par(mar = oripar)
   do.call("clip", as.list(usr))

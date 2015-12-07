@@ -27,6 +27,8 @@ mu[0]=muhat+sqrtf(V_muhat)*norm_rand();
 for(i=0;i<n;i++) e[i]=e[i]-mu[0];
 }
 
+
+
 void sample_beta_ID_x1(double *b, double *e, const int *C_ID, int n, int ngroups,double var_e,double var_b){
 //update b and e.
 //x are all ones in this case y=b[ID]
@@ -166,4 +168,4 @@ SEXP R_Udelta(SEXP R_U, SEXP R_delta){
     return(R_b);
 }
 */
- 
+

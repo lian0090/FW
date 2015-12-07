@@ -8,3 +8,7 @@ void sample_betaX(double *b,double *e, double *Xvec, int nrow, int ncol,double v
 void Ldelta(double *b,const double *L, const double *delta, const int ngroups);
 void Udelta(double *b, const double *U, const double *delta, const int nb, const int ndelta);
 #endif
+
+double invNormpdf(double d, double mu, double sigma,int lower_tail);
+void sample_mu_slicer(double *mu, double lmu, double rmu, double *e, double var_e, int n);
+
