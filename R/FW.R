@@ -11,9 +11,9 @@ FW = function(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS",
 	if (nIter <= burnIn) 
 		stop("nIter must be larger than burnIn\n")
 
-	whNA = which(is.na(y))
-	#if genotype or environment is completely missing for a GxE combination, the predicted value of  y is still NA.
-	
+	if(any(is.na(VAR)))stop("NA  in VAR is not allowed\n")
+  
+  if(any(is.na(ENV)))stop("NA in ENV is ont allowed\n")
 
 	if (method == "OLS") {
 		predictedValue = lmFWh0(y, VAR, ENV, VARlevels = VARlevels, ENVlevels = ENVlevels)
