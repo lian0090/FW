@@ -4,10 +4,6 @@ FW = function(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS",
 	seed = NULL, inits = NULL, saveVAR = c(1:2), saveENV = c(1:2)) {
 	model = "h0"
 
-	if (saveAt == "") {
-		saveAt = paste(getwd(), "/", sep = "")
-	}
-
 	if (nIter <= burnIn) 
 		stop("nIter must be larger than burnIn\n")
 
