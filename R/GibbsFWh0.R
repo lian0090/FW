@@ -10,8 +10,9 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt="",nIter=5000,
   if (saveAt == "") {
     saveAt = paste(getwd(), "/", sep = "")
   }
-  
-  savedir=dirname(saveAt)
+  ##paste a randomfile name to saveAt in order to get the correct directory name.
+  #for example, dirname("~/a//") will be ~. 
+  savedir=dirname(paste(saveAt,"ArandomfileName.txt",sep=""))
   
   if(!file.exists(savedir)){
     dir.create(savedir)
