@@ -54,21 +54,21 @@ SEXP C_GibbsFWh0(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h,
     int *yhatstore=INTEGER_POINTER(R_yhatstore);
     double *Linv=NUMERIC_POINTER(R_Linv);
     double *LHinv=NUMERIC_POINTER(R_LHinv);
-
+    
     //int MethodChol=INTEGER_VALUE(R_MethodChol);
     int ndeltah;
     int ndeltag;
     if(!ISNAN(L[0])){
-    SEXP RdimUA;
-    PROTECT(RdimUA=getAttrib(R_LA,R_DimSymbol));nProtect+=1;
-    if(isNull(RdimUA)){ndeltag=1;}else ndeltag=INTEGER(RdimUA)[1];
+        SEXP RdimUA;
+        PROTECT(RdimUA=getAttrib(R_LA,R_DimSymbol));nProtect+=1;
+        if(isNull(RdimUA)){ndeltag=1;}else ndeltag=INTEGER(RdimUA)[1];
     }else ndeltag=ng;
     //printf("ndeltag%d\n",ndeltag);
     
     if(!ISNAN(LH[0])){
-    SEXP RdimUH;
-    PROTECT(RdimUH=getAttrib(R_LH,R_DimSymbol));nProtect+=1;
-    if(isNull(RdimUH)){ndeltah=1;}else ndeltah=INTEGER(RdimUH)[1];
+        SEXP RdimUH;
+        PROTECT(RdimUH=getAttrib(R_LH,R_DimSymbol));nProtect+=1;
+        if(isNull(RdimUH)){ndeltah=1;}else ndeltah=INTEGER(RdimUH)[1];
     }else ndeltah=nh;
     //printf("ndeltah:%d\n",ndeltah);
     
@@ -180,19 +180,25 @@ SEXP C_GibbsFWh0(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h,
     
     double *e=(double *) R_alloc(n,sizeof(double));
     double *X=(double *) R_alloc(n,sizeof(double));
-    // including covariance matrix for g , b ,h
-    double *ZgL, *ZgLh,*delta_g, *delta_b, *Xkb,*Xkg;
-    //double *post_delta_g;
     double *ZhL, *ZhLb, *delta_h, *Xkh;
+    double *ZgL, *ZgLh,*delta_g, *delta_b, *Xkb,*Xkg;
+
+
+    
     if(!ISNAN(LH[0])){
         //ZhL : multiplier for delta_h
         ZhL=(double *) R_alloc(n*ndeltah,sizeof(double));
         //ZhLb is the incidence matrix for delta_h
         ZhLb=(double *) R_alloc(n*ndeltah,sizeof(double));
+        for(j=0;j<(n*ndeltah);j++){
+            ZhL[j]=0;
+            ZhLb[j]=0;
+        }
         delta_h=(double *)R_alloc(ndeltah,sizeof(double));
+        for(j=0;j<ndeltah;j++)delta_h[j]=0;
         //inital values for delta_h transformed from h.
         Ldelta(delta_h,LHinv,h,nh);
-       // Udelta(delta_h,LHinv,h,ndeltah,nh);
+        // Udelta(delta_h,LHinv,h,ndeltah,nh);
         
         for(j=0;j<ndeltah;j++){
             //initial values for delta_h  same as h
@@ -204,19 +210,28 @@ SEXP C_GibbsFWh0(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h,
     }
     
     if(!ISNAN(L[0])){
+        // including covariance matrix for g , b ,h
         //ZgL is the incidence matrix for delta_g
         ZgL=(double *) R_alloc(n*ndeltag,sizeof(double));
         //ZgLh is the incidence matrix for delta_b
         ZgLh=(double *) R_alloc(n*ndeltag,sizeof(double));
+        for(j=0;j<(n*ndeltag);j++){
+            ZgL[j]=0;
+            ZgLh[j]=0;
+        }
         delta_g=(double *)R_alloc(ndeltag,sizeof(double));
         delta_b=(double *)R_alloc(ndeltag,sizeof(double));
+        for(j=0;j<ndeltag;j++){
+            delta_g[j]=0;
+            delta_b[j]=0;
+        }
         //post_delta_g
         /*
-        post_delta_g=(double *)R_alloc(ng,sizeof(double));
-        for(j=0;j<ng;j++){
-            post_delta_g[j]=0;
-        }
-        */
+         post_delta_g=(double *)R_alloc(ng,sizeof(double));
+         for(j=0;j<ng;j++){
+         post_delta_g[j]=0;
+         }
+         */
         
         //initial values for delta_g and delta_b
         //Ldelta calculates b=L%*%delta_b or delta_b=Linv%*%b
@@ -225,12 +240,8 @@ SEXP C_GibbsFWh0(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h,
         Ldelta(delta_b,Linv,b,ng);
         //Udelta(delta_g,Linv,g,ndeltag,ng);
         //Udelta(delta_b,Linv,b,ndeltag,ng);
-       
+        
         for(j=0;j<ndeltag;j++){
-            /*//initial values for delta_g and delta_b set the same as g and b
-             delta_g[j]= NUMERIC_POINTER(R_g)[j];
-             delta_b[j]= NUMERIC_POINTER(R_b)[j];
-             */
             for(i=0;i<n;i++){
                 //ZgL is the incidence matrix for delta_g
                 ZgL[i+n*j]=L[C_IDL[i]+j*ng];
@@ -294,7 +305,7 @@ SEXP C_GibbsFWh0(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h,
             }
             //update h from delta_h
             Ldelta(h,LH,delta_h,nh);
-           //Udelta(h,LH,delta_h,nh,ndeltah);
+            //Udelta(h,LH,delta_h,nh,ndeltah);
         }
         
         if(ISNAN(L[0])){
@@ -378,10 +389,10 @@ SEXP C_GibbsFWh0(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h,
             
             //update b from delta_b
             //update g from delta_g //this is needed to get SD_g and plot the samples for g (instead of plot delta_g), but maybe it better not to do this for many lines for computation reaons, we might want to report delta_g in the case of too many line.
-             Ldelta(b,L,delta_b,ng);
-             Ldelta(g,L,delta_g,ng);
-             //Udelta(g,L,delta_g,ng,ndeltag);
-             //Udelta(b,L,delta_b,ng,ndeltag);
+            Ldelta(b,L,delta_b,ng);
+            Ldelta(g,L,delta_g,ng);
+            //Udelta(g,L,delta_g,ng,ndeltag);
+            //Udelta(b,L,delta_b,ng,ndeltag);
         }
         
         //var_e;
@@ -503,8 +514,8 @@ SEXP C_GibbsFWh0(SEXP R_y, SEXP R_IDL, SEXP R_IDE, SEXP R_g, SEXP R_b, SEXP R_h,
     
     
     //get post_g from post_delta_g
-   // if(!ISNAN(L[0])){
-     //   Ldelta(post_g,L,post_delta_g,ng);
+    // if(!ISNAN(L[0])){
+    //   Ldelta(post_g,L,post_delta_g,ng);
     //}
     
     fclose(fsaveFile);

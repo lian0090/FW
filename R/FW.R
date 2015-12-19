@@ -1,5 +1,6 @@
 #a wrapper for GibbsFW and lmFW
-FW = function(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS", "Gibbs")[2], A = NULL, H = NULL, saveAt = "", nIter = 5000, 
+#VAR and ENV coersed to factors
+FW = function(y, VAR, ENV,  method = c("OLS", "Gibbs")[2], A = NULL, H = NULL, saveAt = "", nIter = 5000, 
 	burnIn = 3000, thin = 5, dfe = 5, dfg = 5, dfh = 5, dfb = 5, priorVARe = NULL, priorVARg = NULL, priorVARb = NULL, priorVARh = NULL, nchain = 1, 
 	seed = NULL, inits = NULL, saveVAR = c(1:2), saveENV = c(1:2)) {
 	model = "h0"
@@ -10,12 +11,13 @@ FW = function(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS",
 	if(any(is.na(VAR)))stop("NA  in VAR is not allowed\n")
   
   if(any(is.na(ENV)))stop("NA in ENV is ont allowed\n")
-
+	#coerse to factors
+   
 	if (method == "OLS") {
-		predictedValue = lmFWh0(y, VAR, ENV, VARlevels = VARlevels, ENVlevels = ENVlevels)
+		predictedValue = lmFWh0(y, VAR, ENV)
 	}
 	if (method == "Gibbs") {
-		predictedValue = GibbsFWh0(y = y, VAR = VAR, ENV = ENV, VARlevels = VARlevels, ENVlevels = ENVlevels, nIter = nIter, burnIn = burnIn, 
+		predictedValue = GibbsFWh0(y = y, VAR = VAR, ENV = ENV,  nIter = nIter, burnIn = burnIn, 
 			thin = thin, dfe = dfe, dfg = dfg, dfh = dfh, dfb = dfb, priorVARe = priorVARe, priorVARg = priorVARg, priorVARb = priorVARb, priorVARh = priorVARh, 
 			A = A, H = H, nchain = nchain, seed = seed, inits = inits, saveAt = saveAt,saveVAR=saveVAR,saveENV=saveENV)
 	}
@@ -31,37 +33,33 @@ FW = function(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS",
 ####################################################################################
 plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T, ...) {
   ##first argument name must be x to be consistent with S3 generic methods
-  namesx = names(x)
-  for (i in 1:length(namesx)) {
-    assign(namesx[i], x[[i]])
-  }
   if(is.null(chain))chain=1
+ y=x$y
+ VARlevels=x$VARlevels
+ ENVlevels=x$ENVlevels
+ VAR=factor(x$VAR,levels=VARlevels)
+ ENV=factor(x$ENV,levels=ENVlevels)
+ IDL=as.numeric(VAR)
+ IDE=as.numeric(ENV)
+ yhat=x$yhat[,chain]
+ mu=x$mu[chain]
+ g=x$g[,chain]
+ names(g)=VARlevels
+ b=x$b[,chain]
+ names(b)=VARlevels
+ h=x$h[,chain]
+ names(h)=ENVlevels
+  
   if (!is.null(plotVAR)) {
     if (is.integer(plotVAR)) {
       plotIDL = plotVAR
     } else if (is.character(plotVAR)) {
-      plotIDL = which(VARlevels %in% plotVAR)
-      
+      plotIDL = match(plotVAR,VARlevels,nomatch=0) 
     }
-    
-    VARlevels = VARlevels[plotIDL]
-    whVAR = which(VAR %in% VARlevels)
-    y = y[whVAR]
-    VAR = VAR[whVAR]
-    ENV = ENV[whVAR]
-    yhat = yhat[whVAR, chain]
-  } else {
-    yhat = yhat[, chain]
-  }
-  yhat = aggregate(yhat, by = list(VAR, ENV), function(a) mean(a, na.rm = T))
-  y = data.frame(aggregate(y, by = list(VAR, ENV), function(a) mean(a, na.rm = T)))
-  colnames(yhat) = c("VAR", "ENV", "yhat")
-  yhat$yhat = yhat$yhat
-  VAR = yhat$VAR
-  ENV = yhat$ENV
-  yhat = yhat$yhat
-  y = y[, 3]
-  n.VAR = length(VARlevels)
+  }else{
+    plotIDL=c(1:length(VARlevels))
+  } 
+  n.plotVAR = length(plotIDL)
   oripar = par()$mar
   if(!ENVlabel){
   par(xpd = T, mar = oripar + c(1.5, 0, 0, 5))
@@ -69,7 +67,9 @@ plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T, ...) {
   par(xpd = T, mar = oripar + c(0, 0, 0, 5))  
   }
   range.h = range(h, na.rm = T)
-  range.y = range(y, na.rm = T)
+ #set range.y with ys in plotIDL
+ y.plot=y[(IDL%in%plotIDL)]
+ range.y = range(y.plot, na.rm = T)
   
   #default valus for ...
   args1=list(xlab="Environment effect",ylab="Variety performance",bty="l",type="n")
@@ -89,41 +89,42 @@ plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T, ...) {
     args2$type=NULL
     do.call(title,args2)    
   }
-  h = h[order(h[, chain]), chain]
+  sorth = sort(h)
   
-  sorth1 = h[seq(1, length(h), by = 2)]
-  sorth2 = h[seq(2, length(h), by = 2)]
+  sorth1 = sorth[seq(1, length(h), by = 2)]
+  sorth2 = sorth[seq(2, length(h), by = 2)]
   if(ENVlabel){
   axis(side = 1, at = sorth1, labels = names(sorth1), line = 2)
   axis(side = 3, at = sorth2, labels = names(sorth2), line = 1)
   }
   cols = NULL
   pchs = NULL
-  for (i in 1:n.VAR) {
-    col = i + 1
+ 
+  usr <- par("usr")
+  col=1
+  for (i in plotIDL) {
+    col = col + 1
     pch = 1
     cols = c(cols, col)
     pchs = c(pchs, pch)
-    VARi = VARlevels[i]
-    wh.i = which(VAR == VARi)
-    yhat.i = yhat[wh.i]
-    y.i = y[wh.i]
-    ENV.i = ENV[wh.i]
-    p.i = h[ENV.i]
-    order.E.i = order(p.i)
-    sortp.i = sort(p.i)
-    lines(yhat.i[order.E.i] ~ sortp.i, col = col, type = "l",...)
-    points(y.i[order.E.i] ~ sortp.i, col = col, pch = pch,...)
-    whmax = which.max(p.i)
-    #text(x=min(p.i)+1.05*(max(p.i)-min(p.i)),y=y.i[whmax],labels=IDLi,col=col)
-    
+    IDLi = which(IDL == i)
+    y.i = y[IDLi]
+    ENV.i=ENV[IDLi]
+    #aggregate will not change the factor levels  
+    cellMeans=aggregate(y.i,by=list(ENV.i),mean)
+    cellMeansIDE=as.numeric(cellMeans[,1])
+    cellMeans=cellMeans[,2]
+    hi=h[cellMeansIDE]
+    clip(range.h[1], range.h[2], range.y[1], range.y[2])
+    abline(a=mu+g[i],b=b[i]+1, col = col, ...)
+    do.call("clip", as.list(usr))
+    points(cellMeans ~ hi, col = col, pch = pch,xpd=T,...)    
   }
   #the intercept denpends on g
-  usr <- par("usr")
   clip(range.h[1], range.h[2], range.y[1], range.y[2])
-  abline(a = mean(y, na.rm = T), b = 1, lty = 2, col = 1)
+  abline(a = mean(y.plot, na.rm = T), b = 1, lty = 2, col = 1)
   clip(usr[1], usr[2] + (usr[2]-usr[1])* 10, usr[3], usr[4])
-  legend(x = usr[2], y = usr[4], legend = c(VARlevels, "slope = 1"), lty = c(rep(1, n.VAR), 2), col = c(cols, 1), bg = "transparent", bty = "n")
+  legend(x = usr[2], y = usr[4], legend = c(VARlevels[plotIDL], "slope = 1"), lty = c(rep(1, n.plotVAR), 2), col = c(cols, 1), bg = "transparent", bty = "n")
   par(mar = oripar)
   do.call("clip", as.list(usr))
 }
@@ -137,26 +138,13 @@ plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T, ...) {
 #}
 
 
-getIDEL = function(VAR, ENV, VARlevels = NULL, ENVlevels = NULL) {
-	VAR = as.character(VAR)
-	ENV = as.character(ENV)
-	if (is.null(VARlevels)) {
-		VARlevels = sort(unique(VAR))
-	}
-	if (is.null(ENVlevels)) {
-		ENVlevels = sort(unique(ENV))
-	}
-	fVAR = factor(VAR, levels = VARlevels, ordered = T)
-	fENV = factor(ENV, levels = ENVlevels, ordered = T)
-	IDL = as.numeric(fVAR)
-	IDE = as.numeric(fENV)
-	out = list()
-	out$IDL = IDL
-	out$IDE = IDE
-	out$VARlevels = VARlevels
-	out$ENVlevels = ENVlevels
-	out$fVAR = fVAR
-	out$fENV = fENV
+getIDEL = function(VAR, ENV) {
+  #coerse to factors
+	out$IDL = as.numeric(VAR)
+	out$IDE = as.numeric(ENV)
+  out$VARlevels = levels(VAR)
+	out$ENVlevels = levels(ENV)
+
 	return(out)
 }
 

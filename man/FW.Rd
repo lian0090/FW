@@ -7,7 +7,7 @@ An R package for Genomic/Pedigree and Spatial analysis using the Finlay-Wilkinso
 The FW ("Finlay-Wilkinson") function fits the Finlay-Wilkinson regression with Ordinary least squares method or Bayesian method to continuous traits. Genomic informationa and Spatial correlations can be included in the model. 
 }
 \usage{
-FW(y, VAR, ENV, VARlevels = NULL, ENVlevels = NULL, method = c("OLS", 
+FW(y, VAR, ENV, method = c("OLS", 
     "Gibbs")[2], A = NULL, H = NULL, saveAt = "", nIter = 5000, 
     burnIn = 3000, thin = 5, dfe = 5, dfg = 5, dfh = 5, dfb = 5, 
     priorVARe = NULL, priorVARg = NULL, priorVARb = NULL, priorVARh = NULL, 
@@ -20,13 +20,11 @@ Only the arguments \code{y}, \code{VAR}, \code{ENV}, \code{VARlevels}, \code{ENV
 (numeric, \eqn{n}) The data vector (NAs are alllowed). 
 }
   \item{VAR}{
-(character, \eqn{n}) is a vector whose elements are identifiers for the varieties which are treated as labels (NAs are not allowed).
+(character, \eqn{n}) is a vector whose elements are identifiers for the varieties which are treated as labels (NAs are not allowed).Internally, VAR is coersed to factors.
 }
   \item{ENV}{ 
-  (character, \eqn{n}) is a vector whose elements are identifiers for the environments which are treated as labels (NAs are not allowed).
+  (character, \eqn{n}) is a vector whose elements are identifiers for the environments which are treated as labels (NAs are not allowed). Internally, ENV is coersed to factors.
   }
-  \item{VARlevels}{(character, \eqn{qg}) unique levels of variety identifiers used to specify the order of fitting for the varieties and the order of output for the estimates of g and b. The default values are the unique values of VAR sorted into ascending order by string comparisons. }
-  \item{ENVlevels}{(character, \eqn{qh}) unique levels of environment identifiers used to specify the order of fitting for the environments and the order of output for the estimates of h. The default values are the unique values of ENV sorted into ascending order by string comparison.}
   \item{method}{
   Describes what method to use: either "OLS" for ordinary least squares method or "Gibbs" for Bayesian method using Gibbs Sampler. The default is "Gibbs".
   }
@@ -71,7 +69,7 @@ A list with estimated posterior means and the parameters used to fit the model.
   \item{y}{response vector used in the call to FW}
   \item{whichNa}{the position of the entries in y that were missing}
   \item{VAR}{The identifiers for varieties}
-  \item{ENV}{the identifiers for environments}
+  \item{ENV}{The identifiers for environments}
   \item{VARlevels}{the levels of the varieties (the varieties are fitted in the order of the VARlevels)}
   \item{ENVlevels}{
   levels of the environments (the environments are fitted in the order of the ENVlevels

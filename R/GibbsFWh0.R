@@ -1,11 +1,8 @@
-GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt="",nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,H=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2),saveyhat=NULL){
+GibbsFWh0=function(y,VAR,ENV,saveAt="",nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5,dfh=5,dfb=5,priorVARe=NULL,priorVARg=NULL,priorVARb=NULL,priorVARh=NULL,A=NULL,H=NULL,nchain=1,seed=NULL,inits=NULL,saveVAR=c(1:2),saveENV=c(1:2),saveyhat=NULL){
   #check Input type
   if(any(!is.numeric(c(nIter,burnIn,thin,dfe,dfg,dfh,dfb)))){
     stop("thin and df must be a numeric")
   }
-  if(any(!is.numeric(c(saveVAR,saveENV)))){
-    stop("saveVAR and saveENV must be a numeric")
-  }	
   
   if (saveAt == "") {
     saveAt = paste(getwd(), "/", sep = "")
@@ -21,20 +18,23 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt="",nIter=5000,
   if(!is.null(seed)){
     if(length(seed)!=nchain)stop("number of seed must be equal to the number of chains")
   }	
+  VAR=factor(VAR)
+  ENV=factor(ENV)
+  IDL=as.numeric(VAR)
+  IDE=as.numeric(ENV)
+  VARlevels=levels(VAR)
+  ENVlevels=levels(ENV)
+  if(!is.integer(saveVAR) & !(is.character(saveVAR))){
+    stop("saveVAR must be interger or character vector\n")
+    if(is.character(saveVAR))saveVAR=match(saveVAR,VARlevels,nomatch=0)
   
-  if(!is.integer(saveVAR)){
-    stop("saveVAR must be interger vector")
   }
-  if(!is.integer(saveENV)){
-    stop("saveENV must be interger vector")
-  }	
-  #setup VARlevels and ENVlevels (if VARlevels and ENVlevels are NULL, they are set to default increasing orders)
-  IDEL=getIDEL(VAR,ENV,VARlevels,ENVlevels)
-  IDE=IDEL$IDE
-  IDL=IDEL$IDL
-  VARlevels=IDEL$VARlevels
-  ENVlevels=IDEL$ENVlevels
-  if(is.null(saveyhat))saveyhat=which((VAR %in% VARlevels[saveVAR]) & (ENV %in% ENVlevels[saveENV]))
+  if(!is.integer(saveENV) & !(is.character(saveENV))){
+    stop("saveENV must be interger or character vector\n")
+    if(is.character(saveENV))saveENV=match(saveENV,ENVlevels,nomatch=0)
+  }  
+  
+  if(is.null(saveyhat))saveyhat=which((IDL %in% saveVAR) & (IDE %in% saveENV))
   
   if(!is.null(H)){
     if(nrow(H)!=ncol(H)){
@@ -48,7 +48,7 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt="",nIter=5000,
       stop("colnames of H must be equal to rownames of H\n")
     }
     
-    if(any(!(unique(ENV) %in% colnames(H)))) stop("Covariance structure not available for some environments")
+    if(any(!(ENVlevels %in% colnames(H)))) stop("Covariance structure not available for some environments")
     
     H=H[ENVlevels,ENVlevels] ##changed the order of A to correspond to user defined or default VARlevels.
     
@@ -68,7 +68,7 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt="",nIter=5000,
       stop("colnames of A must be equal to rownames of A\n")
     }
     
-    if(any(!(unique(VAR) %in% colnames(A)))) stop("Covariance structure not available for some varieties")
+    if(any(!(VARlevels %in% colnames(A)))) stop("Covariance structure not available for some varieties")
     
     
     A=A[VARlevels,VARlevels] ##changed the order of A to correspond to user defined or default VARlevels.
@@ -190,7 +190,6 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt="",nIter=5000,
       
       # postMeanlogLikT[i]=outi$postlogLik
       # logLikAtPostMeanT[i]=outi$logLikAtPostMean
-      
     }
     
     rownames(gT)=VARlevels
@@ -214,7 +213,7 @@ GibbsFWh0=function(y,VAR,ENV,VARlevels=NULL,ENVlevels=NULL,saveAt="",nIter=5000,
     # fit=list(postMeanlogLik=postMeanlogLikT,logLikAtPostMean=logLikAtPostMeanT,pD=pD,DIC=DIC)
     # postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,g=gT,b=bT,h=hT,yhat=yhatT,var_e=var_eT,var_g=var_gT,var_b=var_bT,var_h=var_hT,post_yhat=post_yhatT,fit=fit)
     
-    postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV,VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,SD.mu=SD.muT,g=gT,SD.g=SD.gT,b=bT,SD.b=SD.bT,h=hT,SD.h=SD.hT,yhat=post_yhatT,SD.yhat=SD.yhatT,var_e=var_eT,SD.var_e=SD.var_eT,var_g=var_gT,SD.var_g=SD.var_gT,var_b=var_bT,SD.var_b=SD.var_bT,var_h=var_hT,SD.var_h=SD.var_hT)		
+    postMean=list(y=y,whichNa=whNA,VAR=VAR,ENV=ENV, VARlevels=VARlevels,ENVlevels=ENVlevels, mu=muT,SD.mu=SD.muT,g=gT,SD.g=SD.gT,b=bT,SD.b=SD.bT,h=hT,SD.h=SD.hT,yhat=post_yhatT,SD.yhat=SD.yhatT,var_e=var_eT,SD.var_e=SD.var_eT,var_g=var_gT,SD.var_g=SD.var_gT,var_b=var_bT,SD.var_b=SD.var_bT,var_h=var_hT,SD.var_h=SD.var_hT)		
     class(postMean)=c("FW","list")
     
     for(i in 1:nchain){
