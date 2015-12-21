@@ -1,0 +1,133 @@
+---
+title: "Test version of FW pipeline"
+output: html_document
+---
+This is a test version of the examples in the manuscript: the only differnece is that only 200 iterations are run to produce this document
+
+
+```{r}
+#setwd("~/Dropbox/work/arvalisGxE/manuscript/results/h0")
+
+##loading library and data
+library(FW)
+#only coda functions used inside FW package is automatically loaded.
+library(coda)
+#To run this with older versions of FW and do comparisons
+#devtools::load_all("~/Desktop/FWold")
+#library(coda)
+data(wheat)
+attach(wheat.Y)
+
+OLS=FW(y=y,VAR=VAR,ENV=ENV, method="OLS")
+GibbsI=FW(y=y,VAR=VAR,ENV=ENV,method="Gibbs",seed=12345,saveAt="GibbsI",burnIn=100,nIter=200)
+GibbsA=FW(y=y,VAR=VAR,ENV=ENV, method="Gibbs",A=wheat.G,seed=12345, saveAt="GibbsA",burnIn=100,nIter=200)
+load("GibbsIsamps.rda")
+sampsI=samps
+load("GibbsAsamps.rda")
+sampsA=samps
+```
+## Estimated variance components 
+```{r}
+formatCI=function(M,L,U){
+	L=formatC(L,digits=2,format="f")
+	U=formatC(U,digits=2,format="f")
+ 	M=formatC(M,digits=2,format="f")
+	paste(M," (",L,", ", U,")",sep="")
+}
+ 
+cbind(
+c(formatC(OLS$var_e_weighted,digits=2,format="f"),rep(0,3)),
+formatCI(c(GibbsI$var_e,GibbsI$var_g,GibbsI$var_b,GibbsI$var_h),HPDinterval(sampsI[,c("var_e","var_g","var_b","var_h")])[[1]][,1],HPDinterval(sampsI[,c("var_e","var_g","var_b","var_h")])[[1]][,2]),
+
+formatCI(c(GibbsA$var_e,GibbsA$var_g,GibbsA$var_b,GibbsA$var_h),HPDinterval(sampsA[,c("var_e","var_g","var_b","var_h")])[[1]][,1],HPDinterval(sampsA[,c("var_e","var_g","var_b","var_h")])[[1]][,2])
+)
+```
+
+## correlation between parameter estimates 
+```{r}
+matrix(
+	formatC(
+		c(
+			cor(OLS$h,GibbsI$h),cor(OLS$h,GibbsA$h),cor(GibbsI$h,GibbsA$h),
+			cor(OLS$b,GibbsI$b),cor(OLS$b,GibbsA$b),cor(GibbsI$b,GibbsA$b),
+			cor(OLS$g,GibbsI$g),cor(OLS$g,GibbsA$g),cor(GibbsI$g,GibbsA$g),
+			cor(OLS$yhat,GibbsI$yhat),cor(OLS$yhat,GibbsA$yhat),cor(GibbsI$yhat,GibbsA$yhat)
+		)
+	,digits=2,format="f")
+,nrow=4,ncol=3,byrow=T
+)
+```
+
+##Plot fitted models 
+
+```{r, echo=FALSE,fig.width=8,fig.height=3.5,dev.args=list(pointsize=8)}
+par(mfrow=c(1,2),mar=c(5,4,4,2)+0.5,xpd=F)
+plot(OLS,main="OLS",cex.lab=1.5,cex=0.2,lwd=0.2); plot(GibbsA,main="GibbsA",cex.lab=1.5,cex=0.2,lwd=0.2)
+
+par(mfrow=c(1,2),mar=c(5,4,4,2)+0.5)
+ 
+plot(OLS,plotVAR=c("1081265","1101307", 
+                    "1295736", "13302" , "1343502"), main="OLS",cex.lab=1.5); 
+plot(GibbsA,plotVAR=c("1081265","1101307", 
+                    "1295736", "13302" , "1343502"), main="GibbsA",cex.lab=1.5)
+
+```
+
+## Environment effects with GibbsH
+```{r}
+H=diag(1,4)
+H[1,2]=H[2,1]=0.9
+colnames(H)=rownames(H)=c(1,2,4,5)
+
+GibbsH=FW(y=y,VAR=VAR,ENV=ENV,		method="Gibbs",H=H,seed=12345,nIter=200,burnIn=100)
+
+yNA=y
+yNA[which(ENV==2)]=NA
+
+GibbsH_NA=FW(y=yNA,VAR=VAR,ENV=ENV,		method="Gibbs",H=H,seed=12345,nIter=200,burnIn=100)
+
+round(cbind(GibbsI$h,GibbsH$h,GibbsH_NA$h),2)
+```
+
+##trace plot
+```{r,fig.height=8,fig.width=8}
+load("GibbsAsamps.rda")
+plot(samps[,c("var_e","var_g","var_b","var_h")])
+plot(samps[,c("mu","h[1]","h[2]")],density=F)
+```
+
+#prediction accuracy for training and validation data sets.
+```{r}
+yNA=y
+seed=12345; set.seed(seed)
+#randomly masking one environment for each variety
+whichNa=seq(from=0,to=2392,by=4)+sample(1:4,size=599,replace=T)
+yNA[whichNa]=NA
+
+OLS=FW(y=yNA,VAR=VAR,ENV=ENV, method="OLS")
+GibbsI=FW(y=yNA,VAR=VAR,ENV=ENV,
+method="Gibbs",seed=seed,nIter=200, burnIn=100)
+GibbsA=FW(y=yNA,VAR=VAR,ENV=ENV,
+method="Gibbs",A=wheat.G,seed=seed,nIter=200,burnIn=100)
+
+round(cbind(
+cor(y[-whichNa],OLS$yhat[-whichNa,]),
+cor(y[-whichNa],GibbsI$yhat[-whichNa,]),
+cor(y[-whichNa],GibbsA$yhat[-whichNa,]),
+cor(y[whichNa],OLS$yhat[whichNa,]),
+cor(y[whichNa],GibbsI$yhat[whichNa,]),
+cor(y[whichNa],GibbsA$yhat[whichNa,])
+)
+,digits=2)
+```
+
+# put VAR and ENV as factor
+
+```{r,fig.width=8,fig.height=3.5,dev.args=list(pointsize=8)}
+fEV=FW(y=yNA,VAR=factor(VAR),ENV=factor(ENV),nIter=200,burnIn=100,A=wheat.G,seed=12345)
+par(mfrow=c(1,2),mar=c(5,4,4,2)+0.5,xpd=F)
+plot(GibbsA,main="GibbsA",cex.lab=1.5,cex=0.2,lwd=0.2)
+plot(fEV,main="fEV",cex.lab=1.5,cex=0.2,lwd=0.2)
+round(c(cor(GibbsA$h,fEV$h),cor(GibbsA$g,fEV$g),cor(GibbsA$b,fEV$b),cor(GibbsA$yhat,fEV$yhat)),digits=2)
+cbind(GibbsA$h,fEV$h)
+```
