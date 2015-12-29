@@ -79,7 +79,9 @@ A list with estimated posterior means and the parameters used to fit the model.
   \item{yhat}{(matrix) is the estimates of the predictor: \eqn{yhat = mu+ g + h + b*h}. For OLS, there is only one column for yhat. For Gibbs method, each column of yhat corresponds to a different chain.
   }
   \item{SD.mu,SD.g,SD.b,SD.h,SD.yhat}{only for Gibbs method, the posterior standard deviation for mu, g, b, h and yhat}
-  \item{var_e,var_g,var_b,var_h}{only for Gibbs method, the posterior means for \eqn{\sigma^2_\epsilon}, \eqn{\sigma^2_g}, \eqn{\sigma^2_b}, \eqn{\sigma^2_h}
+  \item{var_e}{For Gibbs method, the posterior mean of \eqn{\sigma^2_\epsilon}; For OLS method, a vector of residual variance for each within line linear regression}
+  \item{var_e_weighted}{weighted mean of residual variance for each within line regression by its residual degree of freedom}
+  \item{var_g,var_b,var_h}{only for Gibbs method, the posterior means for \eqn{\sigma^2_g}, \eqn{\sigma^2_b}, \eqn{\sigma^2_h}
   }
   \item{SD.var_e,SD.var_g,SD.var_b,SD.var_h}{only for Gibbs method, the posterior standard deviation for \eqn{\sigma^2_\epsilon}, \eqn{\sigma^2_g}, \eqn{\sigma^2_b}, \eqn{\sigma^2_h}
 }
