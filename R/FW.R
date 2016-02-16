@@ -31,7 +31,7 @@ FW = function(y, VAR, ENV,  method = c("OLS", "Gibbs")[2], A = NULL, H = NULL, s
 ####################################################################################
 ### function to plot FW object
 ####################################################################################
-plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T, ...) {
+plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T,splitENVlabel=T, ...) {
   ##first argument name must be x to be consistent with S3 generic methods
   if(is.null(chain))chain=1
  y=x$y
@@ -94,8 +94,12 @@ plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T, ...) {
   sorth1 = sorth[seq(1, length(h), by = 2)]
   sorth2 = sorth[seq(2, length(h), by = 2)]
   if(ENVlabel){
-  axis(side = 1, at = sorth1, labels = names(sorth1), line = 2)
-  axis(side = 3, at = sorth2, labels = names(sorth2), line = 1)
+    if(splitENVlabel){
+      axis(side = 1, at = sorth1, labels = names(sorth1), line = 2)
+      axis(side = 3, at = sorth2, labels = names(sorth2), line = 1)
+    }else{
+      axis(side = 1, at=sorth,labels=names(sorth),line=2)
+    }
   }
   cols = NULL
   pchs = NULL
