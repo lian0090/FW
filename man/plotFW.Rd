@@ -8,7 +8,7 @@ the plot.FW function plot the fitted object from calling the function \code{\lin
 }
 
 \usage{
-\method{plot}{FW}(x,plotVAR=NULL,chain=1,ENVlabel=T,\dots)
+\method{plot}{FW}(x,plotVAR=NULL,chain=1,ENVlabel="split",\dots)
 }
 \arguments{
 \item{x}{(class 'FW') returned from calling \code{\link{FW}} function.}
@@ -17,8 +17,7 @@ the plot.FW function plot the fitted object from calling the function \code{\lin
 
 \item{chain}{(integer), only used for Gibbs method, when there are fitted values from multiple chains. This specifies from which chain the fitted value is to be plotted
 }
-\item{ENVlabel}{(logical), if true, environment labels will be printed on x-axis. Otherwise, no enviroment lables will be printed}
-\item{splitENVlabel}{if TRUE, half of the environment labels will be printed on the top of the plot and half of the environment labels will be printed on the bottom of the plot. The default is TRUE so that if there are many environments, the labels can be displayed with more spaces. Otherwise, the environment labels will be printed at the bottom of the plot }
+\item{ENVlabel}{Whether to print environment labels and the label positions: available values are TRUE,FALSE,"split","top" or "bottom". If FALSE, environment labels will not be printed on x-axis. If TRUE or "split", half of the environment labels will be printed on the top of the plot and half of the environment labels will be printed on the bottom of the plot. The default is "split" so that if there are many environments, the labels can be displayed with more spaces. Otherwise, the environment labels will be printed at the bottom ("bottom") or at the top ("top") of the plot}
 \item{\dots}{
 other arguments to be passed for plot.FW and plot function (e.g., xlab, ylab, main).
 }

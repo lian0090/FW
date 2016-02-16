@@ -31,7 +31,7 @@ FW = function(y, VAR, ENV,  method = c("OLS", "Gibbs")[2], A = NULL, H = NULL, s
 ####################################################################################
 ### function to plot FW object
 ####################################################################################
-plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T,splitENVlabel=T, ...) {
+plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel="split", ...) {
   ##first argument name must be x to be consistent with S3 generic methods
   if(is.null(chain))chain=1
  y=x$y
@@ -61,7 +61,7 @@ plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T,splitENVlabel=T, ...) {
   } 
   n.plotVAR = length(plotIDL)
   oripar = par()$mar
-  if(!ENVlabel){
+  if(ENVlabel==FALSE){
   par(xpd = T, mar = oripar + c(1.5, 0, 0, 5))
   }else{
   par(xpd = T, mar = oripar + c(0, 0, 0, 5))  
@@ -76,7 +76,7 @@ plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T,splitENVlabel=T, ...) {
   inargs<-list(...)
   args1[names(inargs)]<-inargs
   
-  if(!ENVlabel){
+  if(ENVlabel==FALSE){
   do.call(plot,c(list(formula=range.y ~ range.h),args1))
   }else{
     args2=args1
@@ -93,12 +93,16 @@ plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel=T,splitENVlabel=T, ...) {
   
   sorth1 = sorth[seq(1, length(h), by = 2)]
   sorth2 = sorth[seq(2, length(h), by = 2)]
-  if(ENVlabel){
-    if(splitENVlabel){
+  if(ENVlabel!=FALSE){
+    if(ENVlabel=="split"|ENVlabel==TRUE){
       axis(side = 1, at = sorth1, labels = names(sorth1), line = 2)
       axis(side = 3, at = sorth2, labels = names(sorth2), line = 1)
-    }else{
+    }else if(ENVlabel=="top"){
       axis(side = 1, at=sorth,labels=names(sorth),line=2)
+    }else if(ENVlabel=="bottom"){
+      axis(side=3,at=sorth,labels=names(sorth),line=1)
+    }else{
+      cat("ENVlabel must be TRUE, FALSE, \"split\",\"top\" or \"bottom\" \n")
     }
   }
   cols = NULL
