@@ -97,9 +97,9 @@ plot.FW = function(x, plotVAR=NULL, chain=1, ENVlabel="split", ...) {
     if(ENVlabel=="split"|ENVlabel==TRUE){
       axis(side = 1, at = sorth1, labels = names(sorth1), line = 2)
       axis(side = 3, at = sorth2, labels = names(sorth2), line = 1)
-    }else if(ENVlabel=="top"){
-      axis(side = 1, at=sorth,labels=names(sorth),line=2)
     }else if(ENVlabel=="bottom"){
+      axis(side = 1, at=sorth,labels=names(sorth),line=2)
+    }else if(ENVlabel=="top"){
       axis(side=3,at=sorth,labels=names(sorth),line=1)
     }else{
       cat("ENVlabel must be TRUE, FALSE, \"split\",\"top\" or \"bottom\" \n")
