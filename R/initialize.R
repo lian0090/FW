@@ -1,11 +1,12 @@
 #initialize
 initialize.Gibbs=function(y,ng,nh,inits=NULL,nchain=1){
   whichNa=which(is.na(y))
-  ynNA=y[-whichNa]
-  VAR_nNA=VAR[-whichNa]
-  ENV_nNA=ENV[-whichNa]
-  ng_nNA=length(unique(VAR_nNA))
-  nh_nNA=length(unique(ENV_nNA))
+  #currently not using, need to add input variable VAR, and ENV to use the following
+  #ynNA=y[-whichNa]
+  #VAR_nNA=VAR[-whichNa]
+  #ENV_nNA=ENV[-whichNa]
+  #ng_nNA=length(unique(VAR_nNA))
+  #nh_nNA=length(unique(ENV_nNA))
   #seed is to set the random seed for Gibbs Sampler for jags. Not for the random seed of inital values.
   #the seed for setting up initial values is their chain index
   var_y=var(y,na.rm=T)
