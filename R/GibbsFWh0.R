@@ -101,7 +101,7 @@ GibbsFWh0=function(y,VAR,ENV,saveAt="",nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5
   ##LAinv and LHinv is only used to get initial values for delta_h, delta_b and delta_g
   if(!is.null(A)) {
     LA<-try(t(chol(A)),silent=T); 
-    if(inherits(LA,"try-error")) stop("A is not full rank, try add small values to the diagonal of A to make it full rank.  ");
+    if(inherits(LA,"try-error")) stop("A positive definite, try add small values to the diagonal of A to make it positive definite");
     LAinv=forwardsolve(LA,x=diag(1,nrow(LA)),upper.tri=F)
   } else {
     LA=NA;
@@ -109,7 +109,7 @@ GibbsFWh0=function(y,VAR,ENV,saveAt="",nIter=5000,burnIn=3000,thin=5,dfe=5,dfg=5
   }
   if(!is.null(H)) {
     LH<-try(t(chol(H)),silent=T);  
-    if(inherits(LH,"try-error")) stop("H is not full rank, try add small values to the diagonal of H to make it full rank."); 
+    if(inherits(LH,"try-error")) stop("H is not positive definite, try add small values to the diagonal of H to make it positive definite"); 
     LHinv=forwardsolve(LH,x=diag(1,nrow(LH)),upper.tri=F)
   } else {
     LH=NA;
